@@ -36,11 +36,7 @@ var foo = array[someIndex];
 
 // With `object` enabled
 var { foo } = object;
-
 var foo = object.bar;
-
-let foo;
-({ foo } = object);
 ```
 
 Examples of **incorrect** code when `enforceForRenamedProperties` is enabled:
@@ -153,18 +149,10 @@ var foo = array[100];
 
 Then the `array` part of this rule is not recommended, as destructuring does not match this use case very well.
 
-Or for non-iterable 'array-like' objects:
-
-```javascript
-var $ = require('jquery');
-var foo = $('body')[0];
-var [bar] = $('body'); // fails with a TypeError
-```
-
 
 ## Further Reading
 
 If you want to learn more about destructuring, check out the links below:
 
 - [Destructuring Assignment (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-- [Destructuring and parameter handling in ECMAScript 6 (2ality blog)](http://2ality.com/2015/01/es6-destructuring.html)
+- [Destructuring and parameter handling in ECMAScript 6 (2ality blog)](http://www.2ality.com/2015/01/es6-destructuring.html)

@@ -162,8 +162,8 @@ ruleTester.run("no-fallthrough", rule, {
             }],
             errors: [
                 {
-                    message: errorsDefault[0].message,
-                    type: errorsDefault[0].type,
+                    message: errorsDefault.message,
+                    type: errorsDefault.type,
                     line: 4,
                     column: 1
                 }

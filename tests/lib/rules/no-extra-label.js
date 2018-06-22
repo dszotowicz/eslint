@@ -40,53 +40,53 @@ ruleTester.run("no-extra-label", rule, {
         {
             code: "A: while (a) break A;",
             output: "A: while (a) break;",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: while (a) { B: { continue A; } }",
             output: "A: while (a) { B: { continue; } }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "X: while (x) { A: while (a) { B: { break A; break B; continue X; } } }",
             output: "X: while (x) { A: while (a) { B: { break; break B; continue X; } } }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: do { break A; } while (a);",
             output: "A: do { break; } while (a);",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: for (;;) { break A; }",
             output: "A: for (;;) { break; }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: for (a in obj) { break A; }",
             output: "A: for (a in obj) { break; }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: for (a of ary) { break A; }",
             output: "A: for (a of ary) { break; }",
             parserOptions: { ecmaVersion: 6 },
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "A: switch (a) { case 0: break A; }",
             output: "A: switch (a) { case 0: break; }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "X: while (x) { A: switch (a) { case 0: break A; } }",
             output: "X: while (x) { A: switch (a) { case 0: break; } }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: "X: switch (a) { case 0: A: while (b) break A; }",
             output: "X: switch (a) { case 0: A: while (b) break; }",
-            errors: [{ messageId: "unexpected", data: { name: "A" } }]
+            errors: ["This label 'A' is unnecessary."]
         },
         {
             code: `\
@@ -105,7 +105,7 @@ ruleTester.run("no-extra-label", rule, {
                     }
                 }
             `,
-            errors: [{ messageId: "unexpected", data: { name: "A" }, type: "Identifier", line: 2 }]
+            errors: [{ message: "This label 'A' is unnecessary.", type: "Identifier", line: 2 }]
         }
     ]
 });

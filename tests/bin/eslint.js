@@ -11,20 +11,20 @@ const assert = require("chai").assert;
 const EXECUTABLE_PATH = require("path").resolve(`${__dirname}/../../bin/eslint.js`);
 
 /**
- * Returns a Promise for when a child process exits
- * @param {ChildProcess} exitingProcess The child process
- * @returns {Promise<number>} A Promise that fulfills with the exit code when the child process exits
- */
+* Returns a Promise for when a child process exits
+* @param {ChildProcess} exitingProcess The child process
+* @returns {Promise<number>} A Promise that fulfills with the exit code when the child process exits
+*/
 function awaitExit(exitingProcess) {
     return new Promise(resolve => exitingProcess.once("exit", resolve));
 }
 
 /**
- * Asserts that the exit code of a given child process will equal the given value.
- * @param {ChildProcess} exitingProcess The child process
- * @param {number} expectedExitCode The expected exit code of the child process
- * @returns {Promise} A Promise that fufills if the exit code ends up matching, and rejects otherwise.
- */
+* Asserts that the exit code of a given child process will equal the given value.
+* @param {ChildProcess} exitingProcess The child process
+* @param {number} expectedExitCode The expected exit code of the child process
+* @returns {Promise} A Promise that fufills if the exit code ends up matching, and rejects otherwise.
+*/
 function assertExitCode(exitingProcess, expectedExitCode) {
     return awaitExit(exitingProcess).then(exitCode => {
         assert.strictEqual(exitCode, expectedExitCode, `Expected an exit code of ${expectedExitCode} but got ${exitCode}.`);
@@ -32,11 +32,11 @@ function assertExitCode(exitingProcess, expectedExitCode) {
 }
 
 /**
- * Returns a Promise for the stdout of a process.
- * @param {ChildProcess} runningProcess The child process
- * @returns {Promise<{stdout: string, stderr: string}>} A Promise that fulfills with all of the
- * stdout and stderr output produced by the process when it exits.
- */
+* Returns a Promise for the stdout of a process.
+* @param {ChildProcess} runningProcess The child process
+* @returns {Promise<{stdout: string, stderr: string}>} A Promise that fulfills with all of the
+* stdout and stderr output produced by the process when it exits.
+*/
 function getOutput(runningProcess) {
     let stdout = "";
     let stderr = "";
@@ -50,11 +50,11 @@ describe("bin/eslint.js", () => {
     const forkedProcesses = new Set();
 
     /**
-     * Forks the process to run an instance of ESLint.
-     * @param {string[]} [args] An array of arguments
-     * @param {Object} [options] An object containing options for the resulting child process
-     * @returns {ChildProcess} The resulting child process
-     */
+    * Forks the process to run an instance of ESLint.
+    * @param {string[]} [args] An array of arguments
+    * @param {Object} [options] An object containing options for the resulting child process
+    * @returns {ChildProcess} The resulting child process
+    */
     function runESLint(args, options) {
         const newProcess = childProcess.fork(EXECUTABLE_PATH, args, Object.assign({ silent: true }, options));
 
@@ -122,47 +122,20 @@ describe("bin/eslint.js", () => {
             return assertExitCode(child, 1);
         });
 
-        it(
-            "gives a detailed error message if no config file is found in /",
-            () => {
-                if (
-                    fs.readdirSync("/").some(
-                        fileName =>
-                            /^\.eslintrc(?:\.(?:js|yaml|yml|json))?$/
-                                .test(fileName)
-                    )
-                ) {
-                    return Promise.resolve(true);
-                }
-                const child = runESLint(
-                    ["--stdin"], { cwd: "/", env: { HOME: "/" } }
-                );
+        it("gives a detailed error message if no config file is found", () => {
+            const child = runESLint(["--stdin"], { cwd: "/" }); // Assumes the root directory has no .eslintrc file
 
-                const exitCodePromise = assertExitCode(child, 2);
-                const stderrPromise = getOutput(child).then(output => {
-                    assert.match(
-                        output.stderr,
-                        /ESLint couldn't find a configuration file/
-                    );
-                });
-
-                child.stdin.write("1 < 3;\n");
-                child.stdin.end();
-                return Promise.all([exitCodePromise, stderrPromise]);
-            }
-        );
-
-        it("successfully reads from an asynchronous pipe", () => {
-            const child = runESLint(["--stdin", "--no-eslintrc"]);
-
-            child.stdin.write("var foo = bar;\n");
-            return new Promise(resolve => setTimeout(resolve, 300)).then(() => {
-                child.stdin.write("var baz = qux;\n");
-                child.stdin.end();
-
-                return assertExitCode(child, 0);
+            const exitCodePromise = assertExitCode(child, 1);
+            const stdoutPromise = getOutput(child).then(output => {
+                assert.match(output.stderr, /ESLint couldn't find a configuration file/);
             });
+
+            child.stdin.write("var foo = bar\n");
+            child.stdin.end();
+
+            return Promise.all([exitCodePromise, stdoutPromise]);
         });
+
     });
 
     describe("running on files", () => {
@@ -232,8 +205,11 @@ describe("bin/eslint.js", () => {
                 return assertExitCode(child, 0).then(() => {
                     assert.isTrue(fs.existsSync(CACHE_PATH), "Cache file should exist at the given location");
 
-                    // Cache file should contain valid JSON
-                    JSON.parse(fs.readFileSync(CACHE_PATH, "utf8"));
+                    assert.doesNotThrow(
+                        () => JSON.parse(fs.readFileSync(CACHE_PATH, "utf8")),
+                        SyntaxError,
+                        "Cache file should contain valid JSON"
+                    );
                 });
             });
         });
@@ -297,9 +273,11 @@ describe("bin/eslint.js", () => {
 
                 return assertExitCode(child, 0).then(() => {
                     assert.isTrue(fs.existsSync(CACHE_PATH), "Cache file should exist at the given location");
-
-                    // Cache file should contain valid JSON
-                    JSON.parse(fs.readFileSync(CACHE_PATH, "utf8"));
+                    assert.doesNotThrow(
+                        () => JSON.parse(fs.readFileSync(CACHE_PATH, "utf8")),
+                        SyntaxError,
+                        "Cache file should contain valid JSON"
+                    );
                 });
             });
 
@@ -322,7 +300,7 @@ describe("bin/eslint.js", () => {
     describe("handling crashes", () => {
         it("prints the error message to stderr in the event of a crash", () => {
             const child = runESLint(["--rule=no-restricted-syntax:[error, 'Invalid Selector [[[']", "Makefile.js"]);
-            const exitCodeAssertion = assertExitCode(child, 2);
+            const exitCodeAssertion = assertExitCode(child, 1);
             const outputAssertion = getOutput(child).then(output => {
                 const expectedSubstring = "Syntax error in selector";
 
@@ -336,7 +314,7 @@ describe("bin/eslint.js", () => {
         it("prints the error message pointing to line of code", () => {
             const invalidConfig = `${__dirname}/../fixtures/bin/.eslintrc.yml`;
             const child = runESLint(["--no-ignore", invalidConfig]);
-            const exitCodeAssertion = assertExitCode(child, 2);
+            const exitCodeAssertion = assertExitCode(child, 1);
             const outputAssertion = getOutput(child).then(output => {
                 const expectedSubstring = "Error: bad indentation of a mapping entry at line";
 

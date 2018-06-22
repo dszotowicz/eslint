@@ -4,7 +4,7 @@ Each plugin is an npm module with a name in the format of `eslint-plugin-<plugin
 
 ## Create a Plugin
 
-The easiest way to start creating a plugin is to use the [Yeoman generator](https://www.npmjs.com/package/generator-eslint). The generator will guide you through setting up the skeleton of a plugin.
+The easiest way to start creating a plugin is to use the [Yeoman generator](https://npmjs.com/package/generator-eslint). The generator will guide you through setting up the skeleton of a plugin.
 
 ### Rules in Plugins
 
@@ -108,7 +108,7 @@ By default, ESLint will not perform autofixes when a processor is used, even whe
 
     The `range` property contains two indexes in the code, referring to the start and end location of a contiguous section of text that will be replaced. The `text` property refers to the text that will replace the given range.
 
-    In the initial list of problems, the `fix` property will refer to a fix in the processed JavaScript. The `postprocess` method should transform the object to refer to a fix in the original, unprocessed file.
+    In the initial list of problems, the `fix` property will refer refer to a fix in the processed JavaScript. The `postprocess` method should transform the object to refer to a fix in the original, unprocessed file.
 
 2. Add a `supportsAutofix: true` property to the processor.
 
@@ -132,7 +132,7 @@ configs: {
 }
 ```
 
-**Note:** Please note that configuration will not automatically attach your rules and you have to specify your plugin name and any rules you want to enable that are part of the plugin. Any plugin rules must be prefixed with the short or long plugin name. See [Configuring Plugins](../user-guide/configuring.md#configuring-plugins)
+**Note:** Please note that configuration will not automatically attach your rules and you have to specify your plugin name and any rules you want to enable that are part of the plugin. Any plugin rules must be prefixed with the short or long plugin name. See [Configuring Plugins](../user-guide/configuring#configuring-plugins)
 
 ### Peer Dependency
 
@@ -149,7 +149,7 @@ The plugin support was introduced in ESLint version `0.8.0`. Ensure the `peerDep
 
 ### Testing
 
-ESLint provides the [`RuleTester`](/docs/developer-guide/nodejs-api.md#ruletester) utility to make it easy to test the rules of your plugin.
+ESLint provides the [`RuleTester`](/docs/developer-guide/nodejs-api#ruletester) utility to make it easy to test the rules of your plugin.
 
 ## Share Plugins
 
@@ -165,3 +165,67 @@ Add these keywords into your `package.json` file to make it easy for others to f
 ## Further Reading
 
 * [npm Developer Guide](https://docs.npmjs.com/misc/developers)
+
+## Working with Custom Parsers
+
+If you want to use your own parser and provide additional capabilities for your rules, you can specify your own custom parser. If a `parseForESLint` method is exposed on the parser, this method will be used to parse the code. Otherwise, the `parse` method will be used. Both methods should take in the the source code as the first argument, and an optional configuration object as the second argument (provided as `parserOptions` in a config file). The `parse` method should simply return the AST. The `parseForESLint` method should return an object that contains the required property `ast` and an optional `services` property. `ast` should contain the AST. The `services` property can contain any parser-dependent services (such as type checkers for nodes). The value of the `services` property is available to rules as `context.parserServices`.
+
+You can find an ESLint parser project [here](https://github.com/eslint/typescript-eslint-parser).
+
+    {
+
+        "parser": './path/to/awesome-custom-parser.js'
+    }
+
+```javascript
+var espree = require("espree");
+// awesome-custom-parser.js
+exports.parseForESLint = function(code, options) {
+    return {
+        ast: espree.parse(code, options),
+        services: {
+            foo: function() {
+                console.log("foo");
+            }
+        }
+    };
+};
+
+```
+
+### The AST specification
+
+The AST that custom parsers should create is based on [ESTree](https://github.com/estree/estree). The AST requires some additional properties about detail information of the source code.
+
+#### All nodes:
+
+All nodes must have `range` property.
+
+* `range` (`number[]`) is an array of two numbers. Both numbers are a 0-based index which is the position in the array of source code characters. The first is the start position of the node, the second is the end position of the node. `code.slice(node.range[0], node.range[1])` must be the text of the node. This range does not include spaces/parentheses which are around the node.
+* `loc` (`SourceLocation`) must not be `null`. [The `loc` property is defined as nullable by ESTree](https://github.com/estree/estree/blob/25834f7247d44d3156030f8e8a2d07644d771fdb/es5.md#node-objects), but ESLint requires this property. On the other hand, `SourceLocation#source` property can be `undefined`. ESLint does not use the `SourceLocation#source` property.
+
+The `parent` property of all nodes must be rewriteable. ESLint sets each node's parent properties to its parent node while traversing.
+
+#### The `Program` node:
+
+The `Program` node must have `tokens` and `comments` properties. Both properties are an array of the below Token interface.
+
+```ts
+interface Token {
+    type: string;
+    loc: SourceLocation;
+    range: [number, number]; // See "All nodes:" section for details of `range` property.
+    value: string;
+}
+```
+
+* `tokens` (`Token[]`) is the array of tokens which affect the behavior of programs. Arbitrary spaces can exist between tokens, so rules check the `Token#range` to detect spaces between tokens. This must be sorted by `Token#range[0]`.
+* `comments` (`Token[]`) is the array of comment tokens. This must be sorted by `Token#range[0]`.
+
+The range indexes of all tokens and comments must not overlap with the range of other tokens and comments.
+
+#### The `Literal` node:
+
+The `Literal` node must have `raw` property.
+
+* `raw` (`string`) is the source code of this literal. This is the same as `code.slice(node.range[0], node.range[1])`.

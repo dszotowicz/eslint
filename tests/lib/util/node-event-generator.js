@@ -11,7 +11,7 @@
 const assert = require("assert"),
     sinon = require("sinon"),
     espree = require("espree"),
-    Traverser = require("../../../lib/util/traverser"),
+    estraverse = require("estraverse"),
     EventGeneratorTester = require("../../../tools/internal-testers/event-generator-tester"),
     createEmitter = require("../../../lib/util/safe-emitter"),
     NodeEventGenerator = require("../../../lib/util/node-event-generator");
@@ -91,7 +91,7 @@ describe("NodeEventGenerator", () => {
             possibleQueries.forEach(query => emitter.on(query, () => {}));
             const generator = new NodeEventGenerator(emitter);
 
-            Traverser.traverse(ast, {
+            estraverse.traverse(ast, {
                 enter(node, parent) {
                     node.parent = parent;
                     generator.enterNode(node);
@@ -120,7 +120,7 @@ describe("NodeEventGenerator", () => {
                 const emissions = getEmissions(ast, possibleQueries)
                     .filter(emission => possibleQueries.indexOf(emission[0]) !== -1);
 
-                assert.deepStrictEqual(emissions, expectedEmissions(ast));
+                assert.deepEqual(emissions, expectedEmissions(ast));
             });
         }
 

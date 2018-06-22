@@ -15,27 +15,23 @@ This rule has either a string option:
 
 Or an object option:
 
-* `"multiline": true` requires line breaks if there are line breaks inside properties or between properties
+* `"multiline": true` (default) requires line breaks if there are line breaks inside properties or between properties
 * `"minProperties"` requires line breaks if the number of properties is at least the given integer. By default, an error will also be reported if an object contains linebreaks and has fewer properties than the given integer. However, the second behavior is disabled if the `consistent` option is set to `true`
-* `"consistent": true` (default) requires that either both curly braces, or neither, directly enclose newlines. Note that enabling this option will also change the behavior of the `minProperties` option. (See `minProperties` above for more information)
+* `"consistent": true` requires that either both curly braces, or neither, directly enclose newlines. Note that enabling this option will also change the behavior of the `minProperties` option. (See `minProperties` above for more information)
 
-You can specify different options for object literals, destructuring assignments, and named imports and exports:
+You can specify different options for object literals and destructuring assignments:
 
 ```json
 {
     "object-curly-newline": ["error", {
         "ObjectExpression": "always",
-        "ObjectPattern": { "multiline": true },
-        "ImportDeclaration": "never",
-        "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+        "ObjectPattern": { "multiline": true }
     }]
 }
 ```
 
 * `"ObjectExpression"` configuration for object literals
 * `"ObjectPattern"` configuration for object patterns of destructuring assignments
-* `"ImportDeclaration"` configuration for named imports
-* `"ExportDeclaration"` configuration for named exports
 
 ### always
 
@@ -179,7 +175,7 @@ let {k = function() {
 
 ### multiline
 
-Examples of **incorrect** code for this rule with the `{ "multiline": true }` option:
+Examples of **incorrect** code for this rule with the default `{ "multiline": true }` option:
 
 ```js
 /*eslint object-curly-newline: ["error", { "multiline": true }]*/
@@ -214,7 +210,7 @@ let {k = function() {
 }} = obj;
 ```
 
-Examples of **correct** code for this rule with the `{ "multiline": true }` option:
+Examples of **correct** code for this rule with the default `{ "multiline": true }` option:
 
 ```js
 /*eslint object-curly-newline: ["error", { "multiline": true }]*/
@@ -319,7 +315,7 @@ let {k = function() {
 
 ### consistent
 
-Examples of **incorrect** code for this rule with the default `{ "consistent": true }` option:
+Examples of **incorrect** code for this rule with the `{ "consistent": true }` option:
 
 ```js
 /*eslint object-curly-newline: ["error", { "consistent": true }]*/
@@ -354,7 +350,7 @@ let {o = function() {
 }} = obj;
 ```
 
-Examples of **correct** code for this rule with the default `{ "consistent": true }` option:
+Examples of **correct** code for this rule with the `{ "consistent": true }` option:
 
 ```js
 /*eslint object-curly-newline: ["error", { "consistent": true }]*/
@@ -465,48 +461,6 @@ let {i,
 let {k = function() {
     dosomething();
 }} = obj;
-```
-
-### ImportDeclaration and ExportDeclaration
-
-Examples of **incorrect** code for this rule with the `{ "ImportDeclaration": "always", "ExportDeclaration": "never" }` options:
-
-```js
-/*eslint object-curly-newline: ["error", { "ImportDeclaration": "always", "ExportDeclaration": "never" }]*/
-/*eslint-env es6*/
-
-import {foo, bar} from 'foo-bar';
-import {foo as f, bar} from 'foo-bar';
-import {foo,
-    bar} from 'foo-bar';
-
-export {
-   foo,
-   bar
-};
-export {
-   foo as f,
-   bar
-} from 'foo-bar';
-```
-
-Examples of **correct** code for this rule with the `{ "ImportDeclaration": "always", "ExportDeclaration": "never" }` options:
-
-```js
-/*eslint object-curly-newline: ["error", { "ImportDeclaration": "always", "ExportDeclaration": "never" }]*/
-/*eslint-env es6*/
-
-import {
-    foo,
-    bar
-} from 'foo-bar';
-import {
-    foo as f,
-    bar
-} from 'foo-bar';
-
-export { foo, bar } from 'foo-bar';
-export { foo as f, bar } from 'foo-bar';
 ```
 
 ## Compatibility

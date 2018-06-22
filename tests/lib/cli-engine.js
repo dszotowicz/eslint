@@ -46,11 +46,15 @@ describe("CLIEngine", () => {
      * @returns {string} The path inside the fixture directory.
      * @private
      */
-    function getFixturePath(...args) {
-        const filepath = path.join(fixtureDir, ...args);
+    function getFixturePath() {
+        const args = Array.prototype.slice.call(arguments);
+
+        args.unshift(fixtureDir);
+        let filepath = path.join.apply(path, args);
 
         try {
-            return fs.realpathSync(filepath);
+            filepath = fs.realpathSync(filepath);
+            return filepath;
         } catch (e) {
             return filepath;
         }
@@ -98,17 +102,10 @@ describe("CLIEngine", () => {
             try {
                 const engine = new CLIEngine();
 
-                assert.strictEqual(engine.options.cwd, __dirname);
+                assert.equal(engine.options.cwd, __dirname);
             } finally {
                 process.chdir(originalDir);
             }
-        });
-
-        it("should report one fatal message when given a path by --ignore-path that is not a file when ignore is true.", () => {
-            assert.throws(() => {
-                // eslint-disable-next-line no-new
-                new CLIEngine({ ignorePath: fixtureDir });
-            }, `Error: Could not load file ${fixtureDir}\nError: ${fixtureDir} is not a file`);
         });
     });
 
@@ -122,22 +119,22 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar';");
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.errorCount, 5);
-            assert.strictEqual(report.warningCount, 0);
-            assert.strictEqual(report.fixableErrorCount, 3);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages.length, 5);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "strict");
-            assert.strictEqual(report.results[0].messages[1].ruleId, "no-var");
-            assert.strictEqual(report.results[0].messages[2].ruleId, "no-unused-vars");
-            assert.strictEqual(report.results[0].messages[3].ruleId, "quotes");
-            assert.strictEqual(report.results[0].messages[4].ruleId, "eol-last");
-            assert.strictEqual(report.results[0].fixableErrorCount, 3);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.errorCount, 5);
+            assert.equal(report.warningCount, 0);
+            assert.equal(report.fixableErrorCount, 3);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].messages.length, 5);
+            assert.equal(report.results[0].messages[0].ruleId, "strict");
+            assert.equal(report.results[0].messages[1].ruleId, "no-var");
+            assert.equal(report.results[0].messages[2].ruleId, "no-unused-vars");
+            assert.equal(report.results[0].messages[3].ruleId, "quotes");
+            assert.equal(report.results[0].messages[4].ruleId, "eol-last");
+            assert.equal(report.results[0].fixableErrorCount, 3);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
-        it("should report the total and per file warnings when using local cwd .eslintrc", () => {
+        it("should report the toatl and per file warnings when using local cwd .eslintrc", () => {
 
             engine = new CLIEngine({
                 rules: {
@@ -151,19 +148,19 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar';");
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.errorCount, 0);
-            assert.strictEqual(report.warningCount, 5);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 3);
-            assert.strictEqual(report.results[0].messages.length, 5);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "strict");
-            assert.strictEqual(report.results[0].messages[1].ruleId, "no-var");
-            assert.strictEqual(report.results[0].messages[2].ruleId, "no-unused-vars");
-            assert.strictEqual(report.results[0].messages[3].ruleId, "quotes");
-            assert.strictEqual(report.results[0].messages[4].ruleId, "eol-last");
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 3);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.errorCount, 0);
+            assert.equal(report.warningCount, 5);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 3);
+            assert.equal(report.results[0].messages.length, 5);
+            assert.equal(report.results[0].messages[0].ruleId, "strict");
+            assert.equal(report.results[0].messages[1].ruleId, "no-var");
+            assert.equal(report.results[0].messages[2].ruleId, "no-unused-vars");
+            assert.equal(report.results[0].messages[3].ruleId, "quotes");
+            assert.equal(report.results[0].messages[4].ruleId, "eol-last");
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 3);
         });
 
         it("should report one message when using specific config file", () => {
@@ -176,17 +173,17 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar';");
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.errorCount, 1);
-            assert.strictEqual(report.warningCount, 0);
-            assert.strictEqual(report.fixableErrorCount, 1);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.errorCount, 1);
+            assert.equal(report.warningCount, 0);
+            assert.equal(report.fixableErrorCount, 1);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].messages.length, 1);
+            assert.equal(report.results[0].messages[0].ruleId, "quotes");
             assert.isUndefined(report.results[0].messages[0].output);
-            assert.strictEqual(report.results[0].errorCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 1);
-            assert.strictEqual(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].errorCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 1);
+            assert.equal(report.results[0].warningCount, 0);
         });
 
         it("should report the filename when passed in", () => {
@@ -198,7 +195,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar';", "test.js");
 
-            assert.strictEqual(report.results[0].filePath, getFixturePath("test.js"));
+            assert.equal(report.results[0].filePath, getFixturePath("test.js"));
         });
 
         it("should return a warning when given a filename by --stdin-filename in excluded files list if warnIgnored is true", () => {
@@ -209,19 +206,19 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foo;", "fixtures/passing.js", true);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.errorCount, 0);
-            assert.strictEqual(report.warningCount, 1);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].filePath, getFixturePath("passing.js"));
-            assert.strictEqual(report.results[0].messages[0].severity, 1);
-            assert.strictEqual(report.results[0].messages[0].message, "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to override.");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.errorCount, 0);
+            assert.equal(report.warningCount, 1);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].filePath, getFixturePath("passing.js"));
+            assert.equal(report.results[0].messages[0].severity, 1);
+            assert.equal(report.results[0].messages[0].message, "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to override.");
             assert.isUndefined(report.results[0].messages[0].output);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
         it("should not return a warning when given a filename by --stdin-filename in excluded files list if warnIgnored is false", () => {
@@ -234,7 +231,7 @@ describe("CLIEngine", () => {
             const report = engine.executeOnText("va r bar = foo;", "fixtures/passing.js", false);
 
             // should not report anything because the file is ignored
-            assert.strictEqual(report.results.length, 0);
+            assert.equal(report.results.length, 0);
         });
 
         it("should suppress excluded file warnings by default", () => {
@@ -246,7 +243,7 @@ describe("CLIEngine", () => {
             const report = engine.executeOnText("var bar = foo;", "fixtures/passing.js");
 
             // should not report anything because there are no errors
-            assert.strictEqual(report.results.length, 0);
+            assert.equal(report.results.length, 0);
         });
 
         it("should return a message when given a filename by --stdin-filename in excluded files list and ignore is off", () => {
@@ -263,10 +260,10 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foo;", "fixtures/passing.js");
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, getFixturePath("passing.js"));
-            assert.strictEqual(report.results[0].messages[0].ruleId, "no-undef");
-            assert.strictEqual(report.results[0].messages[0].severity, 2);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, getFixturePath("passing.js"));
+            assert.equal(report.results[0].messages[0].ruleId, "no-undef");
+            assert.equal(report.results[0].messages[0].severity, 2);
             assert.isUndefined(report.results[0].messages[0].output);
         });
 
@@ -284,7 +281,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foo", "passing.js");
 
-            assert.deepStrictEqual(report, {
+            assert.deepEqual(report, {
                 results: [
                     {
                         filePath: getFixturePath("passing.js"),
@@ -345,7 +342,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foo", "passing.js");
 
-            assert.deepStrictEqual(report, {
+            assert.deepEqual(report, {
                 results: [
                     {
                         filePath: getFixturePath("passing.js"),
@@ -358,7 +355,8 @@ describe("CLIEngine", () => {
                                 column: 11,
                                 endLine: 1,
                                 endColumn: 14,
-                                nodeType: "Identifier"
+                                nodeType: "Identifier",
+                                source: "var bar = foo"
                             }
                         ],
                         errorCount: 1,
@@ -388,7 +386,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foo", "test.js");
 
-            assert.deepStrictEqual(report, {
+            assert.deepEqual(report, {
                 results: [
                     {
                         filePath: getFixturePath("test.js"),
@@ -399,7 +397,8 @@ describe("CLIEngine", () => {
                                 severity: 2,
                                 message: "Parsing error: Unexpected token is",
                                 line: 1,
-                                column: 19
+                                column: 19,
+                                source: "var bar = foothis is a syntax error."
                             }
                         ],
                         errorCount: 1,
@@ -429,7 +428,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar =", "test.js");
 
-            assert.deepStrictEqual(report, {
+            assert.deepEqual(report, {
                 results: [
                     {
                         filePath: getFixturePath("test.js"),
@@ -440,7 +439,8 @@ describe("CLIEngine", () => {
                                 severity: 2,
                                 message: "Parsing error: Unexpected token",
                                 line: 1,
-                                column: 10
+                                column: 10,
+                                source: "var bar ="
                             }
                         ],
                         errorCount: 1,
@@ -465,7 +465,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar'");
 
-            assert.strictEqual(report.results[0].source, "var foo = 'bar'");
+            assert.equal(report.results[0].source, "var foo = 'bar'");
         });
 
         it("should return source code of file in `source` property when warnings are present", () => {
@@ -476,7 +476,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var foo = 'bar'");
 
-            assert.strictEqual(report.results[0].source, "var foo = 'bar'");
+            assert.equal(report.results[0].source, "var foo = 'bar'");
         });
 
 
@@ -505,7 +505,7 @@ describe("CLIEngine", () => {
             const report = engine.executeOnText("var msg = 'hi' + foo\n");
 
             assert.isUndefined(report.results[0].source);
-            assert.strictEqual(report.results[0].output, "var msg = 'hi' + foo;\n");
+            assert.equal(report.results[0].output, "var msg = 'hi' + foo;\n");
         });
 
         it("should return a `source` property when a parsing error has occurred", () => {
@@ -516,7 +516,7 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnText("var bar = foothis is a syntax error.\n return bar;");
 
-            assert.deepStrictEqual(report, {
+            assert.deepEqual(report, {
                 results: [
                     {
                         filePath: "<text>",
@@ -527,7 +527,8 @@ describe("CLIEngine", () => {
                                 severity: 2,
                                 message: "Parsing error: Unexpected token is",
                                 line: 1,
-                                column: 19
+                                column: 19,
+                                source: "var bar = foothis is a syntax error."
                             }
                         ],
                         errorCount: 1,
@@ -555,49 +556,11 @@ describe("CLIEngine", () => {
             const report = engine.executeOnText("var bar = foo;", "node_modules/passing.js", true);
             const expectedMsg = "File ignored by default. Use \"--ignore-pattern '!node_modules/*'\" to override.";
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, getFixturePath("node_modules/passing.js"));
-            assert.strictEqual(report.results[0].messages[0].message, expectedMsg);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, getFixturePath("node_modules/passing.js"));
+            assert.equal(report.results[0].messages[0].message, expectedMsg);
         });
 
-        // @scope for @scope/eslint-plugin
-        describe("(plugin shorthand)", () => {
-            const Module = require("module");
-            let originalFindPath = null;
-
-            /* eslint-disable no-underscore-dangle */
-            before(() => {
-                originalFindPath = Module._findPath;
-                Module._findPath = function(id, ...otherArgs) {
-                    if (id === "@scope/eslint-plugin") {
-                        return path.resolve(__dirname, "../fixtures/plugin-shorthand/basic/node_modules/@scope/eslint-plugin/index.js");
-                    }
-                    return originalFindPath.call(this, id, ...otherArgs);
-                };
-            });
-            after(() => {
-                Module._findPath = originalFindPath;
-            });
-            /* eslint-enable no-underscore-dangle */
-
-            it("should resolve 'plugins:[\"@scope\"]' to 'node_modules/@scope/eslint-plugin'.", () => {
-                engine = new CLIEngine({ cwd: getFixturePath("plugin-shorthand/basic") });
-                const report = engine.executeOnText("var x = 0", "index.js").results[0];
-
-                assert.strictEqual(report.filePath, getFixturePath("plugin-shorthand/basic/index.js"));
-                assert.strictEqual(report.messages[0].ruleId, "@scope/rule");
-                assert.strictEqual(report.messages[0].message, "OK");
-            });
-
-            it("should resolve 'extends:[\"plugin:@scope/recommended\"]' to 'node_modules/@scope/eslint-plugin'.", () => {
-                engine = new CLIEngine({ cwd: getFixturePath("plugin-shorthand/extends") });
-                const report = engine.executeOnText("var x = 0", "index.js").results[0];
-
-                assert.strictEqual(report.filePath, getFixturePath("plugin-shorthand/extends/index.js"));
-                assert.strictEqual(report.messages[0].ruleId, "@scope/rule");
-                assert.strictEqual(report.messages[0].message, "OK");
-            });
-        });
     });
 
     describe("executeOnFiles()", () => {
@@ -614,9 +577,9 @@ describe("CLIEngine", () => {
             const filePath = path.resolve(__dirname, "../fixtures/configurations/parser/custom.js");
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.results[0].messages[0].message, "Parsing error: Boom!");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 1);
+            assert.equal(report.results[0].messages[0].message, "Parsing error: Boom!");
 
         });
 
@@ -625,28 +588,28 @@ describe("CLIEngine", () => {
 
             engine = new CLIEngine({
                 cwd: originalDir,
-                configFile: ".eslintrc.js"
+                configFile: ".eslintrc.yml"
             });
 
             const report = engine.executeOnFiles(["lib/cli*.js"]);
 
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
+            assert.equal(report.results.length, 2);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
         });
 
         it("should handle multiple patterns with overlapping files", () => {
 
             engine = new CLIEngine({
                 cwd: originalDir,
-                configFile: ".eslintrc.js"
+                configFile: ".eslintrc.yml"
             });
 
             const report = engine.executeOnFiles(["lib/cli*.js", "lib/cli.?s", "lib/{cli,cli-engine}.js"]);
 
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
+            assert.equal(report.results.length, 2);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
         });
 
         it("should report zero messages when given a config file and a valid file and espree as parser", () => {
@@ -659,8 +622,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["lib/cli.js"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should report zero messages when given a config file and a valid file and esprima as parser", () => {
@@ -672,8 +635,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["lib/cli.js"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should report one fatal message when given a config file and a valid file and invalid parser", () => {
@@ -699,8 +662,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([getFixturePath("files/foo.js2")]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should report zero messages when given a directory with a .js and a .js2 file", () => {
@@ -713,9 +676,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["fixtures/files/"]);
 
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
+            assert.equal(report.results.length, 2);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
         });
 
         it("should report zero messages when given a '**' pattern with a .js and a .js2 file", () => {
@@ -728,36 +691,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["fixtures/files/*"]);
 
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
-        });
-
-        it("should resolve globs when 'globInputPaths' option is true", () => {
-            engine = new CLIEngine({
-                extensions: [".js", ".js2"],
-                ignore: false,
-                cwd: getFixturePath("..")
-            });
-
-            const report = engine.executeOnFiles(["fixtures/files/*"]);
-
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
-        });
-
-        it("should not resolve globs when 'globInputPaths' option is false", () => {
-            engine = new CLIEngine({
-                extensions: [".js", ".js2"],
-                ignore: false,
-                cwd: getFixturePath(".."),
-                globInputPaths: false
-            });
-
-            assert.throws(() => {
-                engine.executeOnFiles(["fixtures/files/*"]);
-            }, `ENOENT: no such file or directory, open '${getFixturePath("..", "fixtures", "files", "*")}`);
+            assert.equal(report.results.length, 2);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
         });
 
         it("should report on all files passed explicitly, even if ignored by default", () => {
@@ -769,12 +705,12 @@ describe("CLIEngine", () => {
             const report = engine.executeOnFiles(["node_modules/foo.js"]);
             const expectedMsg = "File ignored by default. Use \"--ignore-pattern '!node_modules/*'\" to override.";
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages[0].message, expectedMsg);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].messages[0].message, expectedMsg);
         });
 
         it("should report on globs with explicit inclusion of dotfiles, even though ignored by default", () => {
@@ -788,11 +724,11 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["hidden/.hiddenfolder/*.js"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].errorCount, 1);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].fixableErrorCount, 1);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].errorCount, 1);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].fixableErrorCount, 1);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
         it("should not check default ignored files without --no-ignore flag", () => {
@@ -801,9 +737,9 @@ describe("CLIEngine", () => {
                 cwd: getFixturePath("cli-engine")
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles(["node_modules"]);
-            }, "All files matched by 'node_modules' are ignored.");
+            const report = engine.executeOnFiles(["node_modules"]);
+
+            assert.equal(report.results.length, 0);
         });
 
         // https://github.com/eslint/eslint/issues/5547
@@ -814,9 +750,9 @@ describe("CLIEngine", () => {
                 ignore: false
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles(["node_modules"]);
-            }, "All files matched by 'node_modules' are ignored.");
+            const report = engine.executeOnFiles(["node_modules"]);
+
+            assert.equal(report.results.length, 0);
         });
 
         it("should not check .hidden files if they are passed explicitly without --no-ignore flag", () => {
@@ -832,12 +768,12 @@ describe("CLIEngine", () => {
             const report = engine.executeOnFiles(["fixtures/files/.bar.js"]);
             const expectedMsg = "File ignored by default.  Use a negated ignore pattern (like \"--ignore-pattern '!<relative/path/to/filename>'\") to override.";
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages[0].message, expectedMsg);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].messages[0].message, expectedMsg);
         });
 
         it("should check .hidden files if they are passed explicitly with --no-ignore flag", () => {
@@ -853,12 +789,12 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["fixtures/files/.bar.js"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].errorCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 1);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].errorCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 1);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].messages[0].ruleId, "quotes");
         });
 
         it("should check .hidden files if they are unignored with an --ignore-pattern", () => {
@@ -875,12 +811,12 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["hidden/"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].errorCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 1);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].errorCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 1);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].messages[0].ruleId, "quotes");
         });
 
         it("should report zero messages when given a pattern with a .js and a .js2 file", () => {
@@ -893,9 +829,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["fixtures/files/*.?s*"]);
 
-            assert.strictEqual(report.results.length, 2);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
+            assert.equal(report.results.length, 2);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
         });
 
         it("should return one error message when given a config with rules with options and severity level set to error", () => {
@@ -906,18 +842,18 @@ describe("CLIEngine", () => {
             });
             const report = engine.executeOnFiles([getFixturePath("single-quoted.js")]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.errorCount, 1);
-            assert.strictEqual(report.warningCount, 0);
-            assert.strictEqual(report.fixableErrorCount, 1);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-            assert.strictEqual(report.results[0].messages[0].severity, 2);
-            assert.strictEqual(report.results[0].errorCount, 1);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].fixableErrorCount, 1);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 1);
+            assert.equal(report.errorCount, 1);
+            assert.equal(report.warningCount, 0);
+            assert.equal(report.fixableErrorCount, 1);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].messages[0].ruleId, "quotes");
+            assert.equal(report.results[0].messages[0].severity, 2);
+            assert.equal(report.results[0].errorCount, 1);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].fixableErrorCount, 1);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
         it("should return 3 messages when given a config file and a directory of 3 valid files", () => {
@@ -929,26 +865,26 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([getFixturePath("formatters")]);
 
-            assert.strictEqual(report.results.length, 3);
-            assert.strictEqual(report.errorCount, 0);
-            assert.strictEqual(report.warningCount, 0);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].messages.length, 0);
-            assert.strictEqual(report.results[1].messages.length, 0);
-            assert.strictEqual(report.results[2].messages.length, 0);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[1].errorCount, 0);
-            assert.strictEqual(report.results[1].warningCount, 0);
-            assert.strictEqual(report.results[1].fixableErrorCount, 0);
-            assert.strictEqual(report.results[1].fixableWarningCount, 0);
-            assert.strictEqual(report.results[2].errorCount, 0);
-            assert.strictEqual(report.results[2].warningCount, 0);
-            assert.strictEqual(report.results[2].fixableErrorCount, 0);
-            assert.strictEqual(report.results[2].fixableWarningCount, 0);
+            assert.equal(report.results.length, 3);
+            assert.equal(report.errorCount, 0);
+            assert.equal(report.warningCount, 0);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].messages.length, 0);
+            assert.equal(report.results[1].messages.length, 0);
+            assert.equal(report.results[2].messages.length, 0);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[1].errorCount, 0);
+            assert.equal(report.results[1].warningCount, 0);
+            assert.equal(report.results[1].fixableErrorCount, 0);
+            assert.equal(report.results[1].fixableWarningCount, 0);
+            assert.equal(report.results[2].errorCount, 0);
+            assert.equal(report.results[2].warningCount, 0);
+            assert.equal(report.results[2].fixableErrorCount, 0);
+            assert.equal(report.results[2].fixableWarningCount, 0);
         });
 
 
@@ -961,22 +897,22 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([getFixturePath("formatters")]);
 
-            assert.strictEqual(report.errorCount, 6);
-            assert.strictEqual(report.warningCount, 0);
-            assert.strictEqual(report.fixableErrorCount, 6);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
-            assert.strictEqual(report.results[1].errorCount, 3);
-            assert.strictEqual(report.results[1].warningCount, 0);
-            assert.strictEqual(report.results[1].fixableErrorCount, 3);
-            assert.strictEqual(report.results[1].fixableWarningCount, 0);
-            assert.strictEqual(report.results[2].errorCount, 3);
-            assert.strictEqual(report.results[2].warningCount, 0);
-            assert.strictEqual(report.results[2].fixableErrorCount, 3);
-            assert.strictEqual(report.results[2].fixableWarningCount, 0);
+            assert.equal(report.errorCount, 6);
+            assert.equal(report.warningCount, 0);
+            assert.equal(report.fixableErrorCount, 6);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[1].errorCount, 3);
+            assert.equal(report.results[1].warningCount, 0);
+            assert.equal(report.results[1].fixableErrorCount, 3);
+            assert.equal(report.results[1].fixableWarningCount, 0);
+            assert.equal(report.results[2].errorCount, 3);
+            assert.equal(report.results[2].warningCount, 0);
+            assert.equal(report.results[2].fixableErrorCount, 3);
+            assert.equal(report.results[2].fixableWarningCount, 0);
         });
 
         it("should process when file is given by not specifying extensions", () => {
@@ -988,8 +924,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["fixtures/files/foo.js2"]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages when given a config with environment set to browser", () => {
@@ -1001,8 +937,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("globals-browser.js"))]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages when given an option to set environment to browser", () => {
@@ -1018,8 +954,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("globals-browser.js"))]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages when given a config with environment set to Node.js", () => {
@@ -1031,8 +967,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("globals-node.js"))]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should not return results from previous call when calling more than once", () => {
@@ -1050,45 +986,48 @@ describe("CLIEngine", () => {
 
             let report = engine.executeOnFiles([failFilePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, failFilePath);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "semi");
-            assert.strictEqual(report.results[0].messages[0].severity, 2);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, failFilePath);
+            assert.equal(report.results[0].messages.length, 1);
+            assert.equal(report.results[0].messages[0].ruleId, "semi");
+            assert.equal(report.results[0].messages[0].severity, 2);
 
             report = engine.executeOnFiles([passFilePath]);
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, passFilePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, passFilePath);
+            assert.equal(report.results[0].messages.length, 0);
 
         });
 
-        it("should throw an error when given a directory with all eslint excluded files in the directory", () => {
+        it("should return zero messages when given a directory with eslint excluded files in the directory", () => {
 
             engine = new CLIEngine({
                 ignorePath: getFixturePath(".eslintignore")
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles([getFixturePath("./")]);
-            }, `All files matched by '${getFixturePath("./")}' are ignored.`);
+            const report = engine.executeOnFiles([getFixturePath("./")]);
+
+            assert.equal(report.results.length, 0);
         });
 
-        it("should throw an error when all given files are ignored", () => {
-
-            assert.throws(() => {
-                engine.executeOnFiles(["tests/fixtures/"]);
-            }, "All files matched by 'tests/fixtures/' are ignored.");
-        });
-
-        it("should throw an error when all given files are ignored even with a `./` prefix", () => {
+        it("should return zero messages when all given files are ignored", () => {
             engine = new CLIEngine({
                 ignorePath: getFixturePath(".eslintignore")
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles(["./tests/fixtures/"]);
-            }, "All files matched by './tests/fixtures/' are ignored.");
+            const report = engine.executeOnFiles(["tests/fixtures/"]);
+
+            assert.equal(report.results.length, 0);
+        });
+
+        it("should return zero messages when all given files are ignored event with a `./` prefix", () => {
+            engine = new CLIEngine({
+                ignorePath: getFixturePath(".eslintignore")
+            });
+
+            const report = engine.executeOnFiles(["./tests/fixtures/"]);
+
+            assert.equal(report.results.length, 0);
         });
 
         // https://github.com/eslint/eslint/issues/3788
@@ -1104,15 +1043,15 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles(["."]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 0);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 0);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
         // https://github.com/eslint/eslint/issues/3812
-        it("should ignore all files and throw an error when tests/fixtures/ is in ignore file", () => {
+        it("should ignore all files when tests/fixtures/ is in ignore file", () => {
             engine = new CLIEngine({
                 ignorePath: getFixturePath("cli-engine/.eslintignore2"),
                 useEslintrc: false,
@@ -1121,19 +1060,19 @@ describe("CLIEngine", () => {
                 }
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles(["./tests/fixtures/cli-engine/"]);
-            }, "No files matching './tests/fixtures/cli-engine/' were found.");
+            const report = engine.executeOnFiles(["./tests/fixtures/cli-engine/"]);
+
+            assert.equal(report.results.length, 0);
         });
 
-        it("should throw an error when all given files are ignored via ignore-pattern", () => {
+        it("should return zero messages when all given files are ignored via ignore-pattern", () => {
             engine = new CLIEngine({
                 ignorePattern: "tests/fixtures/single-quoted.js"
             });
 
-            assert.throws(() => {
-                engine.executeOnFiles(["tests/fixtures/*-quoted.js"]);
-            }, "All files matched by 'tests/fixtures/*-quoted.js' are ignored.");
+            const report = engine.executeOnFiles(["tests/fixtures/*-quoted.js"]);
+
+            assert.equal(report.results.length, 0);
         });
 
         it("should return a warning when an explicitly given file is ignored", () => {
@@ -1146,18 +1085,18 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.errorCount, 0);
-            assert.strictEqual(report.warningCount, 1);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages[0].severity, 1);
-            assert.strictEqual(report.results[0].messages[0].message, "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to override.");
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 1);
-            assert.strictEqual(report.results[0].fixableErrorCount, 0);
-            assert.strictEqual(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.errorCount, 0);
+            assert.equal(report.warningCount, 1);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages[0].severity, 1);
+            assert.equal(report.results[0].messages[0].message, "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to override.");
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 1);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
         });
 
         it("should return two messages when given a file in excluded files list while ignore is off", () => {
@@ -1174,12 +1113,12 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "no-undef");
-            assert.strictEqual(report.results[0].messages[0].severity, 2);
-            assert.strictEqual(report.results[0].messages[1].ruleId, "no-undef");
-            assert.strictEqual(report.results[0].messages[1].severity, 2);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages[0].ruleId, "no-undef");
+            assert.equal(report.results[0].messages[0].severity, 2);
+            assert.equal(report.results[0].messages[1].ruleId, "no-undef");
+            assert.equal(report.results[0].messages[1].severity, 2);
         });
 
         it("should return zero messages when executing a file with a shebang", () => {
@@ -1190,8 +1129,8 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([getFixturePath("shebang.js")]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should give a warning when loading a custom rule that doesn't exist", () => {
@@ -1203,11 +1142,11 @@ describe("CLIEngine", () => {
             });
             const report = engine.executeOnFiles([getFixturePath("rules", "test", "test-custom-rule.js")]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "missing-rule");
-            assert.strictEqual(report.results[0].messages[0].severity, 1);
-            assert.strictEqual(report.results[0].messages[0].message, "Definition for rule 'missing-rule' was not found");
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 1);
+            assert.equal(report.results[0].messages[0].ruleId, "missing-rule");
+            assert.equal(report.results[0].messages[0].severity, 1);
+            assert.equal(report.results[0].messages[0].message, "Definition for rule 'missing-rule' was not found");
 
 
         });
@@ -1239,11 +1178,11 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 2);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "custom-rule");
-            assert.strictEqual(report.results[0].messages[0].severity, 1);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 2);
+            assert.equal(report.results[0].messages[0].ruleId, "custom-rule");
+            assert.equal(report.results[0].messages[0].severity, 1);
         });
 
         it("should load custom rule from the provided cwd", () => {
@@ -1260,11 +1199,11 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 2);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "custom-rule");
-            assert.strictEqual(report.results[0].messages[0].severity, 1);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 2);
+            assert.equal(report.results[0].messages[0].ruleId, "custom-rule");
+            assert.equal(report.results[0].messages[0].severity, 1);
         });
 
         it("should return messages when multiple custom rules match a file", () => {
@@ -1282,13 +1221,13 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 2);
-            assert.strictEqual(report.results[0].messages[0].ruleId, "no-literals");
-            assert.strictEqual(report.results[0].messages[0].severity, 2);
-            assert.strictEqual(report.results[0].messages[1].ruleId, "no-strings");
-            assert.strictEqual(report.results[0].messages[1].severity, 2);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 2);
+            assert.equal(report.results[0].messages[0].ruleId, "no-literals");
+            assert.equal(report.results[0].messages[0].severity, 2);
+            assert.equal(report.results[0].messages[1].ruleId, "no-strings");
+            assert.equal(report.results[0].messages[1].severity, 2);
         });
 
         it("should return zero messages when executing without useEslintrc flag", () => {
@@ -1302,9 +1241,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages when executing without useEslintrc flag in Node.js environment", () => {
@@ -1319,9 +1258,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages when executing with base-config flag set to false", () => {
@@ -1336,9 +1275,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages and ignore .eslintrc files when executing with no-eslintrc flag", () => {
@@ -1353,9 +1292,9 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 0);
         });
 
         it("should return zero messages and ignore package.json files when executing with no-eslintrc flag", () => {
@@ -1370,9 +1309,32 @@ describe("CLIEngine", () => {
 
             const report = engine.executeOnFiles([filePath]);
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].filePath, filePath);
-            assert.strictEqual(report.results[0].messages.length, 0);
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].filePath, filePath);
+            assert.equal(report.results[0].messages.length, 0);
+        });
+
+        it("should not fail if an ignored file cannot be resolved", () => {
+
+            const fakeFS = leche.fake(fs),
+                LocalCLIEngine = proxyquire("../../lib/cli-engine", {
+                    fs: fakeFS
+                });
+
+            fakeFS.realpathSync = function() {
+                throw new Error("this error should not happen");
+            };
+            fakeFS.existsSync = fs.existsSync;
+            fakeFS.unlinkSync = fs.unlinkSync;
+
+            engine = new LocalCLIEngine({
+                ignorePattern: "tests"
+            });
+
+            assert.doesNotThrow(() => {
+                engine.executeOnFiles(["tests/fixtures/file-not-found.js"]);
+            });
+
         });
 
         describe("Fix Mode", () => {
@@ -1407,7 +1369,7 @@ describe("CLIEngine", () => {
                 const report = engine.executeOnFiles([path.resolve(fixtureDir, `${fixtureDir}/fixmode`)]);
 
                 report.results.forEach(convertCRLF);
-                assert.deepStrictEqual(report, {
+                assert.deepEqual(report, {
                     results: [
                         {
                             filePath: fs.realpathSync(path.resolve(fixtureDir, "fixmode/multipass.js")),
@@ -1433,10 +1395,10 @@ describe("CLIEngine", () => {
                                     column: 9,
                                     line: 2,
                                     message: "Expected '===' and instead saw '=='.",
-                                    messageId: "unexpected",
                                     nodeType: "BinaryExpression",
                                     ruleId: "eqeqeq",
-                                    severity: 2
+                                    severity: 2,
+                                    source: "if (msg == \"hi\") {"
                                 }
                             ],
                             errorCount: 1,
@@ -1456,7 +1418,8 @@ describe("CLIEngine", () => {
                                     message: "'foo' is not defined.",
                                     nodeType: "Identifier",
                                     ruleId: "no-undef",
-                                    severity: 2
+                                    severity: 2,
+                                    source: "var msg = \"hi\" + foo;"
                                 }
                             ],
                             errorCount: 1,
@@ -1489,8 +1452,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // No default configuration rules - conf/environments.js (/*eslint-env node*/)
@@ -1504,8 +1467,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes-node.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Project configuration - first level .eslintrc
@@ -1517,8 +1480,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/process-exit.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Project configuration - first level .eslintrc
@@ -1530,8 +1493,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/process-exit.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Project configuration - first level .eslintrc
@@ -1543,10 +1506,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 2);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 2);
             });
 
             // Project configuration - second level .eslintrc
@@ -1558,10 +1521,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/subbroken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "no-console");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "no-console");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
             // Project configuration - third level .eslintrc
@@ -1573,10 +1536,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/subbroken/subsubbroken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
             // Project configuration - first level package.json
@@ -1588,10 +1551,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/packagejson/subdir/wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
             // Project configuration - second level package.json
@@ -1603,8 +1566,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/packagejson/subdir/subsubdir/wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Project configuration - third level package.json
@@ -1616,10 +1579,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/packagejson/subdir/subsubdir/subsubsubdir/wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 2);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 2);
             });
 
             // Project configuration - .eslintrc overrides package.json in same directory
@@ -1631,10 +1594,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/packagejson/wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 2);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 2);
             });
 
             // Command line configuration - --config with first level .eslintrc
@@ -1647,12 +1610,12 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 2);
-                assert.strictEqual(report.results[0].messages[1].ruleId, "semi");
-                assert.strictEqual(report.results[0].messages[1].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 2);
+                assert.equal(report.results[0].messages[1].ruleId, "semi");
+                assert.equal(report.results[0].messages[1].severity, 1);
             });
 
             // Command line configuration - --config with first level .eslintrc
@@ -1665,8 +1628,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Command line configuration - --config with second level .eslintrc
@@ -1679,12 +1642,12 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/subbroken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "no-console");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
-                assert.strictEqual(report.results[0].messages[1].ruleId, "semi");
-                assert.strictEqual(report.results[0].messages[1].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "no-console");
+                assert.equal(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results[0].messages[1].ruleId, "semi");
+                assert.equal(report.results[0].messages[1].severity, 1);
             });
 
             // Command line configuration - --config with second level .eslintrc
@@ -1697,10 +1660,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/subbroken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "no-console");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "no-console");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
             // Command line configuration - --config with first level .eslintrc
@@ -1713,8 +1676,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 0);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 0);
             });
 
             // Command line configuration - --rule with --config and first level .eslintrc
@@ -1730,10 +1693,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(`${fixtureDir}/config-hierarchy/broken/console-wrong-quotes.js`)]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
             // Command line configuration - --rule with --config and first level .eslintrc
@@ -1749,10 +1712,10 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([getFixturePath("config-hierarchy/broken/console-wrong-quotes.js")]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 1);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "quotes");
-                assert.strictEqual(report.results[0].messages[0].severity, 1);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 1);
+                assert.equal(report.results[0].messages[0].ruleId, "quotes");
+                assert.equal(report.results[0].messages[0].severity, 1);
             });
 
         });
@@ -1767,9 +1730,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test/test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "example/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "example/example-rule");
             });
 
             it("should return two messages when executing with config file that specifies a plugin with namespace", () => {
@@ -1781,9 +1744,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test", "test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "example/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "example/example-rule");
             });
 
             it("should return two messages when executing with config file that specifies a plugin without prefix", () => {
@@ -1795,9 +1758,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test", "test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "example/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "example/example-rule");
             });
 
             it("should return two messages when executing with config file that specifies a plugin without prefix and with namespace", () => {
@@ -1809,9 +1772,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test", "test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "example/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "example/example-rule");
             });
 
             it("should return two messages when executing with cli option that specifies a plugin", () => {
@@ -1824,9 +1787,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test", "test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "example/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "example/example-rule");
             });
 
             it("should return two messages when executing with cli option that specifies preloaded plugin", () => {
@@ -1841,9 +1804,9 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("rules", "test", "test-custom-rule.js"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
-                assert.strictEqual(report.results[0].messages[0].ruleId, "test/example-rule");
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
+                assert.equal(report.results[0].messages[0].ruleId, "test/example-rule");
             });
         });
 
@@ -1890,9 +1853,9 @@ describe("CLIEngine", () => {
             describe("when the cacheFile is a directory or looks like a directory", () => {
 
                 /**
-                 * helper method to delete the cache files created during testing
-                 * @returns {void}
-                 */
+                * helper method to delete the cache files created during testing
+                * @returns {void}
+                */
                 function deleteCacheDir() {
                     try {
                         fs.unlinkSync("./tmp/.cacheFileDir/.cache_hashOfCurrentWorkingDirectory");
@@ -2010,8 +1973,8 @@ describe("CLIEngine", () => {
 
                 const result = engine.executeOnFiles([file]);
 
-                assert.strictEqual(result.errorCount + result.warningCount, 0, "the file passed without errors or warnings");
-                assert.strictEqual(spy.getCall(0).args[0], file, "the module read the file because is considered changed");
+                assert.equal(result.errorCount + result.warningCount, 0, "the file passed without errors or warnings");
+                assert.equal(spy.getCall(0).args[0], file, "the module read the file because is considered changed");
                 assert.isTrue(shell.test("-f", path.resolve(".eslintcache")), "the cache for eslint was created");
 
                 // destroy the spy
@@ -2035,8 +1998,8 @@ describe("CLIEngine", () => {
 
                 const cachedResult = engine.executeOnFiles([file]);
 
-                assert.strictEqual(spy.getCall(0).args[0], file, "the module read the file because is considered changed because the config changed");
-                assert.strictEqual(cachedResult.errorCount, 1, "since configuration changed the cache was not used an one error was reported");
+                assert.equal(spy.getCall(0).args[0], file, "the module read the file because is considered changed because the config changed");
+                assert.equal(cachedResult.errorCount, 1, "since configuration changed the cache was not used an one error was reported");
                 assert.isTrue(shell.test("-f", path.resolve(".eslintcache")), "the cache for eslint was created");
             });
 
@@ -2065,7 +2028,7 @@ describe("CLIEngine", () => {
 
                 const result = engine.executeOnFiles([file]);
 
-                assert.strictEqual(spy.getCall(0).args[0], file, "the module read the file because is considered changed");
+                assert.equal(spy.getCall(0).args[0], file, "the module read the file because is considered changed");
                 assert.isTrue(shell.test("-f", path.resolve(".eslintcache")), "the cache for eslint was created");
 
                 // destroy the spy
@@ -2089,7 +2052,7 @@ describe("CLIEngine", () => {
 
                 const cachedResult = engine.executeOnFiles([file]);
 
-                assert.deepStrictEqual(result, cachedResult, "the result is the same regardless of using cache or not");
+                assert.deepEqual(result, cachedResult, "the result is the same regardless of using cache or not");
 
                 // assert the file was not processed because the cache was used
                 assert.isFalse(spy.called, "the file was not loaded because it used the cache");
@@ -2167,7 +2130,7 @@ describe("CLIEngine", () => {
 
                 const cachedResult = engine.executeOnFiles([badFile, goodFile]);
 
-                assert.deepStrictEqual(result, cachedResult, "result is the same with or without cache");
+                assert.deepEqual(result, cachedResult, "result is the same with or without cache");
             });
 
             it("should not contain in the cache a file that was deleted", () => {
@@ -2203,10 +2166,8 @@ describe("CLIEngine", () => {
                 // delete the file from the file system
                 fs.unlinkSync(toBeDeletedFile);
 
-                /*
-                 * file-entry-cache@2.0.0 will remove from the cache deleted files
-                 * even when they were not part of the array of files to be analyzed
-                 */
+                // file-entry-cache@2.0.0 will remove from the cache deleted files
+                // even when they were not part of the array of files to be analyzed
                 engine.executeOnFiles([badFile, goodFile]);
 
                 cache = JSON.parse(fs.readFileSync(cacheFile));
@@ -2244,11 +2205,9 @@ describe("CLIEngine", () => {
 
                 assert.isTrue(typeof cache[testFile2] === "object", "the entry for the test-file2 is in the cache");
 
-                /*
-                 * we pass a different set of files minus test-file2
-                 * previous version of file-entry-cache would remove the non visited
-                 * entries. 2.0.0 version will keep them unless they don't exist
-                 */
+                // we pass a different set of files minus test-file2
+                // previous version of file-entry-cache would remove the non visited
+                // entries. 2.0.0 version will keep them unless they don't exist
                 engine.executeOnFiles([badFile, goodFile]);
 
                 cache = JSON.parse(fs.readFileSync(cacheFile));
@@ -2382,7 +2341,7 @@ describe("CLIEngine", () => {
 
                     const cachedResult = engine.executeOnFiles([badFile, goodFile]);
 
-                    assert.deepStrictEqual(result, cachedResult, "result is the same with or without cache");
+                    assert.deepEqual(result, cachedResult, "result is the same with or without cache");
                 });
             });
         });
@@ -2398,8 +2357,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("processors", "test", "test-processor.txt"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
             });
             it("should return two messages when executing with config file that specifies preloaded processor", () => {
                 engine = new CLIEngine({
@@ -2428,8 +2387,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([fs.realpathSync(getFixturePath("processors", "test", "test-processor.txt"))]);
 
-                assert.strictEqual(report.results.length, 1);
-                assert.strictEqual(report.results[0].messages.length, 2);
+                assert.equal(report.results.length, 1);
+                assert.equal(report.results[0].messages.length, 2);
             });
             it("should run processors when calling executeOnFiles with config file that specifies a processor", () => {
                 engine = cliEngineWithPlugins({
@@ -2441,8 +2400,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([getFixturePath("processors", "test", "test-processor.txt")]);
 
-                assert.strictEqual(report.results[0].messages[0].message, "'b' is defined but never used.");
-                assert.strictEqual(report.results[0].messages[0].ruleId, "post-processed");
+                assert.equal(report.results[0].messages[0].message, "'b' is defined but never used.");
+                assert.equal(report.results[0].messages[0].ruleId, "post-processed");
             });
             it("should run processors when calling executeOnFiles with config file that specifies preloaded processor", () => {
                 engine = new CLIEngine({
@@ -2472,8 +2431,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnFiles([getFixturePath("processors", "test", "test-processor.txt")]);
 
-                assert.strictEqual(report.results[0].messages[0].message, "'b' is defined but never used.");
-                assert.strictEqual(report.results[0].messages[0].ruleId, "post-processed");
+                assert.equal(report.results[0].messages[0].message, "'b' is defined but never used.");
+                assert.equal(report.results[0].messages[0].ruleId, "post-processed");
             });
             it("should run processors when calling executeOnText with config file that specifies a processor", () => {
                 engine = cliEngineWithPlugins({
@@ -2485,8 +2444,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnText("function a() {console.log(\"Test\");}", "tests/fixtures/processors/test/test-processor.txt");
 
-                assert.strictEqual(report.results[0].messages[0].message, "'b' is defined but never used.");
-                assert.strictEqual(report.results[0].messages[0].ruleId, "post-processed");
+                assert.equal(report.results[0].messages[0].message, "'b' is defined but never used.");
+                assert.equal(report.results[0].messages[0].ruleId, "post-processed");
             });
             it("should run processors when calling executeOnText with config file that specifies preloaded processor", () => {
                 engine = new CLIEngine({
@@ -2516,8 +2475,8 @@ describe("CLIEngine", () => {
 
                 const report = engine.executeOnText("function a() {console.log(\"Test\");}", "tests/fixtures/processors/test/test-processor.txt");
 
-                assert.strictEqual(report.results[0].messages[0].message, "'b' is defined but never used.");
-                assert.strictEqual(report.results[0].messages[0].ruleId, "post-processed");
+                assert.equal(report.results[0].messages[0].message, "'b' is defined but never used.");
+                assert.equal(report.results[0].messages[0].ruleId, "post-processed");
             });
 
             describe("autofixing with processors", () => {
@@ -2608,45 +2567,6 @@ describe("CLIEngine", () => {
                 });
             });
         });
-
-        describe("Patterns which match no file should throw errors.", () => {
-            beforeEach(() => {
-                engine = new CLIEngine({
-                    cwd: getFixturePath("cli-engine"),
-                    useEslintrc: false
-                });
-            });
-
-            it("one file", () => {
-                assert.throws(() => {
-                    engine.executeOnFiles(["non-exist.js"]);
-                }, "No files matching 'non-exist.js' were found.");
-            });
-
-            it("should throw if the directory exists and is empty", () => {
-                assert.throws(() => {
-                    engine.executeOnFiles(["empty"]);
-                }, "No files matching 'empty' were found.");
-            });
-
-            it("one glob pattern", () => {
-                assert.throws(() => {
-                    engine.executeOnFiles(["non-exist/**/*.js"]);
-                }, "No files matching 'non-exist/**/*.js' were found.");
-            });
-
-            it("two files", () => {
-                assert.throws(() => {
-                    engine.executeOnFiles(["aaa.js", "bbb.js"]);
-                }, "No files matching 'aaa.js' were found.");
-            });
-
-            it("a mix of an existing file and a non-existing file", () => {
-                assert.throws(() => {
-                    engine.executeOnFiles(["console.js", "non-exist.js"]);
-                }, "No files matching 'non-exist.js' were found.");
-            });
-        });
     });
 
     describe("getConfigForFile", () => {
@@ -2661,7 +2581,7 @@ describe("CLIEngine", () => {
 
             const filePath = getFixturePath("single-quoted.js");
 
-            assert.deepStrictEqual(
+            assert.deepEqual(
                 engine.getConfigForFile(filePath),
                 configHelper.getConfig(filePath)
             );
@@ -2680,7 +2600,7 @@ describe("CLIEngine", () => {
             const filePath = getFixturePath("config-hierarchy", "root-true", "parent", "root", ".eslintrc");
             const config = engine.getConfigForFile("./.eslintrc");
 
-            assert.deepStrictEqual(
+            assert.deepEqual(
                 config,
                 configHelper.getConfig(filePath)
             );
@@ -2765,42 +2685,6 @@ describe("CLIEngine", () => {
             assert.isFunction(formatter);
         });
 
-        it("should return a function when a formatter prefixed with eslint-formatter is requested", () => {
-            const engine = new CLIEngine({
-                    cwd: getFixturePath("cli-engine")
-                }),
-                formatter = engine.getFormatter("bar");
-
-            assert.isFunction(formatter);
-        });
-
-        it("should return a function when a formatter is requested, also when the eslint-formatter prefix is included in the format argument", () => {
-            const engine = new CLIEngine({
-                    cwd: getFixturePath("cli-engine")
-                }),
-                formatter = engine.getFormatter("eslint-formatter-bar");
-
-            assert.isFunction(formatter);
-        });
-
-        it("should return a function when a formatter is requested within a scoped npm package", () => {
-            const engine = new CLIEngine({
-                    cwd: getFixturePath("cli-engine")
-                }),
-                formatter = engine.getFormatter("@somenamespace/foo");
-
-            assert.isFunction(formatter);
-        });
-
-        it("should return a function when a formatter is requested within a scoped npm package, also when the eslint-formatter prefix is included in the format argument", () => {
-            const engine = new CLIEngine({
-                    cwd: getFixturePath("cli-engine")
-                }),
-                formatter = engine.getFormatter("@somenamespace/eslint-formatter-foo");
-
-            assert.isFunction(formatter);
-        });
-
         it("should return null when a customer formatter doesn't exist", () => {
             const engine = new CLIEngine(),
                 formatterPath = getFixturePath("formatters", "doesntexist.js");
@@ -2858,19 +2742,19 @@ describe("CLIEngine", () => {
             const errorResults = CLIEngine.getErrorResults(report.results);
 
             assert.lengthOf(errorResults[0].messages, 5);
-            assert.strictEqual(errorResults[0].errorCount, 5);
-            assert.strictEqual(errorResults[0].fixableErrorCount, 3);
-            assert.strictEqual(errorResults[0].fixableWarningCount, 0);
-            assert.strictEqual(errorResults[0].messages[0].ruleId, "strict");
-            assert.strictEqual(errorResults[0].messages[0].severity, 2);
-            assert.strictEqual(errorResults[0].messages[1].ruleId, "no-var");
-            assert.strictEqual(errorResults[0].messages[1].severity, 2);
-            assert.strictEqual(errorResults[0].messages[2].ruleId, "no-unused-vars");
-            assert.strictEqual(errorResults[0].messages[2].severity, 2);
-            assert.strictEqual(errorResults[0].messages[3].ruleId, "quotes");
-            assert.strictEqual(errorResults[0].messages[3].severity, 2);
-            assert.strictEqual(errorResults[0].messages[4].ruleId, "eol-last");
-            assert.strictEqual(errorResults[0].messages[4].severity, 2);
+            assert.equal(errorResults[0].errorCount, 5);
+            assert.equal(errorResults[0].fixableErrorCount, 3);
+            assert.equal(errorResults[0].fixableWarningCount, 0);
+            assert.equal(errorResults[0].messages[0].ruleId, "strict");
+            assert.equal(errorResults[0].messages[0].severity, 2);
+            assert.equal(errorResults[0].messages[1].ruleId, "no-var");
+            assert.equal(errorResults[0].messages[1].severity, 2);
+            assert.equal(errorResults[0].messages[2].ruleId, "no-unused-vars");
+            assert.equal(errorResults[0].messages[2].severity, 2);
+            assert.equal(errorResults[0].messages[3].ruleId, "quotes");
+            assert.equal(errorResults[0].messages[3].severity, 2);
+            assert.equal(errorResults[0].messages[4].ruleId, "eol-last");
+            assert.equal(errorResults[0].messages[4].severity, 2);
         });
 
         it("should report a warningCount of 0 when looking for errors only", () => {
@@ -2881,8 +2765,8 @@ describe("CLIEngine", () => {
             const report = engine.executeOnText("var foo = 'bar';");
             const errorResults = CLIEngine.getErrorResults(report.results);
 
-            assert.strictEqual(errorResults[0].warningCount, 0);
-            assert.strictEqual(errorResults[0].fixableWarningCount, 0);
+            assert.equal(errorResults[0].warningCount, 0);
+            assert.equal(errorResults[0].fixableWarningCount, 0);
         });
 
         it("should return 0 error or warning messages even when the file has warnings", () => {
@@ -2896,14 +2780,14 @@ describe("CLIEngine", () => {
 
             assert.lengthOf(errorReport, 0);
             assert.lengthOf(report.results, 1);
-            assert.strictEqual(report.errorCount, 0);
-            assert.strictEqual(report.warningCount, 1);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 0);
-            assert.strictEqual(report.results[0].errorCount, 0);
-            assert.strictEqual(report.results[0].warningCount, 1);
-            assert.strictEqual(report.fixableErrorCount, 0);
-            assert.strictEqual(report.fixableWarningCount, 0);
+            assert.equal(report.errorCount, 0);
+            assert.equal(report.warningCount, 1);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 0);
+            assert.equal(report.results[0].errorCount, 0);
+            assert.equal(report.results[0].warningCount, 1);
+            assert.equal(report.fixableErrorCount, 0);
+            assert.equal(report.fixableWarningCount, 0);
         });
 
         it("should return source code of file in the `source` property", () => {
@@ -2918,7 +2802,7 @@ describe("CLIEngine", () => {
             const errorResults = CLIEngine.getErrorResults(report.results);
 
             assert.lengthOf(errorResults[0].messages, 1);
-            assert.strictEqual(errorResults[0].source, "var foo = 'bar';");
+            assert.equal(errorResults[0].source, "var foo = 'bar';");
         });
 
         it("should contain `output` property after fixes", () => {
@@ -2936,7 +2820,7 @@ describe("CLIEngine", () => {
             const errorResults = CLIEngine.getErrorResults(report.results);
 
             assert.lengthOf(errorResults[0].messages, 1);
-            assert.strictEqual(errorResults[0].output, "console.log('foo');");
+            assert.equal(errorResults[0].output, "console.log('foo');");
         });
     });
 
@@ -2971,7 +2855,7 @@ describe("CLIEngine", () => {
 
             localCLIEngine.outputFixes(report);
 
-            assert.strictEqual(spy.callCount, 2);
+            assert.equal(spy.callCount, 2);
             assert.isTrue(spy.firstCall.calledWithExactly("foo.js", "bar"), "First call was incorrect.");
             assert.isTrue(spy.secondCall.calledWithExactly("bar.js", "baz"), "Second call was incorrect.");
 
@@ -3003,7 +2887,7 @@ describe("CLIEngine", () => {
 
             localCLIEngine.outputFixes(report);
 
-            assert.strictEqual(spy.callCount, 2);
+            assert.equal(spy.callCount, 2);
             assert.isTrue(spy.firstCall.calledWithExactly("foo.js", "bar"), "First call was incorrect.");
             assert.isTrue(spy.secondCall.calledWithExactly("bar.js", "baz"), "Second call was incorrect.");
 
@@ -3011,22 +2895,12 @@ describe("CLIEngine", () => {
 
     });
 
-    describe("getRules()", () => {
-        it("should expose the list of rules", () => {
-            const engine = new CLIEngine();
-
-            assert.isTrue(engine.getRules().has("no-eval"), "no-eval is present");
-
-        });
-    });
-
     describe("resolveFileGlobPatterns", () => {
 
         leche.withData([
-            [".", ["**/*.js"]],
-            ["./", ["**/*.js"]],
-            ["../", ["../**/*.js"]],
-            ["", []]
+            [".", "**/*.js"],
+            ["./", "**/*.js"],
+            ["../", "../**/*.js"]
         ], (input, expected) => {
 
             it(`should correctly resolve ${input} to ${expected}`, () => {
@@ -3034,7 +2908,7 @@ describe("CLIEngine", () => {
 
                 const result = engine.resolveFileGlobPatterns([input]);
 
-                assert.deepStrictEqual(result, expected);
+                assert.equal(result[0], expected);
 
             });
         });
@@ -3065,8 +2939,8 @@ describe("CLIEngine", () => {
             const report = eslintCLI.executeOnText(code);
             const messages = report.results[0].messages;
 
-            assert.strictEqual(messages.length, 1);
-            assert.strictEqual(messages[0].ruleId, "no-alert");
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0].ruleId, "no-alert");
         });
 
         it("should not report a violation by default", () => {
@@ -3092,7 +2966,7 @@ describe("CLIEngine", () => {
             const report = eslintCLI.executeOnText(code);
             const messages = report.results[0].messages;
 
-            assert.strictEqual(messages.length, 0);
+            assert.equal(messages.length, 0);
         });
 
     });
@@ -3101,7 +2975,7 @@ describe("CLIEngine", () => {
         it("should report problems for unused eslint-disable directives", () => {
             const cliEngine = new CLIEngine({ useEslintrc: false, reportUnusedDisableDirectives: true });
 
-            assert.deepStrictEqual(
+            assert.deepEqual(
                 cliEngine.executeOnText("/* eslint-disable */"),
                 {
                     results: [
@@ -3114,6 +2988,7 @@ describe("CLIEngine", () => {
                                     line: 1,
                                     column: 1,
                                     severity: 2,
+                                    source: null,
                                     nodeType: null
                                 }
                             ],

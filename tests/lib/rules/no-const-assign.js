@@ -38,50 +38,50 @@ ruleTester.run("no-const-assign", rule, {
     invalid: [
         {
             code: "const x = 0; x = 1;",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const {a: x} = {a: 0}; x = 1;",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; ({x} = {x: 1});",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; ({a: x = 1} = {});",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; x += 1;",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; ++x;",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "for (const i = 0; i < 10; ++i) { foo(i); }",
-            errors: [{ messageId: "const", data: { name: "i" }, type: "Identifier" }]
+            errors: [{ message: "'i' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; x = 1; x = 2;",
             errors: [
-                { messageId: "const", data: { name: "x" }, type: "Identifier", line: 1, column: 14 },
-                { messageId: "const", data: { name: "x" }, type: "Identifier", line: 1, column: 21 }
+                { message: "'x' is constant.", type: "Identifier", line: 1, column: 14 },
+                { message: "'x' is constant.", type: "Identifier", line: 1, column: 21 }
             ]
         },
         {
             code: "const x = 0; function foo() { x = x + 1; }",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; function foo(a) { x = a; }",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         },
         {
             code: "const x = 0; while (true) { x = x + 1; }",
-            errors: [{ messageId: "const", data: { name: "x" }, type: "Identifier" }]
+            errors: [{ message: "'x' is constant.", type: "Identifier" }]
         }
     ]
 });

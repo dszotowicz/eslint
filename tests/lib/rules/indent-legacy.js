@@ -23,21 +23,19 @@ const fixedFixture = fs.readFileSync(path.join(__dirname, "../../fixtures/rules/
 
 /**
  * Create error message object for failure cases with a single 'found' indentation type
- * @param {string} providedIndentType indent type of string or tab
- * @param {array} providedErrors error info
+ * @param {string} indentType indent type of string or tab
+ * @param {array} errors error info
  * @returns {Object} returns the error messages collection
  * @private
  */
-function expectedErrors(providedIndentType, providedErrors) {
-    let indentType;
-    let errors;
-
-    if (Array.isArray(providedIndentType)) {
-        errors = Array.isArray(providedIndentType[0]) ? providedIndentType : [providedIndentType];
+function expectedErrors(indentType, errors) {
+    if (Array.isArray(indentType)) {
+        errors = indentType;
         indentType = "space";
-    } else {
-        errors = Array.isArray(providedErrors[0]) ? providedErrors : [providedErrors];
-        indentType = providedIndentType;
+    }
+
+    if (!errors[0].length) {
+        errors = [errors];
     }
 
     return errors.map(err => {

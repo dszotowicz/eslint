@@ -59,44 +59,44 @@ if (foo) {
     //...
 }
 
-// Avoid conflict with `array-bracket-spacing`
+// no conflict with `array-bracket-spacing`
 let a = [this];
 let b = [function() {}];
 
-// Avoid conflict with `arrow-spacing`
+// no conflict with `arrow-spacing`
 let a = ()=> this.foo;
 
-// Avoid conflict with `block-spacing`
+// no conflict with `block-spacing`
 {function foo() {}}
 
-// Avoid conflict with `comma-spacing`
+// no conflict with `comma-spacing`
 let a = [100,this.foo, this.bar];
 
-// Avoid conflict with `computed-property-spacing`
+// not conflict with `computed-property-spacing`
 obj[this.foo] = 0;
 
-// Avoid conflict with `generator-star-spacing`
+// no conflict with `generator-star-spacing`
 function *foo() {}
 
-// Avoid conflict with `key-spacing`
+// no conflict with `key-spacing`
 let obj = {
     foo:function() {}
 };
 
-// Avoid conflict with `object-curly-spacing`
+// no conflict with `object-curly-spacing`
 let obj = {foo: this};
 
-// Avoid conflict with `semi-spacing`
+// no conflict with `semi-spacing`
 let a = this;function foo() {}
 
-// Avoid conflict with `space-in-parens`
+// no conflict with `space-in-parens`
 (function () {})();
 
-// Avoid conflict with `space-infix-ops`
+// no conflict with `space-infix-ops`
 if ("foo"in {foo: 0}) {}
 if (10+this.foo<= this.bar) {}
 
-// Avoid conflict with `jsx-curly-spacing`
+// no conflict with `jsx-curly-spacing`
 let a = <A foo={this.foo} bar={function(){}} />
 ```
 
@@ -157,57 +157,57 @@ if (foo) {
     //...
 }
 
-// Avoid conflict with `array-bracket-spacing`
+// not conflict with `array-bracket-spacing`
 let a = [this];
 
-// Avoid conflict with `arrow-spacing`
+// not conflict with `arrow-spacing`
 let a = ()=> this.foo;
 
-// Avoid conflict with `comma-spacing`
+// not conflict with `comma-spacing`
 let a = [100, this.foo, this.bar];
 
-// Avoid conflict with `computed-property-spacing`
+// not conflict with `computed-property-spacing`
 obj[this.foo] = 0;
 
-// Avoid conflict with `generator-star-spacing`
+// not conflict with `generator-star-spacing`
 function* foo() {}
 
-// Avoid conflict with `key-spacing`
+// not conflict with `key-spacing`
 let obj = {
     foo:function() {}
 };
 
-// Avoid conflict with `func-call-spacing`
+// not conflict with `func-call-spacing`
 class A {
     constructor() {
         super();
     }
 }
 
-// Avoid conflict with `object-curly-spacing`
+// not conflict with `object-curly-spacing`
 let obj = {foo: this};
 
-// Avoid conflict with `semi-spacing`
+// not conflict with `semi-spacing`
 let a = this;function foo() {}
 
-// Avoid conflict with `space-before-function-paren`
+// not conflict with `space-before-function-paren`
 function() {}
 
-// Avoid conflict with `space-infix-ops`
+// no conflict with `space-infix-ops`
 if ("foo"in{foo: 0}) {}
 if (10+this.foo<= this.bar) {}
 
-// Avoid conflict with `space-unary-ops`
+// no conflict with `space-unary-ops`
 function* foo(a) {
     return yield+a;
 }
 
-// Avoid conflict with `yield-star-spacing`
+// no conflict with `yield-star-spacing`
 function* foo(a) {
     return yield* a;
 }
 
-// Avoid conflict with `jsx-curly-spacing`
+// no conflict with `jsx-curly-spacing`
 let a = <A foo={this.foo} bar={function(){}} />
 ```
 

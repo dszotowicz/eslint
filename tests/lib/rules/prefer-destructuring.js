@@ -130,10 +130,7 @@ ruleTester.run("prefer-destructuring", rule, {
         {
             code: "var foo = object.foo;",
             options: [{ VariableDeclarator: { object: false }, AssignmentExpression: { object: true } }]
-        },
-        "class Foo extends Bar { static foo() {var foo = super.foo} }",
-        "foo = bar[foo];",
-        "var foo = bar[foo];"
+        }
     ],
 
     invalid: [
@@ -278,13 +275,6 @@ ruleTester.run("prefer-destructuring", rule, {
             errors: [{
                 message: "Use object destructuring.",
                 type: "AssignmentExpression"
-            }]
-        },
-        {
-            code: "class Foo extends Bar { static foo() {var bar = super.foo.bar} }",
-            errors: [{
-                message: "Use object destructuring.",
-                type: "VariableDeclarator"
             }]
         }
     ]

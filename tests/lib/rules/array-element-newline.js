@@ -19,14 +19,15 @@ const RuleTester = require("../../../lib/testers/rule-tester");
 
 const ruleTester = new RuleTester();
 
+const ERR_NO_BREAK_HERE = "There should be no linebreak here.";
+const ERR_BREAK_HERE = "There should be a linebreak after this element.";
+
 ruleTester.run("array-element-newline", rule, {
 
     valid: [
 
-        /*
-         * ArrayExpression
-         * "always"
-         */
+        // ArrayExpression
+        // "always"
         "var foo = [];",
         "var foo = [1];",
         "var foo = [1,\n2];",
@@ -53,7 +54,7 @@ ruleTester.run("array-element-newline", rule, {
         { code: "var foo = [// any comment \n1,\n2];", options: ["always"] },
         { code: "var foo = [1,\n2 // any comment\n];", options: ["always"] },
         { code: "var foo = [1,\n2,\n3];", options: ["always"] },
-        { code: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}\n];", options: ["always"] },
+        { code: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\nosomething();\n}\n];", options: ["always"] },
 
         // "never"
         { code: "var foo = [];", options: ["never"] },
@@ -65,23 +66,6 @@ ruleTester.run("array-element-newline", rule, {
         { code: "var foo = [1, 2, 3];", options: ["never"] },
         { code: "var foo = [1, (\n2\n), 3];", options: ["never"] },
         { code: "var foo = [\nfunction foo() {\ndosomething();\n}, function bar() {\ndosomething();\n}\n];", options: ["never"] },
-
-        // "consistent"
-        { code: "var foo = [];", options: ["consistent"] },
-        { code: "var foo = [1];", options: ["consistent"] },
-        { code: "var foo = [1, 2];", options: ["consistent"] },
-        { code: "var foo = [1,\n2];", options: ["consistent"] },
-        { code: "var foo = [1, 2, 3];", options: ["consistent"] },
-        { code: "var foo = [1,\n2,\n3];", options: ["consistent"] },
-        { code: "var foo = [1,\n2,\n,\n3];", options: ["consistent"] },
-        { code: "var foo = [1, // any comment\n2];", options: ["consistent"] },
-        { code: "var foo = [/* any comment */ 1, 2];", options: ["consistent"] },
-        { code: "var foo = [1, (\n2\n), 3];", options: ["consistent"] },
-        { code: "var foo = [1,\n(2)\n, 3];", options: ["consistent"] },
-        { code: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}\n];", options: ["consistent"] },
-        { code: "var foo = [\nfunction foo() {\ndosomething();\n}, function bar() {\ndosomething();\n}\n];", options: ["consistent"] },
-        { code: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}];", options: ["consistent"] },
-        { code: "var foo = [\nfunction foo() {\ndosomething();\n}, function bar() {\ndosomething();\n}, function bar() {\ndosomething();\n}];", options: ["consistent"] },
 
         // { multiline: true }
         { code: "var foo = [];", options: [{ multiline: true }] },
@@ -119,10 +103,8 @@ ruleTester.run("array-element-newline", rule, {
         { code: "var foo = [1,\n2,\n// any comment\n, 3];", options: [{ multiline: true, minItems: 3 }] },
         { code: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}\n];", options: [{ multiline: true, minItems: 3 }] },
 
-        /*
-         * ArrayPattern
-         * "always"
-         */
+        // ArrayPattern
+        // "always"
         { code: "var [] = foo;", parserOptions: { ecmaVersion: 6 } },
         { code: "var [a] = foo;", parserOptions: { ecmaVersion: 6 } },
         { code: "var [a,\nb] = foo;", parserOptions: { ecmaVersion: 6 } },
@@ -141,17 +123,15 @@ ruleTester.run("array-element-newline", rule, {
 
     invalid: [
 
-        /*
-         * ArrayExpression
-         * "always"
-         */
+        // ArrayExpression
+        // "always"
         {
             code: "var foo = [1, 2];",
             output: "var foo = [1,\n2];",
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
@@ -165,14 +145,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 15
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 17,
                     endLine: 1,
@@ -186,14 +166,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 16,
                     endLine: 1,
@@ -207,14 +187,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 15
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 19,
                     endLine: 1,
@@ -228,12 +208,12 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 3,
                     column: 3
                 }
@@ -245,7 +225,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -257,14 +237,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 15
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 25,
                     endLine: 1,
@@ -278,14 +258,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 31,
                     endLine: 1,
                     endColumn: 31
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 35,
                     endLine: 1,
@@ -299,14 +279,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 20,
                     endLine: 1,
@@ -320,14 +300,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14,
                     endLine: 1,
                     endColumn: 15
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 19,
                     endLine: 1,
@@ -341,7 +321,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -353,7 +333,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["always"],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 4
                 }
@@ -367,7 +347,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 2,
                     column: 3
                 }
@@ -379,7 +359,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 3,
                     column: 2
                 }
@@ -391,7 +371,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 3,
                     column: 2
                 }
@@ -403,7 +383,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 2,
                     column: 18
                 }
@@ -415,7 +395,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 2,
                     column: 3
                 }
@@ -427,14 +407,14 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 2,
                     column: 3,
                     endLine: 3,
                     endColumn: 1
                 },
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 3,
                     column: 3,
                     endLine: 4,
@@ -448,7 +428,7 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -460,91 +440,9 @@ ruleTester.run("array-element-newline", rule, {
             options: ["never"],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 4,
                     column: 21
-                }
-            ]
-        },
-
-        // "consistent"
-        {
-            code: "var foo = [1,\n2, 3];",
-            output: "var foo = [1,\n2,\n3];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 2,
-                    column: 3,
-                    endLine: 2,
-                    endColumn: 4
-                }
-            ]
-        },
-        {
-            code: "var foo = [1, 2,\n3];",
-            output: "var foo = [1,\n2,\n3];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 1,
-                    column: 14,
-                    endLine: 1,
-                    endColumn: 15
-                }
-            ]
-        },
-        {
-            code: "var foo = [1,\n(\n2), 3];",
-            output: "var foo = [1,\n(\n2),\n3];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 3,
-                    column: 4,
-                    endLine: 3,
-                    endColumn: 5
-                }
-            ]
-        },
-        {
-            code: "var foo = [1,        \t      (\n2\n),\n3];",
-            output: "var foo = [1,\n(\n2\n),\n3];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 1,
-                    column: 14,
-                    endLine: 1,
-                    endColumn: 29
-                }
-            ]
-        },
-        {
-            code: "var foo = [1, /* any comment */(2),\n3];",
-            output: "var foo = [1, /* any comment */\n(2),\n3];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 1,
-                    column: 32
-                }
-            ]
-        },
-        {
-            code: "var foo = [\nfunction foo() {\ndosomething();\n},function bar() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}];",
-            output: "var foo = [\nfunction foo() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n},\nfunction bar() {\ndosomething();\n}];",
-            options: ["consistent"],
-            errors: [
-                {
-                    messageId: "missingLineBreak",
-                    line: 4,
-                    column: 3
                 }
             ]
         },
@@ -556,7 +454,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -568,7 +466,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -580,7 +478,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 21
                 }
@@ -594,7 +492,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: null }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -606,12 +504,12 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: null }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 14
                 },
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 2,
                     column: 3
                 }
@@ -623,7 +521,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: null }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -637,7 +535,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 0 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -649,12 +547,12 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 0 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 17
                 }
@@ -666,7 +564,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 0 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -680,7 +578,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 3 }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -692,12 +590,12 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 3 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 17
                 }
@@ -709,7 +607,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ minItems: 3 }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
@@ -723,12 +621,12 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true, minItems: 3 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 14
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 17
                 }
@@ -740,7 +638,7 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true, minItems: 3 }],
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 14
                 }
@@ -752,17 +650,15 @@ ruleTester.run("array-element-newline", rule, {
             options: [{ multiline: true, minItems: 3 }],
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 4,
                     column: 3
                 }
             ]
         },
 
-        /*
-         * ArrayPattern
-         * "always"
-         */
+        // ArrayPattern
+        // "always"
         {
             code: "var [a, b] = foo;",
             output: "var [a,\nb] = foo;",
@@ -770,7 +666,7 @@ ruleTester.run("array-element-newline", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 8
                 }
@@ -783,12 +679,12 @@ ruleTester.run("array-element-newline", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 8
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 11
                 }
@@ -803,7 +699,7 @@ ruleTester.run("array-element-newline", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "unexpectedLineBreak",
+                    message: ERR_NO_BREAK_HERE,
                     line: 1,
                     column: 8
                 }
@@ -816,12 +712,12 @@ ruleTester.run("array-element-newline", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 8
                 },
                 {
-                    messageId: "missingLineBreak",
+                    message: ERR_BREAK_HERE,
                     line: 1,
                     column: 11
                 }

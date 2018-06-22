@@ -20,11 +20,7 @@ ruleTester.run("no-shadow-restricted-names", rule, {
         "!function foo(bar){ var baz; }",
         "!function(bar){ var baz; }",
         "try {} catch(e) {}",
-        { code: "export default function() {}", parserOptions: { sourceType: "module" } },
-        {
-            code: "try {} catch {}",
-            parserOptions: { ecmaVersion: 2019 }
-        }
+        { code: "export default function() {}", parserOptions: { sourceType: "module" } }
     ],
     invalid: [
         {
@@ -92,23 +88,6 @@ ruleTester.run("no-shadow-restricted-names", rule, {
                 { message: "Shadowing of global property 'eval'.", type: "Identifier" },
                 { message: "Shadowing of global property 'eval'.", type: "Identifier" },
                 { message: "Shadowing of global property 'eval'.", type: "Identifier" }
-            ]
-        },
-        {
-            code: "var [undefined] = [1]",
-            parserOptions: { ecmaVersion: 6 },
-            errors: [
-                { message: "Shadowing of global property 'undefined'.", type: "Identifier" }
-            ]
-        },
-        {
-            code: "var {undefined} = obj; var {a: undefined} = obj; var {a: {b: {undefined}}} = obj; var {a, ...undefined} = obj;",
-            parserOptions: { ecmaVersion: 9 },
-            errors: [
-                { message: "Shadowing of global property 'undefined'.", type: "Identifier" },
-                { message: "Shadowing of global property 'undefined'.", type: "Identifier" },
-                { message: "Shadowing of global property 'undefined'.", type: "Identifier" },
-                { message: "Shadowing of global property 'undefined'.", type: "Identifier" }
             ]
         }
     ]

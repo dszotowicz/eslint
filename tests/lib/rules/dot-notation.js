@@ -18,16 +18,6 @@ const rule = require("../../../lib/rules/dot-notation"),
 
 const ruleTester = new RuleTester();
 
-/**
- * Quote a string in "double quotes" because it’s painful
- * with a double-quoted string literal
- * @param   {string} str The string to quote
- * @returns {string}     `"${str}"`
- */
-function q(str) {
-    return `"${str}"`;
-}
-
 ruleTester.run("dot-notation", rule, {
     valid: [
         "a.b;",
@@ -64,45 +54,45 @@ ruleTester.run("dot-notation", rule, {
             code: "a.true;",
             output: "a[\"true\"];",
             options: [{ allowKeywords: false }],
-            errors: [{ messageId: "useBrackets", data: { key: "true" } }]
+            errors: [{ message: ".true is a syntax error." }]
         },
         {
             code: "a['true'];",
             output: "a.true;",
-            errors: [{ messageId: "useDot", data: { key: q("true") } }]
+            errors: [{ message: "[\"true\"] is better written in dot notation." }]
         },
         {
             code: "a[`time`];",
             output: "a.time;",
             parserOptions: { ecmaVersion: 6 },
-            errors: [{ messageId: "useDot", data: { key: "`time`" } }]
+            errors: [{ message: "[`time`] is better written in dot notation." }]
         },
         {
             code: "a[null];",
             output: "a.null;",
-            errors: [{ messageId: "useDot", data: { key: "null" } }]
+            errors: [{ message: "[null] is better written in dot notation." }]
         },
         {
             code: "a['b'];",
             output: "a.b;",
-            errors: [{ messageId: "useDot", data: { key: q("b") } }]
+            errors: [{ message: "[\"b\"] is better written in dot notation." }]
         },
         {
             code: "a.b['c'];",
             output: "a.b.c;",
-            errors: [{ messageId: "useDot", data: { key: q("c") } }]
+            errors: [{ message: "[\"c\"] is better written in dot notation." }]
         },
         {
             code: "a['_dangle'];",
             output: "a._dangle;",
             options: [{ allowPattern: "^[a-z]+(_[a-z]+)+$" }],
-            errors: [{ messageId: "useDot", data: { key: q("_dangle") } }]
+            errors: [{ message: "[\"_dangle\"] is better written in dot notation." }]
         },
         {
             code: "a['SHOUT_CASE'];",
             output: "a.SHOUT_CASE;",
             options: [{ allowPattern: "^[a-z]+(_[a-z]+)+$" }],
-            errors: [{ messageId: "useDot", data: { key: q("SHOUT_CASE") } }]
+            errors: [{ message: "[\"SHOUT_CASE\"] is better written in dot notation." }]
         },
         {
             code:
@@ -112,8 +102,7 @@ ruleTester.run("dot-notation", rule, {
                 "a\n" +
                 "  .SHOUT_CASE;",
             errors: [{
-                messageId: "useDot",
-                data: { key: q("SHOUT_CASE") },
+                message: "[\"SHOUT_CASE\"] is better written in dot notation.",
                 line: 2,
                 column: 4
             }]
@@ -133,14 +122,12 @@ ruleTester.run("dot-notation", rule, {
             "    .catch(function(){});",
             errors: [
                 {
-                    messageId: "useDot",
-                    data: { key: q("catch") },
+                    message: "[\"catch\"] is better written in dot notation.",
                     line: 3,
                     column: 6
                 },
                 {
-                    messageId: "useDot",
-                    data: { key: q("catch") },
+                    message: "[\"catch\"] is better written in dot notation.",
                     line: 5,
                     column: 6
                 }
@@ -154,59 +141,59 @@ ruleTester.run("dot-notation", rule, {
             "foo\n" +
             "  [\"while\"];",
             options: [{ allowKeywords: false }],
-            errors: [{ messageId: "useBrackets", data: { key: "while" } }]
+            errors: [{ message: ".while is a syntax error." }]
         },
         {
             code: "foo[ /* comment */ 'bar' ]",
             output: null, // Not fixed due to comment
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "foo[ 'bar' /* comment */ ]",
             output: null, // Not fixed due to comment
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "foo[    'bar'    ];",
             output: "foo.bar;",
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "foo. /* comment */ while",
             output: null, // Not fixed due to comment
             options: [{ allowKeywords: false }],
-            errors: [{ messageId: "useBrackets", data: { key: "while" } }]
+            errors: [{ message: ".while is a syntax error." }]
         },
         {
             code: "foo[('bar')]",
             output: "foo.bar",
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "foo[(null)]",
             output: "foo.null",
-            errors: [{ messageId: "useDot", data: { key: "null" } }]
+            errors: [{ message: "[null] is better written in dot notation." }]
         },
         {
             code: "(foo)['bar']",
             output: "(foo).bar",
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "1['toString']",
             output: "1 .toString",
-            errors: [{ messageId: "useDot", data: { key: q("toString") } }]
+            errors: [{ message: "[\"toString\"] is better written in dot notation." }]
         },
         {
             code: "foo['bar']instanceof baz",
             output: "foo.bar instanceof baz",
-            errors: [{ messageId: "useDot", data: { key: q("bar") } }]
+            errors: [{ message: "[\"bar\"] is better written in dot notation." }]
         },
         {
             code: "let.if()",
             output: null, // `let["if"]()` is a syntax error because `let[` indicates a destructuring variable declaration
             options: [{ allowKeywords: false }],
-            errors: [{ messageId: "useBrackets", data: { key: "if" } }]
+            errors: [{ message: ".if is a syntax error." }]
         }
     ]
 });

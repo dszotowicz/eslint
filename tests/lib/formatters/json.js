@@ -24,7 +24,8 @@ describe("formatter:json", () => {
             severity: 2,
             line: 5,
             column: 10,
-            ruleId: "foo"
+            ruleId: "foo",
+            source: "foo"
         }]
     }, {
         filePath: "bar.js",
@@ -33,13 +34,14 @@ describe("formatter:json", () => {
             severity: 1,
             line: 6,
             column: 11,
-            ruleId: "bar"
+            ruleId: "bar",
+            source: "bar"
         }]
     }];
 
     it("should return passed results as a JSON string without any modification", () => {
         const result = JSON.parse(formatter(code));
 
-        assert.deepStrictEqual(result, code);
+        assert.deepEqual(result, code);
     });
 });

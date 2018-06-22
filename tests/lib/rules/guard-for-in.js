@@ -20,18 +20,10 @@ const ruleTester = new RuleTester();
 
 ruleTester.run("guard-for-in", rule, {
     valid: [
-        "for (var x in o);",
         "for (var x in o) {}",
-        "for (var x in o) if (x) f();",
-        "for (var x in o) { if (x) { f(); } }",
-        "for (var x in o) { if (x) continue; f(); }",
-        "for (var x in o) { if (x) { continue; } f(); }"
+        "for (var x in o) { if (x) {}}"
     ],
     invalid: [
-        { code: "for (var x in o) { if (x) { f(); continue; } g(); }", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] },
-        { code: "for (var x in o) { if (x) { continue; f(); } g(); }", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] },
-        { code: "for (var x in o) { if (x) { f(); } g(); }", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] },
-        { code: "for (var x in o) { if (x) f(); g(); }", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] },
         { code: "for (var x in o) { foo() }", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] },
         { code: "for (var x in o) foo();", errors: [{ message: "The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype.", type: "ForInStatement" }] }
     ]

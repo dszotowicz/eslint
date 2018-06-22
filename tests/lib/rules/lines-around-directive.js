@@ -25,11 +25,9 @@ ruleTester.run("lines-around-directive", rule, {
         // use "always" by default
         "//comment\n\n'use strict';\n'use asm';\n\nvar foo;",
 
-        /*
-         * "always"
-         * at top of file
-         * single directive
-         */
+        // "always"
+        // at top of file
+        // single directive
         {
             code: "'use strict';\n\nvar foo;",
             options: ["always"]
@@ -65,10 +63,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["always"]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n\n'use strict';\n\nvar foo;",
             options: ["always"]
@@ -106,10 +102,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["always"]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\n\nvar bar;\n}",
             options: ["always"]
@@ -149,10 +143,8 @@ ruleTester.run("lines-around-directive", rule, {
             parserOptions: { ecmaVersion: 6 }
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n\n'use strict';\n\nvar bar;\n}",
             options: ["always"]
@@ -204,11 +196,9 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["always"]
         },
 
-        /*
-         * "never"
-         * at top of file
-         * single directive
-         */
+        // "never"
+        // at top of file
+        // single directive
         {
             code: "'use strict';\nvar foo;",
             options: ["never"]
@@ -236,10 +226,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["never"]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n'use strict';\nvar foo;",
             options: ["never"]
@@ -275,10 +263,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["never"]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\nvar bar;\n}",
             options: ["never"]
@@ -318,10 +304,8 @@ ruleTester.run("lines-around-directive", rule, {
             parserOptions: { ecmaVersion: 6 }
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n'use strict';\nvar bar;\n}",
             options: ["never"]
@@ -379,11 +363,9 @@ ruleTester.run("lines-around-directive", rule, {
             options: ["never"]
         },
 
-        /*
-         * { "before": "never", "after": "always" }
-         * at top of file
-         * single directive
-         */
+        // { "before": "never", "after": "always" }
+        // at top of file
+        // single directive
         {
             code: "'use strict';\n\nvar foo;",
             options: [{ before: "never", after: "always" }]
@@ -411,10 +393,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: [{ before: "never", after: "always" }]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n'use strict';\n\nvar foo;",
             options: [{ before: "never", after: "always" }]
@@ -442,10 +422,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: [{ before: "never", after: "always" }]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\n\nvar bar;\n}",
             options: [{ before: "never", after: "always" }]
@@ -485,10 +463,8 @@ ruleTester.run("lines-around-directive", rule, {
             parserOptions: { ecmaVersion: 6 }
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n'use strict';\n\nvar bar;\n}",
             options: [{ before: "never", after: "always" }]
@@ -528,11 +504,9 @@ ruleTester.run("lines-around-directive", rule, {
             parserOptions: { ecmaVersion: 6 }
         },
 
-        /*
-         * { "before": "always", "after": "never" }
-         * at top of file
-         * single directive
-         */
+        // { "before": "always", "after": "never" }
+        // at top of file
+        // single directive
         {
             code: "'use strict';\nvar foo;",
             options: [{ before: "always", after: "never" }]
@@ -568,10 +542,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: [{ before: "always", after: "never" }]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n\n'use strict';\nvar foo;",
             options: [{ before: "always", after: "never" }]
@@ -599,10 +571,8 @@ ruleTester.run("lines-around-directive", rule, {
             options: [{ before: "always", after: "never" }]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\nvar bar;\n}",
             options: [{ before: "always", after: "never" }]
@@ -642,10 +612,8 @@ ruleTester.run("lines-around-directive", rule, {
             parserOptions: { ecmaVersion: 6 }
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n\n'use strict';\nvar bar;\n}",
             options: [{ before: "always", after: "never" }]
@@ -698,11 +666,9 @@ ruleTester.run("lines-around-directive", rule, {
 
     invalid: [
 
-        /*
-         * "always"
-         * at top of file
-         * single directive
-         */
+        // "always"
+        // at top of file
+        // single directive
         {
             code: "'use strict';\nvar foo;",
             output: "'use strict';\n\nvar foo;",
@@ -742,10 +708,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Expected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n'use strict';\nvar foo;",
             output: "#!/usr/bin/env node\n\n'use strict';\n\nvar foo;",
@@ -821,10 +785,8 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\nvar bar;\n}",
             output: "function foo() {\n'use strict';\n\nvar bar;\n}",
@@ -854,10 +816,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Expected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n'use strict';\nvar bar;\n}",
             output: "function foo() {\n//comment\n\n'use strict';\n\nvar bar;\n}",
@@ -937,11 +897,9 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * "never"
-         * at top of file
-         * single directive
-         */
+        // "never"
+        // at top of file
+        // single directive
         {
             code: "'use strict';\n\nvar foo;",
             output: "'use strict';\nvar foo;",
@@ -981,10 +939,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Unexpected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n\n'use strict';\n\nvar foo;",
             output: "#!/usr/bin/env node\n'use strict';\nvar foo;",
@@ -1060,10 +1016,8 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\n\nvar bar;\n}",
             output: "function foo() {\n'use strict';\nvar bar;\n}",
@@ -1093,10 +1047,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Unexpected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n\n'use strict';\n\nvar bar;\n}",
             output: "function foo() {\n//comment\n'use strict';\nvar bar;\n}",
@@ -1177,11 +1129,9 @@ ruleTester.run("lines-around-directive", rule, {
         },
 
 
-        /*
-         * { "before": "never", "after": "always" }
-         * at top of file
-         * single directive
-         */
+        // { "before": "never", "after": "always" }
+        // at top of file
+        // single directive
         {
             code: "'use strict';\nvar foo;",
             output: "'use strict';\n\nvar foo;",
@@ -1221,10 +1171,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Expected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n\n'use strict';\nvar foo;",
             output: "#!/usr/bin/env node\n'use strict';\n\nvar foo;",
@@ -1282,10 +1230,8 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\nvar bar;\n}",
             output: "function foo() {\n'use strict';\n\nvar bar;\n}",
@@ -1341,10 +1287,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Expected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n\n'use strict';\nvar bar;\n}",
             output: "function foo() {\n//comment\n'use strict';\n\nvar bar;\n}",
@@ -1424,11 +1368,9 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * { "before": "always", "after": "never" }
-         * at top of file
-         * single directive
-         */
+        // { "before": "always", "after": "never" }
+        // at top of file
+        // single directive
         {
             code: "'use strict';\n\nvar foo;",
             output: "'use strict';\nvar foo;",
@@ -1468,10 +1410,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Unexpected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of file
-         * single directive
-         */
+        // after comment at top of file
+        // single directive
         {
             code: "#!/usr/bin/env node\n'use strict';\n\nvar foo;",
             output: "#!/usr/bin/env node\n\n'use strict';\nvar foo;",
@@ -1529,10 +1469,8 @@ ruleTester.run("lines-around-directive", rule, {
             ]
         },
 
-        /*
-         * at the top of function blocks
-         * single directive
-         */
+        // at the top of function blocks
+        // single directive
         {
             code: "function foo() {\n'use strict';\n\nvar bar;\n}",
             output: "function foo() {\n'use strict';\nvar bar;\n}",
@@ -1588,10 +1526,8 @@ ruleTester.run("lines-around-directive", rule, {
             errors: ["Unexpected newline after \"use asm\" directive."]
         },
 
-        /*
-         * after comment at top of function blocks
-         * single directive
-         */
+        // after comment at top of function blocks
+        // single directive
         {
             code: "function foo() {\n//comment\n'use strict';\n\nvar bar;\n}",
             output: "function foo() {\n//comment\n\n'use strict';\nvar bar;\n}",

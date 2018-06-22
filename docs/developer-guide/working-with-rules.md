@@ -1,12 +1,11 @@
 # Working with Rules
 
-**Note:** This page covers the most recent rule format for ESLint >= 3.0.0. There is also a [deprecated rule format](./working-with-rules-deprecated.md).
+**Note:** This page covers the most recent rule format for ESLint >= 3.0.0. There is also a [deprecated rule format](./working-with-rules-deprecated).
 
-Each rule in ESLint has three files named with its identifier (for example, `no-extra-semi`).
+Each rule in ESLint has two files named with its identifier (for example, `no-extra-semi`).
 
 * in the `lib/rules` directory: a source file (for example, `no-extra-semi.js`)
 * in the `tests/lib/rules` directory: a test file (for example, `no-extra-semi.js`)
-* in the `docs/rules` directory: a Markdown documentation file (for example, `no-extra-semi.md`)
 
 **Important:** If you submit a **core** rule to the ESLint repository, you **must** follow some conventions explained below.
 
@@ -29,8 +28,7 @@ module.exports = {
         docs: {
             description: "disallow unnecessary semicolons",
             category: "Possible Errors",
-            recommended: true,
-            url: "https://eslint.org/docs/rules/no-extra-semi"
+            recommended: true
         },
         fixable: "code",
         schema: [] // no options
@@ -53,28 +51,27 @@ The source file for a rule exports an object with the following properties.
 
     * `description` (string) provides the short description of the rule in the [rules index](../rules/)
     * `category` (string) specifies the heading under which the rule is listed in the [rules index](../rules/)
-    * `recommended` (boolean) is whether the `"extends": "eslint:recommended"` property in a [configuration file](../user-guide/configuring.md#extending-configuration-files) enables the rule
-    * `url` (string) specifies the URL at which the full documentation can be accessed
+    * `recommended` (boolean) is whether the `"extends": "eslint:recommended"` property in a [configuration file](../user-guide/configuring#extending-configuration-files) enables the rule
 
     In a custom rule or plugin, you can omit `docs` or include any properties that you need in it.
 
-* `fixable` (string) is either `"code"` or `"whitespace"` if the `--fix` option on the [command line](../user-guide/command-line-interface.md#fix) automatically fixes problems reported by the rule
+* `fixable` (string) is either `"code"` or `"whitespace"` if the `--fix` option on the [command line](../user-guide/command-line-interface#fix) automatically fixes problems reported by the rule
 
     **Important:** Without the `fixable` property, ESLint does not [apply fixes](#applying-fixes) even if the rule implements `fix` functions. Omit the `fixable` property if the rule is not fixable.
 
-* `schema` (array) specifies the [options](#options-schemas) so ESLint can prevent invalid [rule configurations](../user-guide/configuring.md#configuring-rules)
+* `schema` (array) specifies the [options](#options-schemas) so ESLint can prevent invalid [rule configurations](../user-guide/configuring#configuring-rules)
 
 * `deprecated` (boolean) indicates whether the rule has been deprecated.  You may omit the `deprecated` property if the rule has not been deprecated.
 
 `create` (function) returns an object with methods that ESLint calls to "visit" nodes while traversing the abstract syntax tree (AST as defined by [ESTree](https://github.com/estree/estree)) of JavaScript code:
 
-* if a key is a node type or a [selector](./selectors.md), ESLint calls that **visitor** function while going **down** the tree
-* if a key is a node type or a [selector](./selectors.md) plus `:exit`, ESLint calls that **visitor** function while going **up** the tree
+* if a key is a node type or a [selector](./selectors), ESLint calls that **visitor** function while going **down** the tree
+* if a key is a node type or a [selector](./selectors) plus `:exit`, ESLint calls that **visitor** function while going **up** the tree
 * if a key is an event name, ESLint calls that **handler** function for [code path analysis](./code-path-analysis.md)
 
 A rule can use the current node and its surrounding tree to report or fix problems.
 
-Here are methods for the [array-callback-return](../rules/array-callback-return.md) rule:
+Here are methods for the [array-callback-return](../rules/array-callback-return) rule:
 
 ```js
 function checkLastSegment (node) {
@@ -107,20 +104,20 @@ module.exports = {
 
 The `context` object contains additional functionality that is helpful for rules to do their jobs. As the name implies, the `context` object contains information that is relevant to the context of the rule. The `context` object has the following properties:
 
-* `parserOptions` - the parser options configured for this run (more details [here](../user-guide/configuring.md#specifying-parser-options)).
+* `parserOptions` - the parser options configured for this run (more details [here](../user-guide/configuring#specifying-parser-options)).
 * `id` - the rule ID.
-* `options` - an array of the [configured options](/docs/user-guide/configuring.md#configuring-rules) for this rule. This array does not include the rule severity. For more information, see [here](#contextoptions).
-* `settings` - the [shared settings](/docs/user-guide/configuring.md#adding-shared-settings) from configuration.
+* `options` - an array of the [configured options](/docs/user-guide/configuring#configuring-rules) for this rule. This array does not include the rule severity. For more information, see [here](#contextoptions).
+* `settings` - the [shared settings](/docs/user-guide/configuring#adding-shared-settings) from configuration.
 * `parserPath` - the name of the `parser` from configuration.
 * `parserServices` - an object containing parser-provided services for rules. The default parser does not provide any services. However, if a rule is intended to be used with a custom parser, it could use `parserServices` to access anything provided by that parser. (For example, a TypeScript parser could provide the ability to get the computed type of a given node.)
 
 Additionally, the `context` object has the following methods:
 
 * `getAncestors()` - returns an array of the ancestors of the currently-traversed node, starting at the root of the AST and continuing through the direct parent of the current node. This array does not include the currently-traversed node itself.
-* `getDeclaredVariables(node)` - returns a list of [variables](./scope-manager-interface.md#variable-interface) declared by the given node. This information can be used to track references to variables.
+* `getDeclaredVariables(node)` - returns a list of [variables](https://estools.github.io/escope/Variable.html) declared by the given node. This information can be used to track references to variables.
     * If the node is a `VariableDeclaration`, all variables declared in the declaration are returned.
     * If the node is a `VariableDeclarator`, all variables declared in the declarator are returned.
-    * If the node is a `FunctionDeclaration` or `FunctionExpression`, the variable for the function name is returned, in addition to variables for the function parameters.
+    * If the node is a `FunctionDeclaration` or `FunctionExpression`, the variable for the function name is returned,in addition to variables for the function parameters.
     * If the node is an `ArrowFunctionExpression`, variables for the parameters are returned.
     * If the node is a `ClassDeclaration` or a `ClassExpression`, the variable for the class name is returned.
     * If the node is a `CatchClause`, the variable for the exception is returned.
@@ -128,37 +125,12 @@ Additionally, the `context` object has the following methods:
     * If the node is an `ImportSpecifier`, `ImportDefaultSpecifier`, or `ImportNamespaceSpecifier`, the declared variable is returned.
     * Otherwise, if the node does not declare any variables, an empty array is returned.
 * `getFilename()` - returns the filename associated with the source.
-* `getScope()` - returns the [scope](./scope-manager-interface.md#scope-interface) of the currently-traversed node. This information can be used track references to variables.
+* `getScope()` - returns the [scope](https://estools.github.io/escope/Scope.html) of the currently-traversed node. This information can be used track references to variables.
 * `getSourceCode()` - returns a [`SourceCode`](#contextgetsourcecode) object that you can use to work with the source that was passed to ESLint.
 * `markVariableAsUsed(name)` - marks a variable with the given name in the current scope as used. This affects the [no-unused-vars](../rules/no-unused-vars.md) rule. Returns `true` if a variable with the given name was found and marked as used, otherwise `false`.
 * `report(descriptor)` - reports a problem in the code (see the [dedicated section](#contextreport)).
 
 **Note:** Earlier versions of ESLint supported additional methods on the `context` object. Those methods were removed in the new format and should not be relied upon.
-
-### context.getScope()
-
-This method returns the scope which has the following types:
-
-| AST Node Type             | Scope Type |
-|:--------------------------|:-----------|
-| `Program`                 | `global`   |
-| `FunctionDeclaration`     | `function` |
-| `FunctionExpression`      | `function` |
-| `ArrowFunctionExpression` | `function` |
-| `ClassDeclaration`        | `class`    |
-| `ClassExpression`         | `class`    |
-| `BlockStatement` ※1      | `block`    |
-| `SwitchStatement` ※1     | `switch`   |
-| `ForStatement` ※2        | `for`      |
-| `ForInStatement` ※2      | `for`      |
-| `ForOfStatement` ※2      | `for`      |
-| `WithStatement`           | `with`     |
-| `CatchClause`             | `catch`    |
-| others                    | ※3        |
-
-**※1** Only if the configured parser provided the block-scope feature. The default parser provides the block-scope feature if `parserOptions.ecmaVersion` is not less than `6`.<br>
-**※2** Only if the `for` statement defines the iteration variable as a block-scoped variable (E.g., `for (let i = 0;;) {}`).<br>
-**※3** The scope of the closest ancestor node which has own scope. If the closest ancestor node has multiple scopes then it chooses the innermost scope (E.g., the `Program` node has a `global` scope and a `module` scope if `Program#sourceType` is `"module"`. The innermost scope is the `module` scope.).
 
 ### context.report()
 
@@ -208,64 +180,6 @@ context.report({
 Note that leading and trailing whitespace is optional in message parameters.
 
 The node contains all of the information necessary to figure out the line and column number of the offending text as well the source text representing the node.
-
-### `messageId`s
-
-Instead of typing out messages in both the `context.report()` call and your tests, you can use `messageId`s instead.
-
-This allows you to avoid retyping error messages. It also prevents errors reported in different sections of your rule from having out-of-date messages.
-
-```js
-{% raw %}
-// in your rule
-module.exports = {
-    meta: {
-        messages: {
-            avoidName: "Avoid using variables named '{{ name }}'"
-        }
-    },
-    create(context) {
-        return {
-            Identifier(node) {
-                if (node.name === "foo") {
-                    context.report({
-                        node,
-                        messageId: "avoidName",
-                        data: {
-                            name: "foo",
-                        }
-                    });
-                }
-            }
-        };
-    }
-};
-
-// in the file to lint:
-
-var foo = 2;
-//  ^ error: Avoid using variables named 'foo'
-
-// In your tests:
-var rule = require("../../../lib/rules/my-rule");
-var RuleTester = require("eslint").RuleTester;
-
-var ruleTester = new RuleTester();
-ruleTester.run("my-rule", rule, {
-    valid: ["bar", "baz"],
-    invalid: [
-        {
-            code: "foo",
-            errors: [
-                {
-                    messageId: "avoidName"
-                }
-            ]
-        }
-    ]
-});
-{% endraw %}
-```
 
 ### Applying Fixes
 
@@ -324,7 +238,7 @@ Best practices for fixes:
 
         ({ "foo": 1 })
         ```
-    * This fixer can just select a quote type arbitrarily. If it guesses wrong, the resulting code will be automatically reported and fixed by the [`quotes`](/docs/rules/quotes.md) rule.
+    * This fixer can just select a quote type arbitrarily. If it guesses wrong, the resulting code will be automatically reported and fixed by the [`quotes`](/docs/rules/quotes) rule.
 
 ### context.options
 
@@ -396,25 +310,23 @@ Once you have an instance of `SourceCode`, you can use the methods on it to work
 * `commentsExistBetween(nodeOrToken1, nodeOrToken2)` - returns `true` if comments exist between two nodes.
 
 > `skipOptions` is an object which has 3 properties; `skip`, `includeComments`, and `filter`. Default is `{skip: 0, includeComments: false, filter: null}`.
-> * `skip` is a positive integer, the number of skipping tokens. If `filter` option is given at the same time, it doesn't count filtered tokens as skipped.
-> * `includeComments` is a boolean value, the flag to include comment tokens into the result.
-> * `filter` is a function which gets a token as the first argument, if the function returns `false` then the result excludes the token.
+> - `skip` is a positive integer, the number of skipping tokens. If `filter` option is given at the same time, it doesn't count filtered tokens as skipped.
+> - `includeComments` is a boolean value, the flag to include comment tokens into the result.
+> - `filter` is a function which gets a token as the first argument, if the function returns `false` then the result excludes the token.
 >
 > `countOptions` is an object which has 3 properties; `count`, `includeComments`, and `filter`. Default is `{count: 0, includeComments: false, filter: null}`.
-> * `count` is a positive integer, the maximum number of returning tokens.
-> * `includeComments` is a boolean value, the flag to include comment tokens into the result.
-> * `filter` is a function which gets a token as the first argument, if the function returns `false` then the result excludes the token.
+> - `count` is a positive integer, the maximum number of returning tokens.
+> - `includeComments` is a boolean value, the flag to include comment tokens into the result.
+> - `filter` is a function which gets a token as the first argument, if the function returns `false` then the result excludes the token.
 >
 > `rangeOptions` is an object which has 1 property: `includeComments`.
-> * `includeComments` is a boolean value, the flag to include comment tokens into the result.
+> - `includeComments` is a boolean value, the flag to include comment tokens into the result.
 
 There are also some properties you can access:
 
 * `hasBOM` - the flag to indicate whether or not the source code has Unicode BOM.
 * `text` - the full text of the code being linted. Unicode BOM has been stripped from this text.
 * `ast` - the `Program` node of the AST for the code being linted.
-* `scopeManager` - the [ScopeManager](./scope-manager-interface.md#scopemanager-interface) object of the code.
-* `visitorKeys` - the visitor keys to traverse this AST.
 * `lines` - an array of lines, split according to the specification's definition of line breaks.
 
 You should use a `SourceCode` object whenever you need to get more information about the code being linted.
@@ -452,7 +364,7 @@ module.exports = {
                 },
                 "additionalProperties": false
             }
-        ]
+        ];
     },
 };
 ```
@@ -461,7 +373,7 @@ In the preceding example, the error level is assumed to be the first argument. I
 
 To learn more about JSON Schema, we recommend looking at some [examples](http://json-schema.org/examples.html) to start, and also reading [Understanding JSON Schema](http://spacetelescope.github.io/understanding-json-schema/) (a free ebook).
 
-**Note:** Currently you need to use full JSON Schema object rather than array in case your schema has references ($ref), because in case of array format ESLint transforms this array into a single schema without updating references that makes them incorrect (they are ignored).
+**Note:** Currently you need to use full JSON Schema object rather than array in case your schema has references ($ref), because in case of array format eslint transforms this array into a single schema without updating references that makes them incorrect (they are ignored).
 
 ### Getting the Source
 
@@ -517,7 +429,7 @@ You can access that code path objects with five events related to code paths.
 
 Each bundled rule for ESLint core must have a set of unit tests submitted with it to be accepted. The test file is named the same as the source file but lives in `tests/lib/`. For example, if the rule source file is `lib/rules/foo.js` then the test file should be `tests/lib/rules/foo.js`.
 
-ESLint provides the [`RuleTester`](/docs/developer-guide/nodejs-api.md#ruletester) utility to make it easy to write tests for rules.
+ESLint provides the [`RuleTester`](/docs/developer-guide/nodejs-api#ruletester) utility to make it easy to write tests for rules.
 
 ## Performance Testing
 
@@ -588,6 +500,7 @@ The rule naming conventions for ESLint are fairly simple:
 
 * If your rule is disallowing something, prefix it with `no-` such as `no-eval` for disallowing `eval()` and `no-debugger` for disallowing `debugger`.
 * If your rule is enforcing the inclusion of something, use a short name without a special prefix.
+* Keep your rule names as short as possible, use abbreviations where appropriate, and no more than four words.
 * Use dashes between words.
 
 ## Runtime Rules
@@ -597,5 +510,5 @@ The thing that makes ESLint different from other linters is the ability to defin
 Runtime rules are written in the same format as all other rules. Create your rule as you would any other and then follow these steps:
 
 1. Place all of your runtime rules in the same directory (i.e., `eslint_rules`).
-2. Create a [configuration file](../user-guide/configuring.md) and specify your rule ID error level under the `rules` key. Your rule will not run unless it has a value of `1` or `2` in the configuration file.
-3. Run the [command line interface](../user-guide/command-line-interface.md) using the `--rulesdir` option to specify the location of your runtime rules.
+2. Create a [configuration file](../user-guide/configuring) and specify your rule ID error level under the `rules` key. Your rule will not run unless it has a value of `1` or `2` in the configuration file.
+3. Run the [command line interface](../user-guide/command-line-interface) using the `--rulesdir` option to specify the location of your runtime rules.

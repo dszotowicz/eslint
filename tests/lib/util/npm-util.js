@@ -65,23 +65,23 @@ describe("npmUtil", () => {
                 "package.json": JSON.stringify({ private: true, dependencies: {} })
             });
 
-            // Should not throw.
-            npmUtil.checkDevDeps(["some-package"]);
+            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+
+            assert.doesNotThrow(fn);
         });
 
         it("should throw with message when parsing invalid package.json", () => {
+            const logInfo = sandbox.stub(log, "info");
+
             mockFs({
                 "package.json": "{ \"not: \"valid json\" }"
             });
 
-            assert.throws(() => {
-                try {
-                    npmUtil.checkDevDeps(["some-package"]);
-                } catch (error) {
-                    assert.strictEqual(error.messageTemplate, "failed-to-read-json");
-                    throw error;
-                }
-            }, "SyntaxError: Unexpected token v");
+            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+
+            assert.throws(fn, "SyntaxError: Unexpected token v");
+            assert(logInfo.calledOnce);
+            assert.equal(logInfo.firstCall.args[0], "Could not read package.json file. Please check that the file contains valid JSON.");
         });
     });
 
@@ -128,23 +128,24 @@ describe("npmUtil", () => {
                 "package.json": JSON.stringify({ private: true, devDependencies: {} })
             });
 
-            // Should not throw.
-            npmUtil.checkDeps(["some-package"]);
+            const fn = npmUtil.checkDeps.bind(null, ["some-package"]);
+
+            assert.doesNotThrow(fn);
         });
 
         it("should throw with message when parsing invalid package.json", () => {
+            const logInfo = sandbox.stub(log, "info");
+
             mockFs({
                 "package.json": "{ \"not: \"valid json\" }"
             });
 
-            assert.throws(() => {
-                try {
-                    npmUtil.checkDeps(["some-package"]);
-                } catch (error) {
-                    assert.strictEqual(error.messageTemplate, "failed-to-read-json");
-                    throw error;
-                }
-            }, "SyntaxError: Unexpected token v");
+            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+
+            assert.throws(fn, "SyntaxError: Unexpected token v");
+            assert(logInfo.calledOnce);
+            assert.equal(logInfo.firstCall.args[0], "Could not read package.json file. Please check that the file contains valid JSON.");
+            logInfo.restore();
         });
     });
 
@@ -158,12 +159,12 @@ describe("npmUtil", () => {
                 "package.json": "{ \"file\": \"contents\" }"
             });
 
-            assert.strictEqual(npmUtil.checkPackageJson(), true);
+            assert.equal(npmUtil.checkPackageJson(), true);
         });
 
         it("should return false if package.json does not exist", () => {
             mockFs({});
-            assert.strictEqual(npmUtil.checkPackageJson(), false);
+            assert.equal(npmUtil.checkPackageJson(), false);
         });
     });
 
@@ -173,8 +174,8 @@ describe("npmUtil", () => {
 
             npmUtil.installSyncSaveDev("desired-package");
             assert(stub.calledOnce);
-            assert.strictEqual(stub.firstCall.args[0], "npm");
-            assert.deepStrictEqual(stub.firstCall.args[1], ["i", "--save-dev", "desired-package"]);
+            assert.equal(stub.firstCall.args[0], "npm");
+            assert.deepEqual(stub.firstCall.args[1], ["i", "--save-dev", "desired-package"]);
             stub.restore();
         });
 
@@ -183,8 +184,8 @@ describe("npmUtil", () => {
 
             npmUtil.installSyncSaveDev(["first-package", "second-package"]);
             assert(stub.calledOnce);
-            assert.strictEqual(stub.firstCall.args[0], "npm");
-            assert.deepStrictEqual(stub.firstCall.args[1], ["i", "--save-dev", "first-package", "second-package"]);
+            assert.equal(stub.firstCall.args[0], "npm");
+            assert.deepEqual(stub.firstCall.args[1], ["i", "--save-dev", "first-package", "second-package"]);
             stub.restore();
         });
 
@@ -207,8 +208,8 @@ describe("npmUtil", () => {
 
             npmUtil.fetchPeerDependencies("desired-package");
             assert(stub.calledOnce);
-            assert.strictEqual(stub.firstCall.args[0], "npm");
-            assert.deepStrictEqual(stub.firstCall.args[1], ["show", "--json", "desired-package", "peerDependencies"]);
+            assert.equal(stub.firstCall.args[0], "npm");
+            assert.deepEqual(stub.firstCall.args[1], ["show", "--json", "desired-package", "peerDependencies"]);
             stub.restore();
         });
 

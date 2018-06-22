@@ -23,17 +23,19 @@ const rule = require("../../../lib/rules/no-extra-parens"),
  * @private
  */
 function invalid(code, output, type, line, config) {
+    config = config || {};
+
     const result = {
         code,
         output,
-        parserOptions: config && config.parserOptions || {},
+        parserOptions: config.parserOptions || {},
         errors: [
             {
-                messageId: "unexpected",
+                message: "Gratuitous parentheses around expression.",
                 type
             }
         ],
-        options: config && config.options || []
+        options: config.options || []
     };
 
     if (line) {
@@ -44,8 +46,9 @@ function invalid(code, output, type, line, config) {
 
 const ruleTester = new RuleTester({
     parserOptions: {
-        ecmaVersion: 2018,
+        ecmaVersion: 8,
         ecmaFeatures: {
+            experimentalObjectRestSpread: true,
             jsx: true
         }
     }
@@ -142,9 +145,7 @@ ruleTester.run("no-extra-parens", rule, {
         "do; while(a);",
         "for(;;);",
         "for(a in b);",
-        "for(a in b, c);",
         "for(a of b);",
-        "for (a of (b, c));",
         "var a = (b, c);",
         "[]",
         "[a, b]",
@@ -289,13 +290,6 @@ ruleTester.run("no-extra-parens", rule, {
             "}"
         ].join("\n"),
         [
-            "function a() {",
-            "    return (",
-            "        <></>",
-            "    );",
-            "}"
-        ].join("\n"),
-        [
             "throw (",
             "    a",
             ");"
@@ -328,14 +322,6 @@ ruleTester.run("no-extra-parens", rule, {
 
         // ["all", { ignoreJSX: "all" }]
         { code: "const Component = (<div />)", options: ["all", { ignoreJSX: "all" }] },
-        {
-            code: [
-                "const Component = (<>",
-                "  <p />",
-                "</>);"
-            ].join("\n"),
-            options: ["all", { ignoreJSX: "all" }]
-        },
         {
             code: [
                 "const Component = (<div>",
@@ -421,16 +407,8 @@ ruleTester.run("no-extra-parens", rule, {
 
         "let a = [ ...b ]",
         "let a = { ...b }",
-        {
-            code: "let a = { ...b }",
-            parserOptions: { ecmaVersion: 2018 }
-        },
         "let a = [ ...(b, c) ]",
         "let a = { ...(b, c) }",
-        {
-            code: "let a = { ...(b, c) }",
-            parserOptions: { ecmaVersion: 2018 }
-        },
         "var [x = (1, foo)] = bar",
         "class A extends B {}",
         "const A = class extends B {}",
@@ -678,19 +656,6 @@ ruleTester.run("no-extra-parens", rule, {
             "    );",
             "}"
         ].join("\n"), "JSXElement", null),
-        invalid([
-            "function a() {",
-            "    return ((",
-            "       <></>",
-            "    ));",
-            "}"
-        ].join("\n"), [
-            "function a() {",
-            "    return (",
-            "       <></>",
-            "    );",
-            "}"
-        ].join("\n"), "JSXFragment", null),
         invalid("throw (a);", "throw a;", "Identifier"),
         invalid([
             "throw ((",
@@ -742,7 +707,7 @@ ruleTester.run("no-extra-parens", rule, {
             options: ["all", { returnAssign: false }],
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -752,7 +717,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "function a(b) { return (b = c) || (d = e); }",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -762,7 +727,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "function a(b) { return b = 1; }",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -772,11 +737,11 @@ ruleTester.run("no-extra-parens", rule, {
             output: "function a(b) { return c ? d = b : e = b; }",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 },
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -788,7 +753,7 @@ ruleTester.run("no-extra-parens", rule, {
 
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -798,7 +763,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => (b = c) || (d = e);",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -808,7 +773,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => b = 1;",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -818,11 +783,11 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => c ? d = b : e = b;",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 },
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -833,7 +798,7 @@ ruleTester.run("no-extra-parens", rule, {
             options: ["all", { returnAssign: false }],
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -843,7 +808,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => { return (b = c) || (d = e) };",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "LogicalExpression"
                 }
             ]
@@ -853,7 +818,7 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => { return b = 1 };",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -863,11 +828,11 @@ ruleTester.run("no-extra-parens", rule, {
             output: "b => { return c ? d = b : e = b; }",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 },
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AssignmentExpression"
                 }
             ]
@@ -879,11 +844,11 @@ ruleTester.run("no-extra-parens", rule, {
             output: "async function a() { await a + await b; }",
             errors: [
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AwaitExpression"
                 },
                 {
-                    messgeId: "unexpected",
+                    message: "Gratuitous parentheses around expression.",
                     type: "AwaitExpression"
                 }
             ]
@@ -910,13 +875,6 @@ ruleTester.run("no-extra-parens", rule, {
             "  <div />",
             ");"
         ].join("\n"), "const Component = \n  <div />\n;", "JSXElement", 1, {
-            options: ["all", { ignoreJSX: "multi-line" }]
-        }),
-        invalid([
-            "const Component = (",
-            "  <></>",
-            ");"
-        ].join("\n"), "const Component = \n  <></>\n;", "JSXFragment", 1, {
             options: ["all", { ignoreJSX: "multi-line" }]
         }),
 
@@ -964,7 +922,7 @@ ruleTester.run("no-extra-parens", rule, {
             options: ["all", { enforceForArrowConditionals: true }],
             errors: [
                 {
-                    messgeId: "unexpected"
+                    message: "Gratuitous parentheses around expression."
                 }
             ]
         },
@@ -976,7 +934,7 @@ ruleTester.run("no-extra-parens", rule, {
             options: ["all", { enforceForArrowConditionals: false }],
             errors: [
                 {
-                    messgeId: "unexpected"
+                    message: "Gratuitous parentheses around expression."
                 }
             ]
         },
@@ -995,13 +953,6 @@ ruleTester.run("no-extra-parens", rule, {
             1
         ),
         invalid(
-            "let a = {...(b)}",
-            "let a = {...b}",
-            "Identifier",
-            1,
-            { parserOptions: { ecmaVersion: 2018 } }
-        ),
-        invalid(
             "let a = [...((b, c))]",
             "let a = [...(b, c)]",
             "SequenceExpression",
@@ -1012,13 +963,6 @@ ruleTester.run("no-extra-parens", rule, {
             "let a = {...(b, c)}",
             "SequenceExpression",
             1
-        ),
-        invalid(
-            "let a = {...((b, c))}",
-            "let a = {...(b, c)}",
-            "SequenceExpression",
-            1,
-            { parserOptions: { ecmaVersion: 2018 } }
         ),
         invalid(
             "class A extends (B) {}",
@@ -1091,7 +1035,6 @@ ruleTester.run("no-extra-parens", rule, {
             "for (let.foo.bar in baz);",
             "Identifier",
             1
-        ),
-        invalid("for (a in (b, c));", "for (a in b, c);", "SequenceExpression", null)
+        )
     ]
 });

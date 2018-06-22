@@ -35,8 +35,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "var {} = foo",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "object" },
+                message: "Unexpected empty object pattern.",
                 type: "ObjectPattern"
             }]
         },
@@ -44,8 +43,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "var [] = foo",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "array" },
+                message: "Unexpected empty array pattern.",
                 type: "ArrayPattern"
             }]
         },
@@ -53,8 +51,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "var {a: {}} = foo",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "object" },
+                message: "Unexpected empty object pattern.",
                 type: "ObjectPattern"
             }]
         },
@@ -62,8 +59,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "var {a, b: {}} = foo",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "object" },
+                message: "Unexpected empty object pattern.",
                 type: "ObjectPattern"
             }]
         },
@@ -71,8 +67,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "var {a: []} = foo",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "array" },
+                message: "Unexpected empty array pattern.",
                 type: "ArrayPattern"
             }]
         },
@@ -80,8 +75,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "function foo({}) {}",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "object" },
+                message: "Unexpected empty object pattern.",
                 type: "ObjectPattern"
             }]
         },
@@ -89,8 +83,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "function foo([]) {}",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "array" },
+                message: "Unexpected empty array pattern.",
                 type: "ArrayPattern"
             }]
         },
@@ -98,8 +91,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "function foo({a: {}}) {}",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "object" },
+                message: "Unexpected empty object pattern.",
                 type: "ObjectPattern"
             }]
         },
@@ -107,8 +99,7 @@ ruleTester.run("no-empty-pattern", rule, {
             code: "function foo({a: []}) {}",
             parserOptions: { ecmaVersion: 6 },
             errors: [{
-                messageId: "unexpected",
-                data: { type: "array" },
+                message: "Unexpected empty array pattern.",
                 type: "ArrayPattern"
             }]
         }

@@ -1,6 +1,6 @@
 # enforce consistent line breaks inside function parentheses (function-paren-newline)
 
-Many style guides require or disallow newlines inside of function parentheses.
+Many styleguides require or disallow newlines inside of function parentheses.
 
 ## Rule Details
 

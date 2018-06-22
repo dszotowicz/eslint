@@ -26,8 +26,11 @@ let fixtureDir;
  * @returns {string} The path inside the fixture directory.
  * @private
  */
-function getFixturePath(...args) {
-    return path.join(fs.realpathSync(fixtureDir), ...args);
+function getFixturePath() {
+    const args = Array.prototype.slice.call(arguments);
+
+    args.unshift(fs.realpathSync(fixtureDir));
+    return path.join.apply(path, args);
 }
 
 //------------------------------------------------------------------------------
@@ -55,18 +58,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.js"]);
-        });
-
-        it("should not convert path with globInputPaths option false", () => {
-            const patterns = ["one-js-file"];
-            const opts = {
-                cwd: getFixturePath("glob-util"),
-                globInputPaths: false
-            };
-            const result = globUtil.resolveFileGlobPatterns(patterns, opts);
-
-            assert.deepStrictEqual(result, ["one-js-file"]);
+            assert.deepEqual(result, ["one-js-file/**/*.js"]);
         });
 
         it("should convert an absolute directory name with no provided extensions into a posix glob pattern", () => {
@@ -77,7 +69,7 @@ describe("globUtil", () => {
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
             const expected = [`${getFixturePath("glob-util", "one-js-file").replace(/\\/g, "/")}/**/*.js`];
 
-            assert.deepStrictEqual(result, expected);
+            assert.deepEqual(result, expected);
         });
 
         it("should convert a directory name with a single provided extension into a glob pattern", () => {
@@ -88,7 +80,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.jsx"]);
+            assert.deepEqual(result, ["one-js-file/**/*.jsx"]);
         });
 
         it("should convert a directory name with multiple provided extensions into a glob pattern", () => {
@@ -99,7 +91,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.{jsx,js}"]);
+            assert.deepEqual(result, ["one-js-file/**/*.{jsx,js}"]);
         });
 
         it("should convert multiple directory names into glob patterns", () => {
@@ -109,7 +101,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.js", "two-js-files/**/*.js"]);
+            assert.deepEqual(result, ["one-js-file/**/*.js", "two-js-files/**/*.js"]);
         });
 
         it("should remove leading './' from glob patterns", () => {
@@ -119,7 +111,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.js"]);
+            assert.deepEqual(result, ["one-js-file/**/*.js"]);
         });
 
         it("should convert a directory name with a trailing '/' into a glob pattern", () => {
@@ -129,7 +121,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/**/*.js"]);
+            assert.deepEqual(result, ["one-js-file/**/*.js"]);
         });
 
         it("should return filenames as they are", () => {
@@ -139,7 +131,7 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["some-file.js"]);
+            assert.deepEqual(result, ["some-file.js"]);
         });
 
         it("should convert backslashes into forward slashes", () => {
@@ -149,8 +141,19 @@ describe("globUtil", () => {
             };
             const result = globUtil.resolveFileGlobPatterns(patterns, opts);
 
-            assert.deepStrictEqual(result, ["one-js-file/example.js"]);
+            assert.deepEqual(result, ["one-js-file/example.js"]);
         });
+
+        it("should ignore empty patterns", () => {
+            const patterns = [""];
+            const opts = {
+                cwd: getFixturePath()
+            };
+            const result = globUtil.resolveFileGlobPatterns(patterns, opts);
+
+            assert.deepEqual(result, []);
+        });
+
     });
 
     describe("listFilesToProcess()", () => {
@@ -164,20 +167,7 @@ describe("globUtil", () => {
             const file1 = getFixturePath("glob-util", "one-js-file", "baz.js");
 
             assert.isArray(result);
-            assert.deepStrictEqual(result, [{ filename: file1, ignored: false }]);
-        });
-
-        it("should return an array with a unmodified filename", () => {
-            const patterns = [getFixturePath("glob-util", "one-js-file", "**/*.js")];
-            const result = globUtil.listFilesToProcess(patterns, {
-                cwd: getFixturePath(),
-                globInputPaths: false
-            });
-
-            const file1 = getFixturePath("glob-util", "one-js-file", "**/*.js");
-
-            assert.isArray(result);
-            assert.deepStrictEqual(result, [{ filename: file1, ignored: false }]);
+            assert.deepEqual(result, [{ filename: file1, ignored: false }]);
         });
 
         it("should return all files matching a glob pattern", () => {
@@ -189,8 +179,8 @@ describe("globUtil", () => {
             const file1 = getFixturePath("glob-util", "two-js-files", "bar.js");
             const file2 = getFixturePath("glob-util", "two-js-files", "foo.js");
 
-            assert.strictEqual(result.length, 2);
-            assert.deepStrictEqual(result, [
+            assert.equal(result.length, 2);
+            assert.deepEqual(result, [
                 { filename: file1, ignored: false },
                 { filename: file2, ignored: false }
             ]);
@@ -209,22 +199,21 @@ describe("globUtil", () => {
             const file2 = getFixturePath("glob-util", "two-js-files", "foo.js");
             const file3 = getFixturePath("glob-util", "one-js-file", "baz.js");
 
-            assert.strictEqual(result.length, 3);
-            assert.deepStrictEqual(result, [
+            assert.equal(result.length, 3);
+            assert.deepEqual(result, [
                 { filename: file1, ignored: false },
                 { filename: file2, ignored: false },
                 { filename: file3, ignored: false }
             ]);
         });
 
-        it("should ignore hidden files for standard glob patterns", () => {
+        it("should not return hidden files for standard glob patterns", () => {
             const patterns = [getFixturePath("glob-util", "hidden", "**/*.js")];
+            const result = globUtil.listFilesToProcess(patterns, {
+                cwd: getFixturePath()
+            });
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, {
-                    cwd: getFixturePath()
-                });
-            }, `All files matched by '${patterns[0]}' are ignored.`);
+            assert.equal(result.length, 0);
         });
 
         it("should return hidden files if included in glob pattern", () => {
@@ -235,21 +224,20 @@ describe("globUtil", () => {
 
             const file1 = getFixturePath("glob-util", "hidden", ".foo.js");
 
-            assert.strictEqual(result.length, 1);
-            assert.deepStrictEqual(result, [
+            assert.equal(result.length, 1);
+            assert.deepEqual(result, [
                 { filename: file1, ignored: false }
             ]);
         });
 
-        it("should ignore default ignored files if not passed explicitly", () => {
+        it("should silently ignore default ignored files if not passed explicitly", () => {
             const directory = getFixturePath("glob-util", "hidden");
             const patterns = [directory];
+            const result = globUtil.listFilesToProcess(patterns, {
+                cwd: getFixturePath()
+            });
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, {
-                    cwd: getFixturePath()
-                });
-            }, `All files matched by '${directory}' are ignored.`);
+            assert.equal(result.length, 0);
         });
 
         it("should ignore and warn for default ignored files when passed explicitly", () => {
@@ -259,20 +247,19 @@ describe("globUtil", () => {
                 cwd: getFixturePath()
             });
 
-            assert.strictEqual(result.length, 1);
-            assert.deepStrictEqual(result[0], { filename, ignored: true });
+            assert.equal(result.length, 1);
+            assert.deepEqual(result[0], { filename, ignored: true });
         });
 
-        it("should ignore default ignored files if not passed explicitly even if ignore is false", () => {
+        it("should silently ignore default ignored files if not passed explicitly even if ignore is false", () => {
             const directory = getFixturePath("glob-util", "hidden");
             const patterns = [directory];
+            const result = globUtil.listFilesToProcess(patterns, {
+                cwd: getFixturePath(),
+                ignore: false
+            });
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, {
-                    cwd: getFixturePath(),
-                    ignore: false
-                });
-            }, `All files matched by '${directory}' are ignored.`);
+            assert.equal(result.length, 0);
         });
 
         it("should not ignore default ignored files when passed explicitly if ignore is false", () => {
@@ -283,50 +270,24 @@ describe("globUtil", () => {
                 ignore: false
             });
 
-            assert.strictEqual(result.length, 1);
-            assert.deepStrictEqual(result[0], { filename, ignored: false });
+            assert.equal(result.length, 1);
+            assert.deepEqual(result[0], { filename, ignored: false });
         });
 
-        it("should throw an error for a file which does not exist", () => {
-            const filename = getFixturePath("glob-util", "hidden", "bar.js");
-            const patterns = [filename];
+        it("should not return a file which does not exist", () => {
+            const patterns = ["tests/fixtures/glob-util/hidden/bar.js"];
+            const result = globUtil.listFilesToProcess(patterns);
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, {
-                    cwd: getFixturePath(),
-                    allowMissingGlobs: true
-                });
-            }, `No files matching '${filename}' were found.`);
+            assert.equal(result.length, 0);
         });
 
-        it("should throw if a folder that does not have any applicable files is linted", () => {
-            const filename = getFixturePath("glob-util", "empty");
-            const patterns = [filename];
-
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, {
-                    cwd: getFixturePath()
-                });
-            }, `No files matching '${filename}' were found.`);
-        });
-
-        it("should throw if only ignored files match a glob", () => {
-            const pattern = getFixturePath("glob-util", "ignored");
-            const options = { ignore: true, ignorePath: getFixturePath("glob-util", "ignored", ".eslintignore") };
-
-            assert.throws(() => {
-                globUtil.listFilesToProcess([pattern], options);
-            }, `All files matched by '${pattern}' are ignored.`);
-        });
-
-        it("should throw an error if no files match a glob", () => {
+        it("should not return an ignored file", () => {
 
             // Relying here on the .eslintignore from the repo root
             const patterns = ["tests/fixtures/glob-util/ignored/**/*.js"];
+            const result = globUtil.listFilesToProcess(patterns);
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns);
-            }, `No files matching '${patterns[0]}' were found.`);
+            assert.equal(result.length, 0);
         });
 
         it("should return an ignored file, if ignore option is turned off", () => {
@@ -334,25 +295,23 @@ describe("globUtil", () => {
             const patterns = [getFixturePath("glob-util", "ignored", "**/*.js")];
             const result = globUtil.listFilesToProcess(patterns, options);
 
-            assert.strictEqual(result.length, 1);
+            assert.equal(result.length, 1);
         });
 
-        it("should ignore a file from a glob if it matches a pattern in an ignore file", () => {
+        it("should not return a file from a glob if it matches a pattern in an ignore file", () => {
             const options = { ignore: true, ignorePath: getFixturePath("glob-util", "ignored", ".eslintignore") };
             const patterns = [getFixturePath("glob-util", "ignored", "**/*.js")];
+            const result = globUtil.listFilesToProcess(patterns, options);
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, options);
-            }, `All files matched by '${patterns[0]}' are ignored.`);
+            assert.equal(result.length, 0);
         });
 
-        it("should ignore a file from a glob if matching a specified ignore pattern", () => {
+        it("should not return a file from a glob if matching a specified ignore pattern", () => {
             const options = { ignore: true, ignorePattern: "foo.js", cwd: getFixturePath() };
             const patterns = [getFixturePath("glob-util", "ignored", "**/*.js")];
+            const result = globUtil.listFilesToProcess(patterns, options);
 
-            assert.throws(() => {
-                globUtil.listFilesToProcess(patterns, options);
-            }, `All files matched by '${patterns[0]}' are ignored.`);
+            assert.equal(result.length, 0);
         });
 
         it("should return a file only once if listed in more than 1 pattern", () => {
@@ -367,7 +326,7 @@ describe("globUtil", () => {
             const file1 = getFixturePath("glob-util", "one-js-file", "baz.js");
 
             assert.isArray(result);
-            assert.deepStrictEqual(result, [
+            assert.deepEqual(result, [
                 { filename: file1, ignored: false }
             ]);
         });
@@ -378,8 +337,8 @@ describe("globUtil", () => {
             const patterns = [filename];
             const result = globUtil.listFilesToProcess(patterns, options);
 
-            assert.strictEqual(result.length, 1);
-            assert.deepStrictEqual(result, [
+            assert.equal(result.length, 1);
+            assert.deepEqual(result, [
                 { filename, ignored: true }
             ]);
         });

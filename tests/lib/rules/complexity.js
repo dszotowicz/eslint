@@ -34,19 +34,6 @@ function createComplexity(complexity) {
     return funcString;
 }
 
-/**
- * Create an expected error object
- * @param   {string} name       The name of the symbol being tested
- * @param   {number} complexity The cyclomatic complexity value of the symbol
- * @returns {Object}            The error object
- */
-function makeError(name, complexity) {
-    return {
-        messageId: "complex",
-        data: { name, complexity }
-    };
-}
-
 const ruleTester = new RuleTester();
 
 ruleTester.run("complexity", rule, {
@@ -64,7 +51,7 @@ ruleTester.run("complexity", rule, {
         { code: "function a(x) {return x === 4 ? 3 : 5;}", options: [2] },
         { code: "function a(x) {return x === 4 ? 3 : (x === 3 ? 2 : 1);}", options: [3] },
         { code: "function a(x) {return x || 4;}", options: [2] },
-        { code: "function a(x) {x && 4;}", options: [2] },
+        { code: "function a(x) {x && 4;}", options: [1] },
         { code: "function a(x) {switch(x){case 1: 1; break; case 2: 2; break; default: 3;}}", options: [3] },
         { code: "function a(x) {switch(x){case 1: 1; break; case 2: 2; break; default: if(x == 'foo') {5;};}}", options: [4] },
         { code: "function a(x) {while(true) {'foo';}}", options: [2] },
@@ -76,10 +63,10 @@ ruleTester.run("complexity", rule, {
         { code: "function b(x) {}", options: [{ max: 1 }] }
     ],
     invalid: [
-        { code: "function a(x) {}", options: [0], errors: [makeError("Function 'a'", 1)] },
-        { code: "var func = function () {}", options: [0], errors: [makeError("Function", 1)] },
-        { code: "var obj = { a(x) {} }", options: [0], parserOptions: { ecmaVersion: 6 }, errors: [makeError("Method 'a'", 1)] },
-        { code: "class Test { a(x) {} }", options: [0], parserOptions: { ecmaVersion: 6 }, errors: [makeError("Method 'a'", 1)] },
+        { code: "function a(x) {}", options: [0], errors: [{ message: "Function 'a' has a complexity of 1." }] },
+        { code: "var func = function () {}", options: [0], errors: [{ message: "Function has a complexity of 1." }] },
+        { code: "var obj = { a(x) {} }", options: [0], parserOptions: { ecmaVersion: 6 }, errors: [{ message: "Method 'a' has a complexity of 1." }] },
+        { code: "class Test { a(x) {} }", options: [0], parserOptions: { ecmaVersion: 6 }, errors: [{ message: "Method 'a' has a complexity of 1." }] },
         { code: "var a = (x) => {if (true) {return x;}}", options: [1], errors: 1, settings: { ecmascript: 6 } },
         { code: "function a(x) {if (true) {return x;}}", options: [1], errors: 1 },
         { code: "function a(x) {if (true) {return x;} else {return x+1;}}", options: [1], errors: 1 },
@@ -93,21 +80,21 @@ ruleTester.run("complexity", rule, {
         { code: "function a(x) {return x === 4 ? 3 : 5;}", options: [1], errors: 1 },
         { code: "function a(x) {return x === 4 ? 3 : (x === 3 ? 2 : 1);}", options: [2], errors: 1 },
         { code: "function a(x) {return x || 4;}", options: [1], errors: 1 },
-        { code: "function a(x) {x && 4;}", options: [1], errors: 1 },
+        { code: "function a(x) {x && 4;}", options: [0], errors: 1 },
         { code: "function a(x) {switch(x){case 1: 1; break; case 2: 2; break; default: 3;}}", options: [2], errors: 1 },
         { code: "function a(x) {switch(x){case 1: 1; break; case 2: 2; break; default: if(x == 'foo') {5;};}}", options: [3], errors: 1 },
         { code: "function a(x) {while(true) {'foo';}}", options: [1], errors: 1 },
         { code: "function a(x) {do {'foo';} while (true)}", options: [1], errors: 1 },
         { code: "function a(x) {(function() {while(true){'foo';}})(); (function() {while(true){'bar';}})();}", options: [1], errors: 2 },
         { code: "function a(x) {(function() {while(true){'foo';}})(); (function() {'bar';})();}", options: [1], errors: 1 },
-        { code: "var obj = { a(x) { return x ? 0 : 1; } };", options: [1], parserOptions: { ecmaVersion: 6 }, errors: [makeError("Method 'a'", 2)] },
-        { code: "var obj = { a: function b(x) { return x ? 0 : 1; } };", options: [1], errors: [makeError("Method 'b'", 2)] },
+        { code: "var obj = { a(x) { return x ? 0 : 1; } };", options: [1], parserOptions: { ecmaVersion: 6 }, errors: [{ message: "Method 'a' has a complexity of 2." }] },
+        { code: "var obj = { a: function b(x) { return x ? 0 : 1; } };", options: [1], errors: [{ message: "Method 'b' has a complexity of 2." }] },
         {
             code: createComplexity(21),
-            errors: [makeError("Function 'test'", 21)]
+            errors: [{ message: "Function 'test' has a complexity of 21." }]
         },
 
         // object property options
-        { code: "function a(x) {}", options: [{ max: 0 }], errors: [makeError("Function 'a'", 1)] }
+        { code: "function a(x) {}", options: [{ max: 0 }], errors: [{ message: "Function 'a' has a complexity of 1." }] }
     ]
 });

@@ -24,21 +24,19 @@ const parser = require("../../fixtures/fixture-parser");
 
 /**
  * Create error message object for failure cases with a single 'found' indentation type
- * @param {string} providedIndentType indent type of string or tab
- * @param {array} providedErrors error info
+ * @param {string} indentType indent type of string or tab
+ * @param {array} errors error info
  * @returns {Object} returns the error messages collection
  * @private
  */
-function expectedErrors(providedIndentType, providedErrors) {
-    let indentType;
-    let errors;
-
-    if (Array.isArray(providedIndentType)) {
-        errors = Array.isArray(providedIndentType[0]) ? providedIndentType : [providedIndentType];
+function expectedErrors(indentType, errors) {
+    if (Array.isArray(indentType)) {
+        errors = indentType;
         indentType = "space";
-    } else {
-        errors = Array.isArray(providedErrors[0]) ? providedErrors : [providedErrors];
-        indentType = providedIndentType;
+    }
+
+    if (!errors[0].length) {
+        errors = [errors];
     }
 
     return errors.map(err => {
@@ -56,10 +54,10 @@ function expectedErrors(providedIndentType, providedErrors) {
 }
 
 /**
- * Prevents leading spaces in a multiline template literal from appearing in the resulting string
- * @param {string[]} strings The strings in the template literal
- * @returns {string} The template literal, with spaces removed from all lines
- */
+* Prevents leading spaces in a multiline template literal from appearing in the resulting string
+* @param {string[]} strings The strings in the template literal
+* @returns {string} The template literal, with spaces removed from all lines
+*/
 function unIndent(strings) {
     const templateValue = strings[0];
     const lines = templateValue.replace(/^\n/, "").replace(/\n\s*$/, "").split("\n");
@@ -2053,10 +2051,8 @@ ruleTester.run("indent", rule, {
         `,
         {
 
-            /*
-             * Checking comments:
-             * https://github.com/eslint/eslint/issues/3845, https://github.com/eslint/eslint/issues/6571
-             */
+            // Checking comments:
+            // https://github.com/eslint/eslint/issues/3845, https://github.com/eslint/eslint/issues/6571
             code: unIndent`
                 foo();
                 // Line
@@ -2094,10 +2090,8 @@ ruleTester.run("indent", rule, {
         `,
         {
 
-            /*
-             * Destructuring assignments:
-             * https://github.com/eslint/eslint/issues/6813
-             */
+            // Destructuring assignments:
+            // https://github.com/eslint/eslint/issues/6813
             code: unIndent`
                 var {
                   foo,
@@ -2304,17 +2298,6 @@ ruleTester.run("indent", rule, {
             `,
             options: [4]
         },
-        unIndent`
-            foo &&
-                !bar(
-                )
-        `,
-        unIndent`
-            foo &&
-                ![].map(() => {
-                    bar();
-                })
-        `,
         {
             code: unIndent`
                 foo =
@@ -2843,13 +2826,6 @@ ruleTester.run("indent", rule, {
             `,
             options: [2]
         },
-        unIndent`
-            foo(\`
-                bar
-            \`, {
-                baz: 1
-            });
-        `,
         unIndent`
             function foo() {
                 \`foo\${bar}baz\${
@@ -3876,20 +3852,21 @@ ruleTester.run("indent", rule, {
         unIndent`
             foo(\`foo
                     \`, {
-                ok: true
-            },
-            {
-                ok: false
-            })
+                    ok: true
+                },
+                {
+                    ok: false
+                }
+            )
         `,
         unIndent`
             foo(tag\`foo
                     \`, {
-                ok: true
-            },
-            {
-                ok: false
-            }
+                    ok: true
+                },
+                {
+                    ok: false
+                }
             )
         `,
 
@@ -4370,7 +4347,7 @@ ruleTester.run("indent", rule, {
                   <span>
                     {condition ?
                       <Thing
-                        foo={bar}
+                        foo={super}
                       /> :
                       <Thing/>
                     }
@@ -4620,16 +4597,6 @@ ruleTester.run("indent", rule, {
                     );
                 }
             `,
-        unIndent`
-            <div>foo
-                <div>bar</div>
-            </div>
-        `,
-        unIndent`
-            <small>Foo bar&nbsp;
-                <a>baz qux</a>.
-            </small>
-        `,
         {
             code: unIndent`
                 a(b
@@ -4719,15 +4686,6 @@ ruleTester.run("indent", rule, {
         },
         {
             code: unIndent`
-                foo &&
-                <Bar
-                >
-                </Bar>
-            `,
-            options: [4, { ignoredNodes: ["JSXElement", "JSXOpeningElement"] }]
-        },
-        {
-            code: unIndent`
                 (function($) {
                 $(function() {
                     foo;
@@ -4786,64 +4744,7 @@ ruleTester.run("indent", rule, {
                 </foo>
             `,
             options: [4, { ignoredNodes: ["JSXOpeningElement"] }]
-        },
-        {
-            code: unIndent`
-                {
-                \tvar x = 1,
-                \t    y = 2;
-                }
-            `,
-            options: ["tab"]
-        },
-        {
-            code: unIndent`
-                var x = 1,
-                    y = 2;
-                var z;
-            `,
-            options: ["tab", { ignoredNodes: ["VariableDeclarator"] }]
-        },
-        {
-            code: unIndent`
-                [
-                    foo(),
-                    bar
-                ]
-            `,
-            options: ["tab", { ArrayExpression: "first", ignoredNodes: ["CallExpression"] }]
-        },
-        {
-            code: unIndent`
-                if (foo) {
-                    doSomething();
-
-                // Intentionally unindented comment
-                    doSomethingElse();
-                }
-            `,
-            options: [4, { ignoreComments: true }]
-        },
-        {
-            code: unIndent`
-                if (foo) {
-                    doSomething();
-
-                /* Intentionally unindented comment */
-                    doSomethingElse();
-                }
-            `,
-            options: [4, { ignoreComments: true }]
-        },
-        unIndent`
-            const obj = {
-                foo () {
-                    return condition ? // comment
-                        1 :
-                        2
-                }
-            }
-        `
+        }
     ],
 
     invalid: [
@@ -7134,10 +7035,8 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * Checking comments:
-             * https://github.com/eslint/eslint/issues/6571
-             */
+            // Checking comments:
+            // https://github.com/eslint/eslint/issues/6571
             code: unIndent`
                 foo();
                   // comment
@@ -7199,10 +7098,8 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * Destructuring assignments:
-             * https://github.com/eslint/eslint/issues/6813
-             */
+            // Destructuring assignments:
+            // https://github.com/eslint/eslint/issues/6813
             code: unIndent`
                 var {
                 foo,
@@ -7564,34 +7461,6 @@ ruleTester.run("indent", rule, {
         },
         {
             code: unIndent`
-                foo &&
-                    !bar(
-                )
-            `,
-            output: unIndent`
-                foo &&
-                    !bar(
-                    )
-            `,
-            errors: expectedErrors([3, 4, 0, "Punctuator"])
-        },
-        {
-            code: unIndent`
-                foo &&
-                    ![].map(() => {
-                    bar();
-                })
-            `,
-            output: unIndent`
-                foo &&
-                    ![].map(() => {
-                        bar();
-                    })
-            `,
-            errors: expectedErrors([[3, 8, 4, "Identifier"], [4, 4, 0, "Punctuator"]])
-        },
-        {
-            code: unIndent`
                 [
                 ] || [
                     ]
@@ -7754,12 +7623,10 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * https://github.com/eslint/eslint/issues/1801
-             * Note: This issue also mentioned checking the indentation for the 2 below. However,
-             * this is intentionally ignored because everyone seems to have a different idea of how
-             * BinaryExpressions should be indented.
-             */
+            // https://github.com/eslint/eslint/issues/1801
+            // Note: This issue also mentioned checking the indentation for the 2 below. However,
+            // this is intentionally ignored because everyone seems to have a different idea of how
+            // BinaryExpressions should be indented.
             code: unIndent`
                 if (true) {
                     a = (
@@ -8825,10 +8692,8 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * Multiline ternary
-             * (colon at the end of the first expression)
-             */
+            // Multiline ternary
+            // (colon at the end of the first expression)
             code: unIndent`
                 foo ?
                     <Foo /> :
@@ -8843,10 +8708,8 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * Multiline ternary
-             * (colon on its own line)
-             */
+            // Multiline ternary
+            // (colon on its own line)
             code: unIndent`
                 foo ?
                     <Foo />
@@ -8863,10 +8726,8 @@ ruleTester.run("indent", rule, {
         },
         {
 
-            /*
-             * Multiline ternary
-             * (colon at the end of the first expression, parenthesized first expression)
-             */
+            // Multiline ternary
+            // (colon at the end of the first expression, parenthesized first expression)
             code: unIndent`
                 foo ? (
                     <Foo />
@@ -9189,32 +9050,6 @@ ruleTester.run("indent", rule, {
         },
         {
             code: unIndent`
-                <div>foo
-                <div>bar</div>
-                </div>
-            `,
-            output: unIndent`
-                <div>foo
-                    <div>bar</div>
-                </div>
-            `,
-            errors: expectedErrors([2, 4, 0, "Punctuator"])
-        },
-        {
-            code: unIndent`
-                <small>Foo bar&nbsp;
-                <a>baz qux</a>.
-                </small>
-            `,
-            output: unIndent`
-                <small>Foo bar&nbsp;
-                    <a>baz qux</a>.
-                </small>
-            `,
-            errors: expectedErrors([2, 4, 0, "Punctuator"])
-        },
-        {
-            code: unIndent`
                 ({
                     foo
                     }: bar) => baz
@@ -9322,67 +9157,6 @@ ruleTester.run("indent", rule, {
                 ignoredNodes: ["ExpressionStatement > CallExpression > FunctionExpression.callee > BlockStatement"]
             }],
             errors: expectedErrors([3, 4, 0, "Identifier"])
-        },
-        {
-            code: unIndent`
-                if (foo) {
-                    doSomething();
-
-                // Intentionally unindented comment
-                    doSomethingElse();
-                }
-            `,
-            output: unIndent`
-                if (foo) {
-                    doSomething();
-
-                    // Intentionally unindented comment
-                    doSomethingElse();
-                }
-            `,
-            options: [4, { ignoreComments: false }],
-            errors: expectedErrors([4, 4, 0, "Line"])
-        },
-        {
-            code: unIndent`
-                if (foo) {
-                    doSomething();
-
-                /* Intentionally unindented comment */
-                    doSomethingElse();
-                }
-            `,
-            output: unIndent`
-                if (foo) {
-                    doSomething();
-
-                    /* Intentionally unindented comment */
-                    doSomethingElse();
-                }
-            `,
-            options: [4, { ignoreComments: false }],
-            errors: expectedErrors([4, 4, 0, "Block"])
-        },
-        {
-            code: unIndent`
-                const obj = {
-                    foo () {
-                        return condition ? // comment
-                        1 :
-                            2
-                    }
-                }
-            `,
-            output: unIndent`
-                const obj = {
-                    foo () {
-                        return condition ? // comment
-                            1 :
-                            2
-                    }
-                }
-            `,
-            errors: expectedErrors([4, 12, 8, "Numeric"])
         }
     ]
 });

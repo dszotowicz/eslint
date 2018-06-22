@@ -33,6 +33,7 @@ function benchmark(grep, times) {
 
 function run(content, times) {
     while(times--) {
+        linter.reset();
         linter.verify(content, config);
     }
 }

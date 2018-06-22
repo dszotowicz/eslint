@@ -47,23 +47,8 @@ describe("SourceCode", () => {
             const sourceCode = new SourceCode("foo;", ast);
 
             assert.isObject(sourceCode);
-            assert.strictEqual(sourceCode.text, "foo;");
-            assert.strictEqual(sourceCode.ast, ast);
-        });
-
-        it("should create a new instance when called with valid optional data", () => {
-            const parserServices = {};
-            const scopeManager = {};
-            const visitorKeys = {};
-            const ast = { comments: [], tokens: [], loc: {}, range: [] };
-            const sourceCode = new SourceCode({ text: "foo;", ast, parserServices, scopeManager, visitorKeys });
-
-            assert.isObject(sourceCode);
-            assert.strictEqual(sourceCode.text, "foo;");
-            assert.strictEqual(sourceCode.ast, ast);
-            assert.strictEqual(sourceCode.parserServices, parserServices);
-            assert.strictEqual(sourceCode.scopeManager, scopeManager);
-            assert.strictEqual(sourceCode.visitorKeys, visitorKeys);
+            assert.equal(sourceCode.text, "foo;");
+            assert.equal(sourceCode.ast, ast);
         });
 
         it("should split text into lines when called with valid data", () => {
@@ -71,9 +56,9 @@ describe("SourceCode", () => {
             const sourceCode = new SourceCode("foo;\nbar;", ast);
 
             assert.isObject(sourceCode);
-            assert.strictEqual(sourceCode.lines.length, 2);
-            assert.strictEqual(sourceCode.lines[0], "foo;");
-            assert.strictEqual(sourceCode.lines[1], "bar;");
+            assert.equal(sourceCode.lines.length, 2);
+            assert.equal(sourceCode.lines[0], "foo;");
+            assert.equal(sourceCode.lines[1], "bar;");
         });
 
         it("should throw an error when called with an AST that's missing tokens", () => {
@@ -126,7 +111,7 @@ describe("SourceCode", () => {
             const actual = sourceCode.tokensAndComments;
             const expected = [comments[0], tokens[0], tokens[1], comments[1], tokens[2]];
 
-            assert.deepStrictEqual(actual, expected);
+            assert.deepEqual(actual, expected);
         });
 
         describe("if a text has BOM,", () => {
@@ -139,11 +124,11 @@ describe("SourceCode", () => {
             });
 
             it("should has true at `hasBOM` property.", () => {
-                assert.strictEqual(sourceCode.hasBOM, true);
+                assert.equal(sourceCode.hasBOM, true);
             });
 
             it("should not has BOM in `text` property.", () => {
-                assert.strictEqual(sourceCode.text, "console.log('hello');");
+                assert.equal(sourceCode.text, "console.log('hello');");
             });
         });
 
@@ -157,11 +142,11 @@ describe("SourceCode", () => {
             });
 
             it("should has false at `hasBOM` property.", () => {
-                assert.strictEqual(sourceCode.hasBOM, false);
+                assert.equal(sourceCode.hasBOM, false);
             });
 
             it("should not has BOM in `text` property.", () => {
-                assert.strictEqual(sourceCode.text, "console.log('hello');");
+                assert.equal(sourceCode.text, "console.log('hello');");
             });
         });
 
@@ -177,7 +162,7 @@ describe("SourceCode", () => {
             it("should change the type of the first comment to \"Shebang\"", () => {
                 const firstToken = sourceCode.getAllComments()[0];
 
-                assert.strictEqual(firstToken.type, "Shebang");
+                assert.equal(firstToken.type, "Shebang");
             });
         });
 
@@ -187,7 +172,7 @@ describe("SourceCode", () => {
                 const sourceCode = new SourceCode("//comment\nconsole.log('hello');", ast);
                 const firstToken = sourceCode.getAllComments()[0];
 
-                assert.strictEqual(firstToken.type, "Line");
+                assert.equal(firstToken.type, "Line");
             });
         });
 
@@ -208,17 +193,17 @@ describe("SourceCode", () => {
             it("to be clear, check the file has UTF-8 BOM.", () => {
                 const buffer = fs.readFileSync(UTF8_FILE);
 
-                assert.strictEqual(buffer[0], 0xEF);
-                assert.strictEqual(buffer[1], 0xBB);
-                assert.strictEqual(buffer[2], 0xBF);
+                assert.equal(buffer[0], 0xEF);
+                assert.equal(buffer[1], 0xBB);
+                assert.equal(buffer[2], 0xBF);
             });
 
             it("should has true at `hasBOM` property.", () => {
-                assert.strictEqual(sourceCode.hasBOM, true);
+                assert.equal(sourceCode.hasBOM, true);
             });
 
             it("should not has BOM in `text` property.", () => {
-                assert.strictEqual(
+                assert.equal(
                     sourceCode.text,
                     "\"use strict\";\n\nconsole.log(\"This file has [0xEF, 0xBB, 0xBF] as BOM.\");\n"
                 );
@@ -252,7 +237,7 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc, null);
+                assert.equal(jsdoc, null);
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -280,7 +265,7 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc, null);
+                assert.equal(jsdoc, null);
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -309,7 +294,7 @@ describe("SourceCode", () => {
                     const sourceCode = linter.getSourceCode();
                     const jsdoc = sourceCode.getJSDocComment(node);
 
-                    assert.strictEqual(jsdoc, null);
+                    assert.equal(jsdoc, null);
                 }
             }
 
@@ -341,8 +326,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Documentation. ");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Documentation. ");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -369,8 +354,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -398,8 +383,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -429,8 +414,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -490,8 +475,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -522,8 +507,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -553,8 +538,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -584,8 +569,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -613,8 +598,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Desc");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Desc");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -645,8 +630,8 @@ describe("SourceCode", () => {
                     const sourceCode = linter.getSourceCode();
                     const jsdoc = sourceCode.getJSDocComment(node);
 
-                    assert.strictEqual(jsdoc.type, "Block");
-                    assert.strictEqual(jsdoc.value, "* Desc");
+                    assert.equal(jsdoc.type, "Block");
+                    assert.equal(jsdoc.value, "* Desc");
                 }
             }
 
@@ -775,8 +760,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Merges two objects together.");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Merges two objects together.");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -804,8 +789,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Merges two objects together.");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Merges two objects together.");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -866,8 +851,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const jsdoc = sourceCode.getJSDocComment(node);
 
-                assert.strictEqual(jsdoc.type, "Block");
-                assert.strictEqual(jsdoc.value, "* Merges two objects together.");
+                assert.equal(jsdoc.type, "Block");
+                assert.equal(jsdoc.value, "* Merges two objects together.");
             }
 
             const spy = sandbox.spy(assertJSDoc);
@@ -938,8 +923,8 @@ describe("SourceCode", () => {
                 const sourceCode = linter.getSourceCode();
                 const comments = sourceCode.getComments(node);
 
-                assert.strictEqual(comments.leading.length, leading);
-                assert.strictEqual(comments.trailing.length, trailing);
+                assert.equal(comments.leading.length, leading);
+                assert.equal(comments.trailing.length, trailing);
             }
             unusedAssertionFuncs.add(assertionFunc);
             return assertionFunc;
@@ -1615,8 +1600,8 @@ describe("SourceCode", () => {
 
             const lines = sourceCode.getLines();
 
-            assert.strictEqual(lines[0], "a;");
-            assert.strictEqual(lines[1], "b;");
+            assert.equal(lines[0], "a;");
+            assert.equal(lines[1], "b;");
         });
 
         it("should get proper lines when using \\r\\n as a line break", () => {
@@ -1626,8 +1611,8 @@ describe("SourceCode", () => {
 
             const lines = sourceCode.getLines();
 
-            assert.strictEqual(lines[0], "a;");
-            assert.strictEqual(lines[1], "b;");
+            assert.equal(lines[0], "a;");
+            assert.equal(lines[1], "b;");
         });
 
         it("should get proper lines when using \\r as a line break", () => {
@@ -1637,8 +1622,8 @@ describe("SourceCode", () => {
 
             const lines = sourceCode.getLines();
 
-            assert.strictEqual(lines[0], "a;");
-            assert.strictEqual(lines[1], "b;");
+            assert.equal(lines[0], "a;");
+            assert.equal(lines[1], "b;");
         });
 
         it("should get proper lines when using \\u2028 as a line break", () => {
@@ -1648,8 +1633,8 @@ describe("SourceCode", () => {
 
             const lines = sourceCode.getLines();
 
-            assert.strictEqual(lines[0], "a;");
-            assert.strictEqual(lines[1], "b;");
+            assert.equal(lines[0], "a;");
+            assert.equal(lines[1], "b;");
         });
 
         it("should get proper lines when using \\u2029 as a line break", () => {
@@ -1659,8 +1644,8 @@ describe("SourceCode", () => {
 
             const lines = sourceCode.getLines();
 
-            assert.strictEqual(lines[0], "a;");
-            assert.strictEqual(lines[1], "b;");
+            assert.equal(lines[0], "a;");
+            assert.equal(lines[1], "b;");
         });
     });
 
@@ -1679,8 +1664,8 @@ describe("SourceCode", () => {
                 const shebangToken = sourceCode.getAllComments()[0];
                 const shebangText = sourceCode.getText(shebangToken);
 
-                assert.strictEqual(shebangToken.type, "Shebang");
-                assert.strictEqual(shebangText, "#!/usr/bin/env node");
+                assert.equal(shebangToken.type, "Shebang");
+                assert.equal(shebangText, "#!/usr/bin/env node");
             });
         });
 
@@ -1692,19 +1677,19 @@ describe("SourceCode", () => {
         it("should retrieve all text when used without parameters", () => {
             const text = sourceCode.getText();
 
-            assert.strictEqual(text, TEST_CODE);
+            assert.equal(text, TEST_CODE);
         });
 
         it("should retrieve all text for root node", () => {
             const text = sourceCode.getText(ast);
 
-            assert.strictEqual(text, TEST_CODE);
+            assert.equal(text, TEST_CODE);
         });
 
         it("should clamp to valid range when retrieving characters before start of source", () => {
             const text = sourceCode.getText(ast, 2, 0);
 
-            assert.strictEqual(text, TEST_CODE);
+            assert.equal(text, TEST_CODE);
         });
 
         it("should retrieve all text for binary expression", () => {
@@ -1712,7 +1697,7 @@ describe("SourceCode", () => {
             const node = ast.body[0].declarations[0].init;
             const text = sourceCode.getText(node);
 
-            assert.strictEqual(text, "6 * 7");
+            assert.equal(text, "6 * 7");
         });
 
         it("should retrieve all text plus two characters before for binary expression", () => {
@@ -1720,21 +1705,21 @@ describe("SourceCode", () => {
             const node = ast.body[0].declarations[0].init;
             const text = sourceCode.getText(node, 2);
 
-            assert.strictEqual(text, "= 6 * 7");
+            assert.equal(text, "= 6 * 7");
         });
 
         it("should retrieve all text plus one character after for binary expression", () => {
             const node = ast.body[0].declarations[0].init;
             const text = sourceCode.getText(node, 0, 1);
 
-            assert.strictEqual(text, "6 * 7;");
+            assert.equal(text, "6 * 7;");
         });
 
         it("should retrieve all text plus two characters before and one character after for binary expression", () => {
             const node = ast.body[0].declarations[0].init;
             const text = sourceCode.getText(node, 2, 1);
 
-            assert.strictEqual(text, "= 6 * 7;");
+            assert.equal(text, "= 6 * 7;");
         });
 
     });
@@ -1753,34 +1738,34 @@ describe("SourceCode", () => {
         it("should retrieve a node starting at the given index", () => {
             const node = sourceCode.getNodeByRangeIndex(4);
 
-            assert.strictEqual(node.type, "Identifier");
+            assert.equal(node.type, "Identifier");
         });
 
         it("should retrieve a node containing the given index", () => {
             const node = sourceCode.getNodeByRangeIndex(6);
 
-            assert.strictEqual(node.type, "Identifier");
+            assert.equal(node.type, "Identifier");
         });
 
         it("should retrieve a node that is exactly the given index", () => {
             const node = sourceCode.getNodeByRangeIndex(13);
 
-            assert.strictEqual(node.type, "Literal");
-            assert.strictEqual(node.value, 6);
+            assert.equal(node.type, "Literal");
+            assert.equal(node.value, 6);
         });
 
         it("should retrieve a node ending with the given index", () => {
             const node = sourceCode.getNodeByRangeIndex(9);
 
-            assert.strictEqual(node.type, "Identifier");
+            assert.equal(node.type, "Identifier");
         });
 
         it("should retrieve the deepest node containing the given index", () => {
             let node = sourceCode.getNodeByRangeIndex(14);
 
-            assert.strictEqual(node.type, "BinaryExpression");
+            assert.equal(node.type, "BinaryExpression");
             node = sourceCode.getNodeByRangeIndex(3);
-            assert.strictEqual(node.type, "VariableDeclaration");
+            assert.equal(node.type, "VariableDeclaration");
         });
 
         it("should return null if the index is outside the range of any node", () => {
@@ -1790,6 +1775,25 @@ describe("SourceCode", () => {
             node = sourceCode.getNodeByRangeIndex(-99);
             assert.isNull(node);
         });
+
+        it("should attach the node's parent", () => {
+            const node = sourceCode.getNodeByRangeIndex(14);
+
+            assert.property(node, "parent");
+            assert.equal(node.parent.type, "VariableDeclarator");
+        });
+
+        it("should not modify the node when attaching the parent", () => {
+            let node = sourceCode.getNodeByRangeIndex(10);
+
+            assert.equal(node.type, "VariableDeclarator");
+            node = sourceCode.getNodeByRangeIndex(4);
+            assert.equal(node.type, "Identifier");
+            assert.property(node, "parent");
+            assert.equal(node.parent.type, "VariableDeclarator");
+            assert.notProperty(node.parent, "parent");
+        });
+
     });
 
     describe("isSpaceBetweenTokens()", () => {
@@ -1812,7 +1816,7 @@ describe("SourceCode", () => {
                 const ast = espree.parse(code, DEFAULT_CONFIG),
                     sourceCode = new SourceCode(code, ast);
 
-                assert.strictEqual(
+                assert.equal(
                     sourceCode.isSpaceBetweenTokens(
                         sourceCode.ast.tokens[0], sourceCode.ast.tokens[1]
                     ),
@@ -1836,25 +1840,25 @@ describe("SourceCode", () => {
             const sourceCode = new SourceCode(TEST_CODE, ast),
                 messages = linter.verify(sourceCode);
 
-            assert.strictEqual(messages.length, 0);
+            assert.equal(messages.length, 0);
         });
 
         it("should work when passed a SourceCode object containing ES6 syntax and config", () => {
             const sourceCode = new SourceCode("let foo = bar;", AST),
                 messages = linter.verify(sourceCode, CONFIG);
 
-            assert.strictEqual(messages.length, 0);
+            assert.equal(messages.length, 0);
         });
 
-        it("should report an error when using let and ecmaVersion is 6", () => {
+        it("should report an error when using let and blockBindings is false", () => {
             const sourceCode = new SourceCode("let foo = bar;", AST),
                 messages = linter.verify(sourceCode, {
                     parserOptions: { ecmaVersion: 6 },
                     rules: { "no-unused-vars": 2 }
                 });
 
-            assert.strictEqual(messages.length, 1);
-            assert.strictEqual(messages[0].message, "'foo' is assigned a value but never used.");
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0].message, "'foo' is assigned a value but never used.");
         });
     });
 
@@ -1875,10 +1879,10 @@ describe("SourceCode", () => {
         });
 
         it("should return the location of a range index", () => {
-            assert.deepStrictEqual(sourceCode.getLocFromIndex(5), { line: 2, column: 1 });
-            assert.deepStrictEqual(sourceCode.getLocFromIndex(3), { line: 1, column: 3 });
-            assert.deepStrictEqual(sourceCode.getLocFromIndex(4), { line: 2, column: 0 });
-            assert.deepStrictEqual(sourceCode.getLocFromIndex(21), { line: 6, column: 0 });
+            assert.deepEqual(sourceCode.getLocFromIndex(5), { line: 2, column: 1 });
+            assert.deepEqual(sourceCode.getLocFromIndex(3), { line: 1, column: 3 });
+            assert.deepEqual(sourceCode.getLocFromIndex(4), { line: 2, column: 0 });
+            assert.deepEqual(sourceCode.getLocFromIndex(21), { line: 6, column: 0 });
         });
 
         it("should throw if given a bad input", () => {
@@ -1889,7 +1893,7 @@ describe("SourceCode", () => {
         });
 
         it("should not throw if given sourceCode.text.length", () => {
-            assert.deepStrictEqual(sourceCode.getLocFromIndex(CODE.length), { line: 8, column: 0 });
+            assert.deepEqual(sourceCode.getLocFromIndex(CODE.length), { line: 8, column: 0 });
         });
 
         it("should throw if given an out-of-range input", () => {

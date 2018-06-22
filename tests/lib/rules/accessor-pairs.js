@@ -18,9 +18,6 @@ const rule = require("../../../lib/rules/accessor-pairs"),
 
 const ruleTester = new RuleTester();
 
-const getterError = { messageId: "getter" };
-const setterError = { messageId: "setter" };
-
 ruleTester.run("accessor-pairs", rule, {
     valid: [
         "var o = { a: 1 };",
@@ -49,35 +46,49 @@ ruleTester.run("accessor-pairs", rule, {
     invalid: [
         {
             code: "var o = {\n set a(value) {\n val = value; \n} \n};",
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         },
         {
             code: "var o = {\n get a() {\n return val; \n} \n};",
             options: [{
                 getWithoutSet: true
             }],
-            errors: [setterError]
+            errors: [{
+                message: "Setter is not present."
+            }]
         },
         {
             code: "var o = {d: 1};\n Object.defineProperty(o, 'c', \n{set: function(value) {\n val = value; \n} \n});",
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         },
         {
             code: "Reflect.defineProperty(obj, 'foo', {set: function(value) {}});",
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         },
         {
             code: "Object.defineProperties(obj, {foo: {set: function(value) {}}});",
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         },
         {
             code: "Object.create(null, {foo: {set: function(value) {}}});",
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         },
         {
             code: "var expr = 'foo';  var o = { set [expr](value) { val = value; } };",
             parserOptions: { ecmaVersion: 6 },
-            errors: [getterError]
+            errors: [{
+                message: "Getter is not present."
+            }]
         }
     ]
 });

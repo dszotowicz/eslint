@@ -91,8 +91,8 @@ const invalid = [
         output: "a => a",
         options: [{ after: true, before: true }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "expectedBefore" },
-            { column: 4, line: 1, type: "Identifier", messageId: "expectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 4, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -100,8 +100,8 @@ const invalid = [
         output: "() => {}",
         options: [{ after: true, before: true }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 5, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 5, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -109,8 +109,8 @@ const invalid = [
         output: "(a) => {}",
         options: [{ after: true, before: true }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 6, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 6, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -118,8 +118,8 @@ const invalid = [
         output: "a =>a",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "expectedBefore" },
-            { column: 5, line: 1, type: "Identifier", messageId: "unexpectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 5, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -127,8 +127,8 @@ const invalid = [
         output: "() =>{}",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 6, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 6, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -136,8 +136,8 @@ const invalid = [
         output: "(a) =>{}",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 7, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 7, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -145,8 +145,8 @@ const invalid = [
         output: "a =>a",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "expectedBefore" },
-            { column: 6, line: 1, type: "Identifier", messageId: "unexpectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 6, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -154,8 +154,8 @@ const invalid = [
         output: "() =>{}",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 7, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 7, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -163,8 +163,8 @@ const invalid = [
         output: "(a) =>{}",
         options: [{ after: false, before: true }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "expectedBefore" },
-            { column: 8, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 8, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -172,8 +172,8 @@ const invalid = [
         output: "a=> a",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "unexpectedBefore" },
-            { column: 5, line: 1, type: "Identifier", messageId: "expectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 5, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -181,8 +181,8 @@ const invalid = [
         output: "()=> {}",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 6, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 6, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -190,8 +190,8 @@ const invalid = [
         output: "(a)=> {}",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 7, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 7, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -199,8 +199,8 @@ const invalid = [
         output: "a=> a",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "unexpectedBefore" },
-            { column: 6, line: 1, type: "Identifier", messageId: "expectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 6, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -208,8 +208,8 @@ const invalid = [
         output: "()=> {}",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 7, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 7, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -217,8 +217,8 @@ const invalid = [
         output: "(a)=> {}",
         options: [{ after: true, before: false }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 8, line: 1, type: "Punctuator", messageId: "expectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 8, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -226,8 +226,8 @@ const invalid = [
         output: "a=>a",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "unexpectedBefore" },
-            { column: 6, line: 1, type: "Identifier", messageId: "unexpectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 6, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -235,8 +235,8 @@ const invalid = [
         output: "()=>{}",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 7, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 7, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -244,8 +244,8 @@ const invalid = [
         output: "(a)=>{}",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 8, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 8, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -253,8 +253,8 @@ const invalid = [
         output: "a=>a",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 1, line: 1, type: "Identifier", messageId: "unexpectedBefore" },
-            { column: 8, line: 1, type: "Identifier", messageId: "unexpectedAfter" }
+            { column: 1, line: 1, type: "Identifier" },
+            { column: 8, line: 1, type: "Identifier" }
         ]
     },
     {
@@ -262,8 +262,8 @@ const invalid = [
         output: "()=>{}",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 2, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 9, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 2, line: 1, type: "Punctuator" },
+            { column: 9, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -271,8 +271,8 @@ const invalid = [
         output: "(a)=>{}",
         options: [{ after: false, before: false }],
         errors: [
-            { column: 3, line: 1, type: "Punctuator", messageId: "unexpectedBefore" },
-            { column: 10, line: 1, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 3, line: 1, type: "Punctuator" },
+            { column: 10, line: 1, type: "Punctuator" }
         ]
     },
     {
@@ -280,7 +280,7 @@ const invalid = [
         output: "(a)  =>{}",
         options: [{ after: false }],
         errors: [
-            { column: 1, line: 2, type: "Punctuator", messageId: "unexpectedAfter" }
+            { column: 1, line: 2, type: "Punctuator" }
         ]
     },
 
@@ -289,20 +289,20 @@ const invalid = [
         code: "(a = ()=>0)=>1",
         output: "(a = () => 0) => 1",
         errors: [
-            { column: 7, line: 1, messageId: "expectedBefore" },
-            { column: 10, line: 1, messageId: "expectedAfter" },
-            { column: 11, line: 1, messageId: "expectedBefore" },
-            { column: 14, line: 1, messageId: "expectedAfter" }
+            { column: 7, line: 1, message: "Missing space before =>." },
+            { column: 10, line: 1, message: "Missing space after =>." },
+            { column: 11, line: 1, message: "Missing space before =>." },
+            { column: 14, line: 1, message: "Missing space after =>." }
         ]
     },
     {
         code: "(a = ()=>0)=>(1)",
         output: "(a = () => 0) => (1)",
         errors: [
-            { column: 7, line: 1, messageId: "expectedBefore" },
-            { column: 10, line: 1, messageId: "expectedAfter" },
-            { column: 11, line: 1, messageId: "expectedBefore" },
-            { column: 14, line: 1, messageId: "expectedAfter" }
+            { column: 7, line: 1, message: "Missing space before =>." },
+            { column: 10, line: 1, message: "Missing space after =>." },
+            { column: 11, line: 1, message: "Missing space before =>." },
+            { column: 14, line: 1, message: "Missing space after =>." }
         ]
     }
 ];

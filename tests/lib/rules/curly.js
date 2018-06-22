@@ -219,8 +219,7 @@ ruleTester.run("curly", rule, {
             output: "if (foo) {bar()}",
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -230,8 +229,7 @@ ruleTester.run("curly", rule, {
             output: "if (foo) { bar() } else {baz()}",
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "else" },
+                    message: "Expected { after 'else'.",
                     type: "IfStatement"
                 }
             ]
@@ -241,8 +239,7 @@ ruleTester.run("curly", rule, {
             output: "if (foo) { bar() } else if (faa) {baz()}",
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -252,8 +249,7 @@ ruleTester.run("curly", rule, {
             output: "while (foo) {bar()}",
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Expected { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -263,8 +259,7 @@ ruleTester.run("curly", rule, {
             output: "do {bar();} while (foo)",
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "do" },
+                    message: "Expected { after 'do'.",
                     type: "DoWhileStatement"
                 }
             ]
@@ -274,8 +269,7 @@ ruleTester.run("curly", rule, {
             output: "for (;foo;) {bar()}",
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "for" },
+                    message: "Expected { after 'for' condition.",
                     type: "ForStatement"
                 }
             ]
@@ -285,8 +279,7 @@ ruleTester.run("curly", rule, {
             output: "for (var foo in bar) {console.log(foo)}",
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Expected { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -297,8 +290,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Expected { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -309,8 +301,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "for" },
+                    message: "Unnecessary { after 'for' condition.",
                     type: "ForStatement"
                 }
             ]
@@ -321,8 +312,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Unnecessary { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -333,8 +323,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Unnecessary { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -345,8 +334,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "else" },
+                    message: "Unnecessary { after 'else'.",
                     type: "IfStatement"
                 }
             ]
@@ -357,8 +345,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Unnecessary { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -369,8 +356,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Unnecessary { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -405,8 +391,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "else" },
+                    message: "Unnecessary { after 'else'.",
                     type: "IfStatement",
                     line: 6,
                     column: 3
@@ -419,8 +404,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Unnecessary { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -432,8 +416,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Unnecessary { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -444,8 +427,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -456,8 +438,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Expected { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -468,8 +449,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "for" },
+                    message: "Expected { after 'for' condition.",
                     type: "ForStatement"
                 }
             ]
@@ -480,8 +460,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Expected { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -492,8 +471,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -504,8 +482,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "do" },
+                    message: "Expected { after 'do'.",
                     type: "DoWhileStatement"
                 }
             ]
@@ -516,8 +493,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Expected { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -528,8 +504,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-line"],
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Expected { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -541,8 +516,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Expected { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -554,8 +528,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Expected { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -566,8 +539,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -578,8 +550,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Expected { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -590,8 +561,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Unnecessary { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -602,8 +572,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "while" },
+                    message: "Unnecessary { after 'while' condition.",
                     type: "WhileStatement"
                 }
             ]
@@ -614,8 +583,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "for" },
+                    message: "Unnecessary { after 'for' condition.",
                     type: "ForStatement"
                 }
             ]
@@ -626,8 +594,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Expected { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -638,8 +605,7 @@ ruleTester.run("curly", rule, {
             options: ["multi-or-nest"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "for-in" },
+                    message: "Unnecessary { after 'for-in'.",
                     type: "ForInStatement"
                 }
             ]
@@ -651,8 +617,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Expected { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -664,8 +629,7 @@ ruleTester.run("curly", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "for-of" },
+                    message: "Unnecessary { after 'for-of'.",
                     type: "ForOfStatement"
                 }
             ]
@@ -676,8 +640,7 @@ ruleTester.run("curly", rule, {
             options: ["multi", "consistent"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -688,8 +651,7 @@ ruleTester.run("curly", rule, {
             options: ["multi", "consistent"],
             errors: [
                 {
-                    messageId: "missingCurlyAfter",
-                    data: { name: "else" },
+                    message: "Expected { after 'else'.",
                     type: "IfStatement"
                 }
             ]
@@ -700,8 +662,7 @@ ruleTester.run("curly", rule, {
             options: ["multi", "consistent"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "else" },
+                    message: "Unnecessary { after 'else'.",
                     type: "IfStatement"
                 }
             ]
@@ -712,13 +673,11 @@ ruleTester.run("curly", rule, {
             options: ["multi", "consistent"],
             errors: [
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 },
                 {
-                    messageId: "missingCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Expected { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -729,8 +688,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "do" },
+                    message: "Unnecessary { after 'do'.",
                     type: "DoWhileStatement"
                 }
             ]
@@ -741,8 +699,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "do" },
+                    message: "Unnecessary { after 'do'.",
                     type: "DoWhileStatement"
                 }
             ]
@@ -753,8 +710,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfterCondition",
-                    data: { name: "if" },
+                    message: "Unnecessary { after 'if' condition.",
                     type: "IfStatement"
                 }
             ]
@@ -765,8 +721,7 @@ ruleTester.run("curly", rule, {
             options: ["multi"],
             errors: [
                 {
-                    messageId: "unexpectedCurlyAfter",
-                    data: { name: "do" },
+                    message: "Unnecessary { after 'do'.",
                     type: "DoWhileStatement"
                 }
             ]
@@ -777,44 +732,44 @@ ruleTester.run("curly", rule, {
             code: "if (foo) { bar }\n++baz;",
             output: null,
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar; }\n++baz;",
             output: "if (foo)  bar; \n++baz;",
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar++ }\nbaz;",
             output: null,
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar }\n[1, 2, 3].map(foo);",
             output: null,
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar }\n(1).toString();",
             output: null,
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar }\n/regex/.test('foo');",
             output: null,
             options: ["multi"],
             parserOptions: { ecmaVersion: 6 },
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { bar }\nBaz();",
             output: "if (foo)  bar \nBaz();",
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code:
@@ -832,39 +787,39 @@ ruleTester.run("curly", rule, {
             "  }\n" +
             " else e();",
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { while (bar) {} } else {}",
             output: "if (foo)  while (bar) {}  else {}",
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { var foo = () => {} } else {}",
             output: null,
             options: ["multi"],
             parserOptions: { ecmaVersion: 6 },
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { var foo = function() {} } else {}",
             output: null,
             options: ["multi"],
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (foo) { var foo = function*() {} } else {}",
             output: null,
             options: ["multi"],
             parserOptions: { ecmaVersion: 6 },
-            errors: [{ messageId: "unexpectedCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Unnecessary { after 'if' condition.", type: "IfStatement" }]
         },
         {
             code: "if (true)\nfoo()\n;[1, 2, 3].bar()",
             output: "if (true)\n{foo()\n;}[1, 2, 3].bar()",
             options: ["multi-line"],
-            errors: [{ messageId: "missingCurlyAfterCondition", data: { name: "if" }, type: "IfStatement" }]
+            errors: [{ message: "Expected { after 'if' condition.", type: "IfStatement" }]
         }
     ]
 });

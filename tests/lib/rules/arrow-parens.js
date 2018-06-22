@@ -71,6 +71,10 @@ const valid = [
     { code: "(a): T => a", options: ["as-needed", { requireForBlockBody: true }], parser: parser("return-type") }
 ];
 
+const message = "Expected parentheses around arrow function argument.";
+const asNeededMessage = "Unexpected parentheses around single function argument.";
+const requireForBlockBodyMessage = "Unexpected parentheses around single function argument having a body with no curly braces";
+const requireForBlockBodyNoParensMessage = "Expected parentheses around arrow function argument having a body with curly braces.";
 const type = "ArrowFunctionExpression";
 
 const invalid = [
@@ -82,7 +86,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -92,7 +96,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -102,7 +106,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -112,7 +116,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 8,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -122,7 +126,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 8,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -132,7 +136,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 3,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -143,7 +147,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 3,
-            messageId: "expectedParens",
+            message,
             type
         }]
     },
@@ -156,7 +160,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParens",
+            message: asNeededMessage,
             type
         }]
     },
@@ -168,7 +172,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParens",
+            message: asNeededMessage,
             type
         }]
     },
@@ -180,7 +184,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParens",
+            message: asNeededMessage,
             type
         }]
     },
@@ -192,7 +196,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParens",
+            message: asNeededMessage,
             type
         }]
     },
@@ -205,7 +209,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "expectedParensBlock",
+            message: requireForBlockBodyNoParensMessage,
             type
         }]
     },
@@ -216,7 +220,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParensInline",
+            message: requireForBlockBodyMessage,
             type
         }]
     },
@@ -228,7 +232,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "expectedParensBlock",
+            message: requireForBlockBodyNoParensMessage,
             type
         }]
     },
@@ -240,7 +244,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParensInline",
+            message: requireForBlockBodyMessage,
             type
         }]
     },
@@ -252,7 +256,7 @@ const invalid = [
         errors: [{
             line: 1,
             column: 1,
-            messageId: "unexpectedParensInline",
+            message: requireForBlockBodyMessage,
             type
         }]
     }

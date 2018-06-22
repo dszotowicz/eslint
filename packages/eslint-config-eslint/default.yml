@@ -1,9 +1,5 @@
 extends:
-    - "eslint:recommended"
-    - "plugin:node/recommended"
-
-plugins:
-    - "node"
+    "eslint:recommended"
 
 rules:
     array-bracket-spacing: "error"
@@ -28,10 +24,12 @@ rules:
     dot-notation: ["error", { allowKeywords: true }]
     eol-last: "error"
     eqeqeq: "error"
+    for-direction: "error"
     func-call-spacing: "error"
     func-style: ["error", "declaration"]
     function-paren-newline: ["error", "consistent"]
     generator-star-spacing: "error"
+    getter-return: "error"
     guard-for-in: "error"
     handle-callback-err: ["error", "err"]
     key-spacing: ["error", { beforeColon: false, afterColon: true }]
@@ -41,13 +39,6 @@ rules:
         afterBlockComment: false,
         beforeLineComment: true,
         afterLineComment: false
-    }]
-    max-len: ["error", 160, {
-        "ignoreComments": true,
-        "ignoreUrls": true,
-        "ignoreStrings": true,
-        "ignoreTemplateLiterals": true,
-        "ignoreRegExpLiterals": true
     }]
     max-statements-per-line: "error"
     new-cap: "error"
@@ -87,7 +78,6 @@ rules:
     no-new-wrappers: "error"
     no-octal: "error"
     no-octal-escape: "error"
-    no-param-reassign: "error"
     no-path-concat: "error"
     no-process-exit: "error"
     no-proto: "error"
@@ -95,11 +85,7 @@ rules:
     no-restricted-properties: [
         "error",
         { property: "substring", message: "Use .slice instead of .substring." },
-        { property: "substr", message: "Use .slice instead of .substr." },
-        { object: "assert", property: "equal", message: "Use assert.strictEqual instead of assert.equal." },
-        { object: "assert", property: "notEqual", message: "Use assert.notStrictEqual instead of assert.notEqual." },
-        { object: "assert", property: "deepEqual", message: "Use assert.deepStrictEqual instead of assert.deepStrictEqual." },
-        { object: "assert", property: "notDeepEqual", message: "Use assert.notDeepStrictEqual instead of assert.notDeepEqual." }
+        { property: "substr", message: "Use .slice instead of .substr." }
     ]
     no-return-assign: "error"
     no-script-url: "error"
@@ -132,7 +118,7 @@ rules:
     no-var: "error"
     object-curly-newline: ["error", { "consistent": true, "multiline": true }]
     object-curly-spacing: ["error", "always"]
-    object-property-newline: ["error", { "allowAllPropertiesOnSameLine": true }]
+    object-property-newline: ["error", { "allowMultiplePropertiesPerLine": true }]
     object-shorthand: "error"
     one-var-declaration-per-line: "error"
     operator-assignment: "error"
@@ -154,14 +140,11 @@ rules:
     prefer-const: "error"
     prefer-numeric-literals: "error"
     prefer-promise-reject-errors: "error"
-    prefer-rest-params: "error"
-    prefer-spread: "error"
     prefer-template: "error"
     quotes: ["error", "double"]
     quote-props: ["error", "as-needed"]
     radix: "error"
     require-jsdoc: "error"
-    rest-spread-spacing: "error"
     semi: "error"
     semi-spacing: ["error", {before: false, after: true}]
     semi-style: "error"

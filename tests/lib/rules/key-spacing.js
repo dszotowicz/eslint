@@ -317,7 +317,7 @@ ruleTester.run("key-spacing", rule, {
             beforeColon: true,
             afterColon: true
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "var obj = {",
@@ -330,7 +330,7 @@ ruleTester.run("key-spacing", rule, {
         options: [{
             align: "colon"
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "callExpr(arg, {",
@@ -346,7 +346,7 @@ ruleTester.run("key-spacing", rule, {
             beforeColon: true,
             afterColon: false
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "var obj = {",
@@ -362,7 +362,7 @@ ruleTester.run("key-spacing", rule, {
         options: [{
             align: "value"
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -382,7 +382,7 @@ ruleTester.run("key-spacing", rule, {
         options: [{
             align: "colon"
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     },
 
     // https://github.com/eslint/eslint/issues/4792
@@ -502,7 +502,7 @@ ruleTester.run("key-spacing", rule, {
         options: [{
             align: "colon"
         }],
-        parserOptions: { ecmaVersion: 2018 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     },
 
     // https://github.com/eslint/eslint/issues/5613
@@ -524,7 +524,7 @@ ruleTester.run("key-spacing", rule, {
             beforeColon: true,
             afterColon: false
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -543,7 +543,7 @@ ruleTester.run("key-spacing", rule, {
             beforeColon: true,
             afterColon: false
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -561,7 +561,7 @@ ruleTester.run("key-spacing", rule, {
                 }
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -577,7 +577,7 @@ ruleTester.run("key-spacing", rule, {
                 afterColon: false
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: []
     }, {
         code: [
@@ -595,7 +595,7 @@ ruleTester.run("key-spacing", rule, {
                 mode: "minimum"
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -613,7 +613,7 @@ ruleTester.run("key-spacing", rule, {
                 }
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -647,7 +647,7 @@ ruleTester.run("key-spacing", rule, {
                 afterColon: true
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -678,7 +678,7 @@ ruleTester.run("key-spacing", rule, {
                 afterColon: true
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "({",
@@ -706,7 +706,7 @@ ruleTester.run("key-spacing", rule, {
                 afterColon: false
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "var obj = {",
@@ -731,7 +731,7 @@ ruleTester.run("key-spacing", rule, {
                 }
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }, {
         code: [
             "var obj = {",
@@ -756,7 +756,7 @@ ruleTester.run("key-spacing", rule, {
                 mode: "minimum"
             }
         }],
-        parserOptions: { ecmaVersion: 6 }
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } }
     }],
 
     invalid: [{
@@ -1318,7 +1318,7 @@ ruleTester.run("key-spacing", rule, {
             "})"
         ].join("\n"),
         options: [{ align: "colon" }],
-        parserOptions: { ecmaVersion: 2018 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Missing space after key 'a'.", line: 3, column: 5, type: "Identifier" },
             { message: "Extra space after key 'f'.", line: 12, column: 5, type: "Identifier" }
@@ -1536,7 +1536,7 @@ ruleTester.run("key-spacing", rule, {
         code: "({ a:b, ...object, c : d })",
         output: "({ a: b, ...object, c: d })",
         options: [{ align: "colon" }],
-        parserOptions: { ecmaVersion: 2018 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Missing space before value for key 'a'.", line: 1, column: 6, type: "Identifier" },
             { message: "Extra space after key 'c'.", line: 1, column: 20, type: "Identifier" }
@@ -1567,7 +1567,7 @@ ruleTester.run("key-spacing", rule, {
                 mode: "strict"
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Missing space after key 'longName'.", line: 2, column: 5, type: "Identifier" },
             { message: "Missing space before value for key 'longName'.", line: 2, column: 14, type: "Literal" },
@@ -1615,7 +1615,7 @@ ruleTester.run("key-spacing", rule, {
                 mode: "strict"
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Missing space before value for key 'func'.", line: 2, column: 10, type: "FunctionExpression" },
             { message: "Missing space after key 'longName'.", line: 5, column: 5, type: "Identifier" },
@@ -1664,7 +1664,7 @@ ruleTester.run("key-spacing", rule, {
                 }
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Missing space before value for key 'func'.", line: 2, column: 10, type: "FunctionExpression" },
             { message: "Missing space after key 'small'.", line: 6, column: 5, type: "Identifier" },
@@ -1706,7 +1706,7 @@ ruleTester.run("key-spacing", rule, {
                 }
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Extra space before value for key 'key2'.", line: 4, column: 14, type: "Literal" },
             { message: "Extra space before value for key 'key3'.", line: 5, column: 14, type: "Literal" }
@@ -1744,7 +1744,7 @@ ruleTester.run("key-spacing", rule, {
                 on: "colon"
             }
         }],
-        parserOptions: { ecmaVersion: 6 },
+        parserOptions: { ecmaVersion: 6, ecmaFeatures: { experimentalObjectRestSpread: true } },
         errors: [
             { message: "Extra space before value for key 'key2'.", line: 4, column: 14, type: "Literal" },
             { message: "Extra space before value for key 'key3'.", line: 5, column: 14, type: "Literal" }

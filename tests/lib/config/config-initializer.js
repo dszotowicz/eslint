@@ -64,11 +64,15 @@ describe("configInitializer", () => {
      * @returns {string} The path inside the fixture directory.
      * @private
      */
-    function getFixturePath(...args) {
-        const filepath = path.join(fixtureDir, ...args);
+    function getFixturePath() {
+        const args = Array.prototype.slice.call(arguments);
+
+        args.unshift(fixtureDir);
+        let filepath = path.join.apply(path, args);
 
         try {
-            return fs.realpathSync(filepath);
+            filepath = fs.realpathSync(filepath);
+            return filepath;
         } catch (e) {
             return filepath;
         }
@@ -123,9 +127,8 @@ describe("configInitializer", () => {
                     quotes: "single",
                     linebreak: "unix",
                     semi: true,
-                    ecmaVersion: 2015,
+                    es6: true,
                     modules: true,
-                    es6Globals: true,
                     env: ["browser"],
                     jsx: false,
                     react: false,
@@ -137,29 +140,28 @@ describe("configInitializer", () => {
             it("should create default config", () => {
                 const config = init.processAnswers(answers);
 
-                assert.deepStrictEqual(config.rules.indent, ["error", 2]);
-                assert.deepStrictEqual(config.rules.quotes, ["error", "single"]);
-                assert.deepStrictEqual(config.rules["linebreak-style"], ["error", "unix"]);
-                assert.deepStrictEqual(config.rules.semi, ["error", "always"]);
-                assert.strictEqual(config.env.es6, true);
-                assert.strictEqual(config.parserOptions.ecmaVersion, 2015);
-                assert.strictEqual(config.parserOptions.sourceType, "module");
-                assert.strictEqual(config.env.browser, true);
-                assert.strictEqual(config.extends, "eslint:recommended");
+                assert.deepEqual(config.rules.indent, ["error", 2]);
+                assert.deepEqual(config.rules.quotes, ["error", "single"]);
+                assert.deepEqual(config.rules["linebreak-style"], ["error", "unix"]);
+                assert.deepEqual(config.rules.semi, ["error", "always"]);
+                assert.equal(config.env.es6, true);
+                assert.equal(config.parserOptions.sourceType, "module");
+                assert.equal(config.env.browser, true);
+                assert.equal(config.extends, "eslint:recommended");
             });
 
             it("should disable semi", () => {
                 answers.semi = false;
                 const config = init.processAnswers(answers);
 
-                assert.deepStrictEqual(config.rules.semi, ["error", "never"]);
+                assert.deepEqual(config.rules.semi, ["error", "never"]);
             });
 
             it("should enable jsx flag", () => {
                 answers.jsx = true;
                 const config = init.processAnswers(answers);
 
-                assert.strictEqual(config.parserOptions.ecmaFeatures.jsx, true);
+                assert.equal(config.parserOptions.ecmaFeatures.jsx, true);
             });
 
             it("should enable react plugin", () => {
@@ -167,23 +169,22 @@ describe("configInitializer", () => {
                 answers.react = true;
                 const config = init.processAnswers(answers);
 
-                assert.strictEqual(config.parserOptions.ecmaFeatures.jsx, true);
-                assert.strictEqual(config.parserOptions.ecmaVersion, 2018);
-                assert.deepStrictEqual(config.plugins, ["react"]);
+                assert.equal(config.parserOptions.ecmaFeatures.jsx, true);
+                assert.equal(config.parserOptions.ecmaFeatures.experimentalObjectRestSpread, true);
+                assert.deepEqual(config.plugins, ["react"]);
             });
 
             it("should not enable es6", () => {
-                answers.ecmaVersion = 5;
+                answers.es6 = false;
                 const config = init.processAnswers(answers);
 
-                assert.strictEqual(config.parserOptions.ecmaVersion, 5);
                 assert.isUndefined(config.env.es6);
             });
 
             it("should extend eslint:recommended", () => {
                 const config = init.processAnswers(answers);
 
-                assert.strictEqual(config.extends, "eslint:recommended");
+                assert.equal(config.extends, "eslint:recommended");
             });
 
             it("should not use commonjs by default", () => {
@@ -203,34 +204,26 @@ describe("configInitializer", () => {
         describe("guide", () => {
             it("should support the google style guide", () => {
                 const config = init.getConfigForStyleGuide("google");
-                const modules = init.getModulesList(config);
 
-                assert.deepStrictEqual(config, { extends: "google", installedESLint: true });
-                assert.include(modules, "eslint-config-google@latest");
+                assert.deepEqual(config, { extends: "google", installedESLint: true });
             });
 
             it("should support the airbnb style guide", () => {
                 const config = init.getConfigForStyleGuide("airbnb");
-                const modules = init.getModulesList(config);
 
-                assert.deepStrictEqual(config, { extends: "airbnb", installedESLint: true });
-                assert.include(modules, "eslint-config-airbnb@latest");
+                assert.deepEqual(config, { extends: "airbnb", installedESLint: true });
             });
 
             it("should support the airbnb base style guide", () => {
                 const config = init.getConfigForStyleGuide("airbnb-base");
-                const modules = init.getModulesList(config);
 
-                assert.deepStrictEqual(config, { extends: "airbnb-base", installedESLint: true });
-                assert.include(modules, "eslint-config-airbnb-base@latest");
+                assert.deepEqual(config, { extends: "airbnb-base", installedESLint: true });
             });
 
             it("should support the standard style guide", () => {
                 const config = init.getConfigForStyleGuide("standard");
-                const modules = init.getModulesList(config);
 
-                assert.deepStrictEqual(config, { extends: "standard", installedESLint: true });
-                assert.include(modules, "eslint-config-standard@latest");
+                assert.deepEqual(config, { extends: "standard", installedESLint: true });
             });
 
             it("should throw when encountering an unsupported style guide", () => {
@@ -240,30 +233,24 @@ describe("configInitializer", () => {
             });
 
             it("should install required sharable config", () => {
-                const config = init.getConfigForStyleGuide("google");
-
-                init.installModules(init.getModulesList(config));
+                init.getConfigForStyleGuide("google");
                 assert(npmInstallStub.calledOnce);
                 assert(npmInstallStub.firstCall.args[0].some(name => name.startsWith("eslint-config-google@")));
             });
 
             it("should install ESLint if not installed locally", () => {
-                const config = init.getConfigForStyleGuide("google");
-
-                init.installModules(init.getModulesList(config));
+                init.getConfigForStyleGuide("google");
                 assert(npmInstallStub.calledOnce);
                 assert(npmInstallStub.firstCall.args[0].some(name => name.startsWith("eslint@")));
             });
 
             it("should install peerDependencies of the sharable config", () => {
-                const config = init.getConfigForStyleGuide("airbnb");
-
-                init.installModules(init.getModulesList(config));
+                init.getConfigForStyleGuide("airbnb");
 
                 assert(npmFetchPeerDependenciesStub.calledOnce);
                 assert(npmFetchPeerDependenciesStub.firstCall.args[0] === "eslint-config-airbnb@latest");
                 assert(npmInstallStub.calledOnce);
-                assert.deepStrictEqual(
+                assert.deepEqual(
                     npmInstallStub.firstCall.args[0],
                     [
                         "eslint-config-airbnb@latest",
@@ -284,7 +271,7 @@ describe("configInitializer", () => {
                     it("should return false.", () => {
                         const result = init.hasESLintVersionConflict({ styleguide: "airbnb" });
 
-                        assert.strictEqual(result, false);
+                        assert.equal(result, false);
                     });
                 });
 
@@ -296,7 +283,7 @@ describe("configInitializer", () => {
                     it("should return false.", () => {
                         const result = init.hasESLintVersionConflict({ styleguide: "airbnb" });
 
-                        assert.strictEqual(result, false);
+                        assert.equal(result, false);
                     });
                 });
 
@@ -308,7 +295,7 @@ describe("configInitializer", () => {
                     it("should return true.", () => {
                         const result = init.hasESLintVersionConflict({ styleguide: "airbnb" });
 
-                        assert.strictEqual(result, true);
+                        assert.equal(result, true);
                     });
                 });
 
@@ -320,7 +307,7 @@ describe("configInitializer", () => {
                     it("should return true.", () => {
                         const result = init.hasESLintVersionConflict({ styleguide: "airbnb" });
 
-                        assert.strictEqual(result, true);
+                        assert.equal(result, true);
                     });
                 });
             });
@@ -329,7 +316,6 @@ describe("configInitializer", () => {
         describe("auto", () => {
             const completeSpy = sinon.spy();
             let config;
-            let sandbox;
 
             before(() => {
                 const patterns = [
@@ -340,7 +326,7 @@ describe("configInitializer", () => {
                 answers = {
                     source: "auto",
                     patterns,
-                    ecmaVersion: 5,
+                    es6: false,
                     env: ["browser"],
                     jsx: false,
                     react: false,
@@ -348,21 +334,23 @@ describe("configInitializer", () => {
                     commonjs: false
                 };
 
-                sandbox = sinon.sandbox.create();
+                const sandbox = sinon.sandbox.create();
+
                 sandbox.stub(console, "log"); // necessary to replace, because of progress bar
 
                 process.chdir(fixtureDir);
-                config = init.processAnswers(answers);
-                sandbox.restore();
-            });
 
-            after(() => {
-                sandbox.restore();
-            });
+                try {
+                    config = init.processAnswers(answers);
+                    process.chdir(originalDir);
+                } catch (err) {
 
-            afterEach(() => {
-                process.chdir(originalDir);
-                sandbox.restore();
+                    // if processAnswers crashes, we need to be sure to restore cwd
+                    process.chdir(originalDir);
+                    throw err;
+                } finally {
+                    sandbox.restore(); // restore console.log()
+                }
             });
 
             it("should create a config", () => {
@@ -371,42 +359,37 @@ describe("configInitializer", () => {
             });
 
             it("should create the config based on examined files", () => {
-                assert.deepStrictEqual(config.rules.quotes, ["error", "double"]);
-                assert.strictEqual(config.rules.semi, "off");
+                assert.deepEqual(config.rules.quotes, ["error", "double"]);
+                assert.equal(config.rules.semi, "off");
             });
 
             it("should extend and not disable recommended rules", () => {
-                assert.strictEqual(config.extends, "eslint:recommended");
+                assert.equal(config.extends, "eslint:recommended");
                 assert.notProperty(config.rules, "no-console");
-            });
-
-            it("should support new ES features if using later ES version", () => {
-                const filename = getFixturePath("new-es-features");
-
-                answers.patterns = filename;
-                answers.ecmaVersion = 2017;
-                process.chdir(fixtureDir);
-                config = init.processAnswers(answers);
             });
 
             it("should throw on fatal parsing error", () => {
                 const filename = getFixturePath("parse-error");
 
-                sandbox.stub(autoconfig, "extendFromRecommended");
+                sinon.stub(autoconfig, "extendFromRecommended");
                 answers.patterns = filename;
                 process.chdir(fixtureDir);
                 assert.throws(() => {
                     config = init.processAnswers(answers);
                 }, "Parsing error: Unexpected token ;");
+                process.chdir(originalDir);
+                autoconfig.extendFromRecommended.restore();
             });
 
             it("should throw if no files are matched from patterns", () => {
-                sandbox.stub(autoconfig, "extendFromRecommended");
+                sinon.stub(autoconfig, "extendFromRecommended");
                 answers.patterns = "not-a-real-filename";
                 process.chdir(fixtureDir);
                 assert.throws(() => {
                     config = init.processAnswers(answers);
-                }, "No files matching 'not-a-real-filename' were found.");
+                }, "Automatic Configuration failed.  No files were able to be parsed.");
+                process.chdir(originalDir);
+                autoconfig.extendFromRecommended.restore();
             });
         });
     });

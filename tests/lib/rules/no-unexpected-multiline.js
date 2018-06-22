@@ -204,17 +204,6 @@ ruleTester.run("no-unexpected-multiline", rule, {
                 column: 17,
                 message: "Unexpected newline between numerator and division operator."
             }]
-        },
-        {
-            code: `
-                foo
-                /bar/s.test(baz)
-            `,
-            errors: [{
-                line: 3,
-                column: 17,
-                message: "Unexpected newline between numerator and division operator."
-            }]
         }
     ]
 });

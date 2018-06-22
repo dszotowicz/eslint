@@ -50,8 +50,7 @@ ruleTester.run("consistent-return", rule, {
             code: "function foo() { if (true) return true; else return; }",
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected a return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -61,8 +60,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Arrow function" },
+                    message: "Arrow function expected a return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -71,8 +69,7 @@ ruleTester.run("consistent-return", rule, {
             code: "function foo() { if (true) return; else return false; }",
             errors: [
                 {
-                    messageId: "unexpectedReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected no return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -81,8 +78,7 @@ ruleTester.run("consistent-return", rule, {
             code: "f(function() { if (true) return true; else return; })",
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Function" },
+                    message: "Function expected a return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -91,8 +87,7 @@ ruleTester.run("consistent-return", rule, {
             code: "f(function() { if (true) return; else return false; })",
             errors: [
                 {
-                    messageId: "unexpectedReturnValue",
-                    data: { name: "Function" },
+                    message: "Function expected no return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -102,8 +97,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "unexpectedReturnValue",
-                    data: { name: "Arrow function" },
+                    message: "Arrow function expected no return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -113,8 +107,7 @@ ruleTester.run("consistent-return", rule, {
             options: [{ treatUndefinedAsUnspecified: true }],
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected a return value.",
                     type: "ReturnStatement",
                     column: 41
                 }
@@ -125,8 +118,7 @@ ruleTester.run("consistent-return", rule, {
             options: [{ treatUndefinedAsUnspecified: true }],
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected a return value.",
                     type: "ReturnStatement",
                     column: 41
                 }
@@ -137,8 +129,7 @@ ruleTester.run("consistent-return", rule, {
             options: [{ treatUndefinedAsUnspecified: true }],
             errors: [
                 {
-                    messageId: "unexpectedReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected no return value.",
                     type: "ReturnStatement",
                     column: 46
                 }
@@ -149,8 +140,7 @@ ruleTester.run("consistent-return", rule, {
             options: [{ treatUndefinedAsUnspecified: true }],
             errors: [
                 {
-                    messageId: "unexpectedReturnValue",
-                    data: { name: "Function 'foo'" },
+                    message: "Function 'foo' expected no return value.",
                     type: "ReturnStatement",
                     column: 43
                 }
@@ -161,8 +151,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaFeatures: { globalReturn: true } },
             errors: [
                 {
-                    messageId: "missingReturnValue",
-                    data: { name: "Program" },
+                    message: "Program expected a return value.",
                     type: "ReturnStatement"
                 }
             ]
@@ -171,8 +160,7 @@ ruleTester.run("consistent-return", rule, {
             code: "function foo() { if (a) return true; }",
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "function 'foo'" },
+                    message: "Expected to return a value at the end of function 'foo'.",
                     type: "FunctionDeclaration",
                     column: 10
                 }
@@ -182,8 +170,7 @@ ruleTester.run("consistent-return", rule, {
             code: "function _foo() { if (a) return true; }",
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "function '_foo'" },
+                    message: "Expected to return a value at the end of function '_foo'.",
                     type: "FunctionDeclaration",
                     column: 10
                 }
@@ -193,8 +180,7 @@ ruleTester.run("consistent-return", rule, {
             code: "f(function foo() { if (a) return true; });",
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "function 'foo'" },
+                    message: "Expected to return a value at the end of function 'foo'.",
                     type: "FunctionExpression",
                     column: 12
                 }
@@ -204,8 +190,7 @@ ruleTester.run("consistent-return", rule, {
             code: "f(function() { if (a) return true; });",
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "function" },
+                    message: "Expected to return a value at the end of function.",
                     type: "FunctionExpression",
                     column: 3
                 }
@@ -216,8 +201,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "arrow function" },
+                    message: "Expected to return a value at the end of arrow function.",
                     type: "ArrowFunctionExpression",
                     column: 6
                 }
@@ -228,8 +212,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "method 'foo'" },
+                    message: "Expected to return a value at the end of method 'foo'.",
                     type: "FunctionExpression",
                     column: 12
                 }
@@ -240,8 +223,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "method 'foo'" },
+                    message: "Expected to return a value at the end of method 'foo'.",
                     type: "FunctionExpression",
                     column: 10
                 }
@@ -252,8 +234,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaFeatures: { globalReturn: true } },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "program" },
+                    message: "Expected to return a value at the end of program.",
                     type: "Program",
                     column: 1
                 }
@@ -264,8 +245,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "method 'CapitalizedFunction'" },
+                    message: "Expected to return a value at the end of method 'CapitalizedFunction'.",
                     type: "FunctionExpression",
                     column: 11
                 }
@@ -276,8 +256,7 @@ ruleTester.run("consistent-return", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [
                 {
-                    messageId: "missingReturn",
-                    data: { name: "method 'constructor'" },
+                    message: "Expected to return a value at the end of method 'constructor'.",
                     type: "FunctionExpression",
                     column: 4
                 }

@@ -39,13 +39,13 @@ This rule has a string option and an object option.
 
 String option:
 
-* `"always"`(default) require an empty line after class members
-* `"never"` disallows an empty line after class members
+* `"always"`(default) require an empty line after after class members
+* `"never"` disallows an empty line after after class members
 
 Object option:
 
-* `"exceptAfterSingleLine": false`(default) **do not** skip checking empty lines after single-line class members
-* `"exceptAfterSingleLine": true` skip checking empty lines after single-line class members
+* `"exceptAfterSingleLine": "false"`(default) **do not** skip checking empty lines after singleline class members
+* `"exceptAfterSingleLine": "true"` skip checking empty lines after singleline class members
 
 Examples of **incorrect** code for this rule with the string option:
 
@@ -102,6 +102,6 @@ If you don't want to enforce empty lines between class members, you can disable 
 ## Related Rules
 
 * [padded-blocks](padded-blocks.md)
-* [padding-line-between-statements](padding-line-between-statements.md)
+* [padding-line-between-statement](padding-line-between-statement.md)
 * [requirePaddingNewLinesAfterBlocks](http://jscs.info/rule/requirePaddingNewLinesAfterBlocks)
 * [disallowPaddingNewLinesAfterBlocks](http://jscs.info/rule/disallowPaddingNewLinesAfterBlocks)

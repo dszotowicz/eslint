@@ -15,4 +15,3 @@
 ```
 
 **Why should this rule be included in ESLint (instead of a plugin)?**
-

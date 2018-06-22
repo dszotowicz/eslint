@@ -54,7 +54,7 @@ function createStubbedConfigWithPlugins(plugins) {
 }
 
 /**
- * Asserts that two configs are equal. This is necessary because assert.deepStrictEqual()
+ * Asserts that two configs are equal. This is necessary because assert.deepEqual()
  * gets confused when properties are in different orders.
  * @param {Object} actual The config object to check.
  * @param {Object} expected What the config object should look like.
@@ -63,32 +63,24 @@ function createStubbedConfigWithPlugins(plugins) {
  */
 function assertConfigsEqual(actual, expected) {
     if (actual.env && expected.env) {
-        assert.deepStrictEqual(actual.env, expected.env);
+        assert.deepEqual(actual.env, expected.env);
     }
 
     if (actual.parserOptions && expected.parserOptions) {
-        assert.deepStrictEqual(actual.parserOptions, expected.parserOptions);
+        assert.deepEqual(actual.parserOptions, expected.parserOptions);
     }
 
     if (actual.globals && expected.globals) {
-        assert.deepStrictEqual(actual.globals, expected.globals);
+        assert.deepEqual(actual.globals, expected.globals);
     }
 
     if (actual.rules && expected.rules) {
-        assert.deepStrictEqual(actual.rules, expected.rules);
+        assert.deepEqual(actual.rules, expected.rules);
     }
 
     if (actual.plugins && expected.plugins) {
-        assert.deepStrictEqual(actual.plugins, expected.plugins);
+        assert.deepEqual(actual.plugins, expected.plugins);
     }
-}
-
-/**
- * Wait for the next tick.
- * @returns {Promise<void>} -
- */
-function nextTick() {
-    return new Promise(resolve => process.nextTick(resolve));
 }
 
 //------------------------------------------------------------------------------
@@ -105,8 +97,12 @@ describe("Config", () => {
      * @returns {string} The path inside the fixture directory.
      * @private
      */
-    function getFixturePath(...args) {
-        return path.join(fixtureDir, "config-hierarchy", ...args);
+    function getFixturePath() {
+        const args = Array.prototype.slice.call(arguments);
+
+        args.unshift("config-hierarchy");
+        args.unshift(fixtureDir);
+        return path.join.apply(path, args);
     }
 
     /**
@@ -158,8 +154,8 @@ describe("Config", () => {
                 configHelper = new Config({ baseConfig: customBaseConfig, format: "foo" }, linter);
 
             // at one point, customBaseConfig.format would end up equal to "foo"...that's bad
-            assert.deepStrictEqual(customBaseConfig, { foo: "bar" });
-            assert.strictEqual(configHelper.options.format, "foo");
+            assert.deepEqual(customBaseConfig, { foo: "bar" });
+            assert.equal(configHelper.options.format, "foo");
         });
 
         it("should create config object when using baseConfig with extends", () => {
@@ -168,12 +164,12 @@ describe("Config", () => {
             };
             const configHelper = new Config({ baseConfig: customBaseConfig }, linter);
 
-            assert.deepStrictEqual(configHelper.baseConfig.env, {
+            assert.deepEqual(configHelper.baseConfig.env, {
                 browser: false,
                 es6: true,
                 node: true
             });
-            assert.deepStrictEqual(configHelper.baseConfig.rules, {
+            assert.deepEqual(configHelper.baseConfig.rules, {
                 "no-empty": 1,
                 "comma-dangle": 2,
                 "no-console": 2
@@ -188,8 +184,14 @@ describe("Config", () => {
          * @returns {string} The path inside the fixture directory.
          * @private
          */
-        function getFakeFixturePath(...args) {
-            return path.join(process.cwd(), "eslint", "fixtures", "config-hierarchy", ...args);
+        function getFakeFixturePath() {
+            const args = Array.prototype.slice.call(arguments);
+
+            args.unshift("config-hierarchy");
+            args.unshift("fixtures");
+            args.unshift("eslint");
+            args.unshift(process.cwd());
+            return path.join.apply(path, args);
         }
 
         before(() => {
@@ -213,7 +215,7 @@ describe("Config", () => {
                     configHelper.findLocalConfigFiles(getFakeFixturePath("broken"))
                 );
 
-            assert.strictEqual(actual[0], expected);
+            assert.equal(actual[0], expected);
         });
 
         it("should return an empty array when an .eslintrc file is not found", () => {
@@ -234,8 +236,8 @@ describe("Config", () => {
                     configHelper.findLocalConfigFiles(getFakeFixturePath("packagejson", "subdir"))
                 );
 
-            assert.strictEqual(actual[0], expected0);
-            assert.strictEqual(actual[1], expected1);
+            assert.equal(actual[0], expected0);
+            assert.equal(actual[1], expected1);
         });
 
         it("should return the only one config file even if there are multiple found", () => {
@@ -247,8 +249,8 @@ describe("Config", () => {
                     configHelper.findLocalConfigFiles(getFakeFixturePath("broken"))
                 );
 
-            assert.strictEqual(actual.length, 1);
-            assert.deepStrictEqual(actual, [expected]);
+            assert.equal(actual.length, 1);
+            assert.equal(actual, expected);
         });
 
         it("should return all possible files when multiple are found", () => {
@@ -264,7 +266,7 @@ describe("Config", () => {
                 );
 
 
-            assert.deepStrictEqual(actual.length, expected.length);
+            assert.deepEqual(actual.length, expected.length);
         });
 
         it("should return an empty array when a package.json file is not found", () => {
@@ -282,7 +284,7 @@ describe("Config", () => {
             const configHelper = new Config({ cwd: process.cwd() }, linter),
                 actual = configHelper.getConfig();
 
-            assert.strictEqual(actual.rules.strict[1], "global");
+            assert.equal(actual.rules.strict[1], "global");
         });
 
         it("should not retain configs from previous directories when called multiple times", () => {
@@ -294,9 +296,9 @@ describe("Config", () => {
             let config;
 
             config = configHelper.getConfig(firstpath);
-            assert.strictEqual(config.rules["no-new"], 0);
+            assert.equal(config.rules["no-new"], 0);
             config = configHelper.getConfig(secondpath);
-            assert.strictEqual(config.rules["no-new"], 1);
+            assert.equal(config.rules["no-new"], 1);
         });
 
         it("should throw an error when an invalid path is given", () => {
@@ -351,7 +353,7 @@ describe("Config", () => {
 
             configHelper.getConfig(configPath);
 
-            assert.strictEqual(configHelper.findLocalConfigFiles.callcount, callcount);
+            assert.equal(configHelper.findLocalConfigFiles.callcount, callcount);
         });
 
         // make sure JS-style comments don't throw an error
@@ -361,8 +363,8 @@ describe("Config", () => {
                 semi = configHelper.specificConfig.rules.semi,
                 strict = configHelper.specificConfig.rules.strict;
 
-            assert.strictEqual(semi, 1);
-            assert.strictEqual(strict, 0);
+            assert.equal(semi, 1);
+            assert.equal(strict, 0);
         });
 
         // make sure YAML files work correctly
@@ -372,8 +374,8 @@ describe("Config", () => {
                 noAlert = configHelper.specificConfig.rules["no-alert"],
                 noUndef = configHelper.specificConfig.rules["no-undef"];
 
-            assert.strictEqual(noAlert, 0);
-            assert.strictEqual(noUndef, 2);
+            assert.equal(noAlert, 0);
+            assert.equal(noUndef, 2);
         });
 
         it("should contain the correct value for parser when a custom parser is specified", () => {
@@ -381,13 +383,12 @@ describe("Config", () => {
                 configHelper = new Config({ cwd: process.cwd() }, linter),
                 config = configHelper.getConfig(configPath);
 
-            assert.strictEqual(config.parser, path.resolve(path.dirname(configPath), "./custom.js"));
+            assert.equal(config.parser, path.resolve(path.dirname(configPath), "./custom.js"));
         });
 
-        /*
-         * Configuration hierarchy ---------------------------------------------
-         * https://github.com/eslint/eslint/issues/3915
-         */
+        // Configuration hierarchy ---------------------------------------------
+
+        // https://github.com/eslint/eslint/issues/3915
         it("should correctly merge environment settings", () => {
             const configHelper = new Config({ useEslintrc: true, cwd: process.cwd() }, linter),
                 file = getFixturePath("envs", "sub", "foo.js"),
@@ -832,8 +833,14 @@ describe("Config", () => {
              * @returns {string} The path inside the fixture directory.
              * @private
              */
-            function getFakeFixturePath(...args) {
-                return path.join(process.cwd(), "eslint", "fixtures", "config-hierarchy", ...args);
+            function getFakeFixturePath() {
+                const args = Array.prototype.slice.call(arguments);
+
+                args.unshift("config-hierarchy");
+                args.unshift("fixtures");
+                args.unshift("eslint");
+                args.unshift(process.cwd());
+                return path.join.apply(path, args);
             }
 
             /**
@@ -878,7 +885,7 @@ describe("Config", () => {
                         }
                     };
 
-                assert.deepStrictEqual(actual, expected);
+                assert.deepEqual(actual, expected);
 
                 // Ensure that the personal config is cached and isn't reloaded on every call
                 assert.strictEqual(config.getPersonalConfig(), config.getPersonalConfig());
@@ -907,7 +914,7 @@ describe("Config", () => {
                         }
                     };
 
-                assert.deepStrictEqual(actual, expected);
+                assert.deepEqual(actual, expected);
             });
 
             it("should ignore the personal config if config is passed through cli", () => {
@@ -934,7 +941,7 @@ describe("Config", () => {
                         }
                     };
 
-                assert.deepStrictEqual(actual, expected);
+                assert.deepEqual(actual, expected);
             });
 
             it("should still load the project config if the current working directory is the same as the home folder", () => {
@@ -960,7 +967,7 @@ describe("Config", () => {
                         }
                     };
 
-                assert.deepStrictEqual(actual, expected);
+                assert.deepEqual(actual, expected);
             });
         });
 
@@ -971,8 +978,14 @@ describe("Config", () => {
              * @returns {string} The path inside the fixture directory.
              * @private
              */
-            function getFakeFixturePath(...args) {
-                return path.join(process.cwd(), "eslint", "fixtures", "config-hierarchy", ...args);
+            function getFakeFixturePath() {
+                const args = Array.prototype.slice.call(arguments);
+
+                args.unshift("config-hierarchy");
+                args.unshift("fixtures");
+                args.unshift("eslint");
+                args.unshift(process.cwd());
+                return path.join.apply(path, args);
             }
 
             /**
@@ -1046,7 +1059,9 @@ describe("Config", () => {
                     useEslintrc: false
                 }, linter);
 
-                config.getConfig(filePath);
+                assert.doesNotThrow(() => {
+                    config.getConfig(filePath);
+                }, "No ESLint configuration found");
             });
 
             it("should not throw an error if no local config and no personal config was found but rules are specified", () => {
@@ -1065,7 +1080,9 @@ describe("Config", () => {
                     rules: { quotes: [2, "single"] }
                 }, linter);
 
-                config.getConfig(filePath);
+                assert.doesNotThrow(() => {
+                    config.getConfig(filePath);
+                }, "No ESLint configuration found");
             });
 
             it("should not throw an error if no local config and no personal config was found but baseConfig is specified", () => {
@@ -1084,9 +1101,12 @@ describe("Config", () => {
                     baseConfig: {}
                 }, linter);
 
-                config.getConfig(filePath);
+                assert.doesNotThrow(() => {
+                    config.getConfig(filePath);
+                }, "No ESLint configuration found");
             });
         });
+
 
         describe("with overrides", () => {
 
@@ -1096,8 +1116,15 @@ describe("Config", () => {
              * @returns {string} The path inside the fixture directory.
              * @private
              */
-            function getFakeFixturePath(...pathSegments) {
-                return path.join(process.cwd(), "eslint", "fixtures", "config-hierarchy", ...pathSegments);
+            function getFakeFixturePath() {
+                const pathSegments = Array.from(arguments);
+
+                pathSegments.unshift("config-hierarchy");
+                pathSegments.unshift("fixtures");
+                pathSegments.unshift("eslint");
+                pathSegments.unshift(process.cwd());
+
+                return path.join.apply(path, pathSegments);
             }
 
             before(() => {
@@ -1359,112 +1386,6 @@ describe("Config", () => {
 
                 assertConfigsEqual(actual, expected);
             });
-        });
-
-        describe("deprecation warnings", () => {
-            let warning = null;
-
-            function onWarning(w) { // eslint-disable-line require-jsdoc
-
-                // Node.js 6.x does not have 'w.code' property.
-                if (!w.hasOwnProperty("code") || typeof w.code === "string" && w.code.startsWith("ESLINT_")) {
-                    warning = w;
-                }
-            }
-
-            beforeEach(() => {
-                warning = null;
-                process.on("warning", onWarning);
-            });
-            afterEach(() => {
-                process.removeListener("warning", onWarning);
-            });
-
-            it("should emit a deprecation warning if 'ecmaFeatures' is given.", () => Promise.resolve()
-                .then(() => {
-                    const cwd = path.resolve(__dirname, "../fixtures/config-file/ecma-features/");
-                    const config = new Config({ cwd }, linter);
-
-                    config.getConfig("test.js");
-
-                    // Wait for "warning" event.
-                    return nextTick();
-                })
-                .then(() => {
-                    assert.notStrictEqual(warning, null);
-                    assert.strictEqual(
-                        warning.message,
-                        `The 'ecmaFeatures' config file property is deprecated, and has no effect. (found in "tests${path.sep}fixtures${path.sep}config-file${path.sep}ecma-features${path.sep}.eslintrc.yml")`
-                    );
-                }));
-
-            it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given.", () => Promise.resolve()
-                .then(() => {
-                    const cwd = path.resolve(__dirname, "../fixtures/config-file/experimental-object-rest-spread/basic/");
-                    const config = new Config({ cwd }, linter);
-
-                    config.getConfig("test.js");
-
-                    // Wait for "warning" event.
-                    return nextTick();
-                })
-                .then(() => {
-                    assert.notStrictEqual(warning, null);
-                    assert.strictEqual(
-                        warning.message,
-                        `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "tests${path.sep}fixtures${path.sep}config-file${path.sep}experimental-object-rest-spread${path.sep}basic${path.sep}.eslintrc.yml")`
-                    );
-                }));
-
-            it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given in a parent config.", () => Promise.resolve()
-                .then(() => {
-                    const cwd = path.resolve(__dirname, "../fixtures/config-file/experimental-object-rest-spread/subdir/");
-                    const config = new Config({ cwd }, linter);
-
-                    config.getConfig("lib/test.js");
-
-                    // Wait for "warning" event.
-                    return nextTick();
-                })
-                .then(() => {
-                    assert.notStrictEqual(warning, null);
-                    assert.strictEqual(
-                        warning.message,
-                        `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "tests${path.sep}fixtures${path.sep}config-file${path.sep}experimental-object-rest-spread${path.sep}subdir${path.sep}.eslintrc.yml")`
-                    );
-                }));
-
-            it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given in a shareable config.", () => Promise.resolve()
-                .then(() => {
-                    const cwd = path.resolve(__dirname, "../fixtures/config-file/experimental-object-rest-spread/extends/");
-                    const config = new Config({ cwd }, linter);
-
-                    config.getConfig("test.js");
-
-                    // Wait for "warning" event.
-                    return nextTick();
-                })
-                .then(() => {
-                    assert.notStrictEqual(warning, null);
-                    assert.strictEqual(
-                        warning.message,
-                        `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "tests${path.sep}fixtures${path.sep}config-file${path.sep}experimental-object-rest-spread${path.sep}extends${path.sep}common.yml")`
-                    );
-                }));
-
-            it("should NOT emit a deprecation warning even if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given, if parser is not espree.", () => Promise.resolve()
-                .then(() => {
-                    const cwd = path.resolve(__dirname, "../fixtures/config-file/experimental-object-rest-spread/another-parser/");
-                    const config = new Config({ cwd }, linter);
-
-                    config.getConfig("test.js");
-
-                    // Wait for "warning" event.
-                    return nextTick();
-                })
-                .then(() => {
-                    assert.strictEqual(warning, null);
-                }));
         });
     });
 

@@ -69,27 +69,9 @@ ruleTester.run("prefer-const", rule, {
         "/*exported a*/ let a; function init() { a = foo(); }",
         "/*exported a*/ let a = 1",
         "let a; if (true) a = 0; foo(a);",
-        `
-        (function (a) {
-            let b;
-            ({ a, b } = obj);
-        })();
-        `,
-        `
-        (function (a) {
-            let b;
-            ([ a, b ] = obj);
-        })();
-        `,
-        "var a; { var b; ({ a, b } = obj); }",
-        "let a; { let b; ({ a, b } = obj); }",
-        "var a; { var b; ([ a, b ] = obj); }",
-        "let a; { let b; ([ a, b ] = obj); }",
 
-        /*
-         * The assignment is located in a different scope.
-         * Those are warned by prefer-smaller-scope.
-         */
+        // The assignment is located in a different scope.
+        // Those are warned by prefer-smaller-scope.
         "let x; { x = 0; foo(x); }",
         "(function() { let x; { x = 0; foo(x); } })();",
         "let x; for (const a of [1,2,3]) { x = foo(); bar(x); }",
@@ -109,7 +91,7 @@ ruleTester.run("prefer-const", rule, {
         {
             code: "let { name, ...otherStuff } = obj; otherStuff = {};",
             options: [{ destructuring: "all" }],
-            parserOptions: { ecmaVersion: 2018 }
+            parserOptions: { ecmaFeatures: { experimentalObjectRestSpread: true } }
         },
         {
             code: "let { name, ...otherStuff } = obj; otherStuff = {};",
@@ -324,7 +306,7 @@ ruleTester.run("prefer-const", rule, {
             code: "let { name, ...otherStuff } = obj; otherStuff = {};",
             output: null,
             options: [{ destructuring: "any" }],
-            parserOptions: { ecmaVersion: 2018 },
+            parserOptions: { ecmaFeatures: { experimentalObjectRestSpread: true } },
             errors: [{ message: "'name' is never reassigned. Use 'const' instead.", type: "Identifier", column: 7 }]
         },
         {

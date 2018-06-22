@@ -52,50 +52,43 @@ ruleTester.run("no-extend-native", rule, {
     invalid: [{
         code: "Object.prototype.p = 0",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Object" },
+            message: "Object prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     }, {
         code: "Function.prototype['p'] = 0",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Function" },
+            message: "Function prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     }, {
         code: "String['prototype'].p = 0",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "String" },
+            message: "String prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     }, {
         code: "Number['prototype']['p'] = 0",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Number" },
+            message: "Number prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     }, {
         code: "Object.defineProperty(Array.prototype, 'p', {value: 0})",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Array" },
+            message: "Array prototype is read only, properties should not be added.",
             type: "CallExpression"
         }]
     }, {
         code: "Object.defineProperties(Array.prototype, {p: {value: 0}})",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Array" },
+            message: "Array prototype is read only, properties should not be added.",
             type: "CallExpression"
         }]
     }, {
         code: "Object.defineProperties(Array.prototype, {p: {value: 0}, q: {value: 0}})",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Array" },
+            message: "Array prototype is read only, properties should not be added.",
             type: "CallExpression"
         }]
     },
@@ -103,21 +96,18 @@ ruleTester.run("no-extend-native", rule, {
         code: "Number['prototype']['p'] = 0",
         options: [{ exceptions: ["Object"] }],
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Number" },
+            message: "Number prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     },
     {
         code: "Object.prototype.p = 0; Object.prototype.q = 0",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Object" },
+            message: "Object prototype is read only, properties should not be added.",
             type: "AssignmentExpression",
             column: 1
         }, {
-            messageId: "unexpected",
-            data: { builtin: "Object" },
+            message: "Object prototype is read only, properties should not be added.",
             type: "AssignmentExpression",
             column: 25
         }]
@@ -125,8 +115,7 @@ ruleTester.run("no-extend-native", rule, {
     {
         code: "function foo() { Object.prototype.p = 0 }",
         errors: [{
-            messageId: "unexpected",
-            data: { builtin: "Object" },
+            message: "Object prototype is read only, properties should not be added.",
             type: "AssignmentExpression"
         }]
     }]

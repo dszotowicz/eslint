@@ -535,35 +535,6 @@ ruleTester.run("padding-line-between-statements", rule, {
         },
 
         //----------------------------------------------------------------------
-        // multiline-expression
-        //----------------------------------------------------------------------
-
-        {
-            code: "foo()\n\nfoo(\n\tx,\n\ty\n)",
-            options: [
-                { blankLine: "always", prev: "*", next: "multiline-expression" }
-            ]
-        },
-        {
-            code: "foo()\nfoo()",
-            options: [
-                { blankLine: "always", prev: "*", next: "multiline-expression" }
-            ]
-        },
-        {
-            code: "() => {\n\tsomeArray.forEach(x => doSomething(x));\n\treturn theThing;\n}",
-            options: [
-                { blankLine: "always", prev: "multiline-expression", next: "return" }
-            ]
-        },
-        {
-            code: "() => {\n\tsomeArray.forEach(\n\t\tx => doSomething(x)\n\t);\n\n\treturn theThing;\n}",
-            options: [
-                { blankLine: "always", prev: "multiline-expression", next: "return" }
-            ]
-        },
-
-        //----------------------------------------------------------------------
         // break
         //----------------------------------------------------------------------
 
@@ -2158,8 +2129,7 @@ ruleTester.run("padding-line-between-statements", rule, {
             ]
         },
 
-        /*
-         * TODO: May it need an option to ignore blank lines followed by comments?
+        /* TODO: May it need an option to ignore blank lines followed by comments?
          * {
          *     code: "var a = 2;\n\n// foo\nmodule.exports = a;",
          *     options: [
@@ -2968,35 +2938,6 @@ ruleTester.run("padding-line-between-statements", rule, {
             output: "foo()\n\nfoo()",
             options: [
                 { blankLine: "always", prev: "expression", next: "*" }
-            ],
-            errors: [MESSAGE_ALWAYS]
-        },
-
-        //----------------------------------------------------------------------
-        // multiline-expression
-        //----------------------------------------------------------------------
-
-        {
-            code: "foo()\n\nfoo(\n\tx,\n\ty\n)",
-            output: "foo()\nfoo(\n\tx,\n\ty\n)",
-            options: [
-                { blankLine: "never", prev: "*", next: "multiline-expression" }
-            ],
-            errors: [MESSAGE_NEVER]
-        },
-        {
-            code: "foo()\nfoo(\n\tx,\n\ty\n)",
-            output: "foo()\n\nfoo(\n\tx,\n\ty\n)",
-            options: [
-                { blankLine: "always", prev: "*", next: "multiline-expression" }
-            ],
-            errors: [MESSAGE_ALWAYS]
-        },
-        {
-            code: "() => {\n\tsomeArray.forEach(\n\t\tx => doSomething(x)\n\t);\n\treturn theThing;\n}",
-            output: "() => {\n\tsomeArray.forEach(\n\t\tx => doSomething(x)\n\t);\n\n\treturn theThing;\n}",
-            options: [
-                { blankLine: "always", prev: "multiline-expression", next: "return" }
             ],
             errors: [MESSAGE_ALWAYS]
         },

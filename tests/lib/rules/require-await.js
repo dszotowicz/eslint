@@ -18,7 +18,7 @@ const rule = require("../../../lib/rules/require-await"),
 
 const ruleTester = new RuleTester({
     parserOptions: {
-        ecmaVersion: 2018
+        ecmaVersion: 2017
     }
 });
 
@@ -38,10 +38,7 @@ ruleTester.run("require-await", rule, {
         "async () => {}",
 
         // normal functions are ok.
-        "function foo() { doSomething() }",
-
-        // for-await-of
-        "async function foo() { for await (x of xs); }"
+        "function foo() { doSomething() }"
     ],
     invalid: [
         {

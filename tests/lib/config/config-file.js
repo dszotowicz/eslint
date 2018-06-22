@@ -8,8 +8,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const Module = require("module"),
-    assert = require("chai").assert,
+const assert = require("chai").assert,
     leche = require("leche"),
     sinon = require("sinon"),
     path = require("path"),
@@ -128,29 +127,6 @@ function createStubModuleResolver(mapping) {
     };
 }
 
-/**
- * Overrides the native module resolver to resolve with the given mappings.
- * @param {Object<string,string>} mapping A mapping of module name to path.
- * @returns {void}
- * @private
- */
-function overrideNativeResolve(mapping) {
-    let originalFindPath;
-
-    beforeEach(() => {
-        originalFindPath = Module._findPath; // eslint-disable-line no-underscore-dangle
-        Module._findPath = function(request, paths, isMain) { // eslint-disable-line no-underscore-dangle
-            if (mapping.hasOwnProperty(request)) {
-                return mapping[request];
-            }
-            return originalFindPath.call(this, request, paths, isMain);
-        };
-    });
-    afterEach(() => {
-        Module._findPath = originalFindPath; // eslint-disable-line no-underscore-dangle
-    });
-}
-
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
@@ -168,10 +144,6 @@ describe("ConfigFile", () => {
     });
 
     describe("applyExtends()", () => {
-
-        overrideNativeResolve({
-            "eslint-plugin-test": getProjectModulePath("eslint-plugin-test")
-        });
 
         it("should apply extension 'foo' when specified from root directory config", () => {
 
@@ -197,7 +169,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, "/whatever");
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(resolvedPath),
                 filePath: resolvedPath,
                 extends: "foo",
@@ -219,8 +191,8 @@ describe("ConfigFile", () => {
                 extends: "eslint:all"
             }, configContext, "/whatever");
 
-            assert.strictEqual(config.rules.eqeqeq, "error");
-            assert.strictEqual(config.rules.curly, "error");
+            assert.equal(config.rules.eqeqeq, "error");
+            assert.equal(config.rules.curly, "error");
 
         });
 
@@ -354,7 +326,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, "/whatever");
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(resolvedPaths[0]),
                 filePath: resolvedPaths[0],
                 extends: "foo",
@@ -379,7 +351,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, filePath);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(filePath),
                 filePath: path.join(path.dirname(filePath), extendsFile),
                 extends: extendsFile,
@@ -404,7 +376,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, filePath);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(filePath),
                 filePath: path.join(path.dirname(filePath), extendsFile),
                 extends: extendsFile,
@@ -428,7 +400,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, filePath);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(filePath),
                 filePath: path.join(path.dirname(filePath), extendsFile),
                 extends: extendsFile,
@@ -453,7 +425,7 @@ describe("ConfigFile", () => {
                 rules: { eqeqeq: 2 }
             }, configContext, filePath);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(path.resolve(path.dirname(filePath), extendsFile)),
                 filePath: path.resolve(path.dirname(filePath), extendsFile),
                 extends: extendsFile,
@@ -485,7 +457,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("legacy/.eslintrc");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -501,7 +473,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("js/.eslintrc.js");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -523,7 +495,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("js/.eslintrc.parser.js");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parser: path.resolve(getFixturePath("js/node_modules/foo/index.js")),
@@ -540,7 +512,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("js/.eslintrc.parser2.js");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parser: path.resolve(getFixturePath("js/not-a-config.js")),
@@ -557,7 +529,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("js/.eslintrc.parser3.js");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parser: require.resolve("espree"),
@@ -574,7 +546,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("json/.eslintrc.json");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -607,14 +579,14 @@ describe("ConfigFile", () => {
                 tmpFilePath = writeTempConfigFile(initialConfig, tmpFilename);
             let config = ConfigFile.load(tmpFilePath, configContext);
 
-            assert.deepStrictEqual(config, Object.assign({}, initialConfig, {
+            assert.deepEqual(config, Object.assign({}, initialConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
             writeTempConfigFile(updatedConfig, tmpFilename, path.dirname(tmpFilePath));
             configContext = new Config({}, new Linter());
             config = ConfigFile.load(tmpFilePath, configContext);
-            assert.deepStrictEqual(config, Object.assign({}, updatedConfig, {
+            assert.deepEqual(config, Object.assign({}, updatedConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
@@ -624,7 +596,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("package-json/package.json");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -636,12 +608,7 @@ describe("ConfigFile", () => {
 
         it("should throw error when loading invalid package.json file", () => {
             assert.throws(() => {
-                try {
-                    ConfigFile.load(getFixturePath("broken-package-json/package.json"), configContext);
-                } catch (error) {
-                    assert.strictEqual(error.messageTemplate, "failed-to-read-json");
-                    throw error;
-                }
+                ConfigFile.load(getFixturePath("broken-package-json/package.json"), configContext);
             }, /Cannot read config file/);
         });
 
@@ -670,14 +637,14 @@ describe("ConfigFile", () => {
                 tmpFilePath = writeTempConfigFile(initialConfig, tmpFilename);
             let config = ConfigFile.load(tmpFilePath, configContext);
 
-            assert.deepStrictEqual(config, Object.assign({}, initialConfig.eslintConfig, {
+            assert.deepEqual(config, Object.assign({}, initialConfig.eslintConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
             writeTempConfigFile(updatedConfig, tmpFilename, path.dirname(tmpFilePath));
             configContext = new Config({}, new Linter());
             config = ConfigFile.load(tmpFilePath, configContext);
-            assert.deepStrictEqual(config, Object.assign({}, updatedConfig.eslintConfig, {
+            assert.deepEqual(config, Object.assign({}, updatedConfig.eslintConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
@@ -704,14 +671,14 @@ describe("ConfigFile", () => {
                 tmpFilePath = writeTempJsConfigFile(initialConfig, tmpFilename);
             let config = ConfigFile.load(tmpFilePath, configContext);
 
-            assert.deepStrictEqual(config, Object.assign({}, initialConfig, {
+            assert.deepEqual(config, Object.assign({}, initialConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
             writeTempJsConfigFile(updatedConfig, tmpFilename, path.dirname(tmpFilePath));
             configContext = new Config({}, new Linter());
             config = ConfigFile.load(tmpFilePath, configContext);
-            assert.deepStrictEqual(config, Object.assign({}, updatedConfig, {
+            assert.deepEqual(config, Object.assign({}, updatedConfig, {
                 baseDirectory: path.dirname(tmpFilePath),
                 filePath: tmpFilePath
             }));
@@ -721,7 +688,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("yaml/.eslintrc.yaml");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -735,7 +702,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("yaml/.eslintrc.empty.yaml");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -749,7 +716,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("yml/.eslintrc.yml");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 parserOptions: {},
@@ -763,7 +730,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("extends/.eslintrc.yml");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 env: { es6: true },
@@ -778,7 +745,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("extends-chain/.eslintrc.json");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 env: {},
@@ -797,7 +764,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("extends-chain-2/.eslintrc.json");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 env: {},
@@ -815,7 +782,7 @@ describe("ConfigFile", () => {
             const configFilePath = getFixturePath("extends-chain-2/relative.eslintrc.json");
             const config = ConfigFile.load(configFilePath, configContext);
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 env: {},
@@ -834,7 +801,7 @@ describe("ConfigFile", () => {
             const config = ConfigFile.load(configFilePath, configContext);
             const parserPath = getFixturePath("extends-chain-2/parser.js");
 
-            assert.deepStrictEqual(config, {
+            assert.deepEqual(config, {
                 baseDirectory: path.dirname(configFilePath),
                 filePath: configFilePath,
                 env: {},
@@ -864,7 +831,7 @@ describe("ConfigFile", () => {
                 const configFilePath = path.join(fixturePath, "relative.eslintrc.json");
                 const config = ConfigFile.load(configFilePath, configContext);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     env: {},
@@ -883,7 +850,7 @@ describe("ConfigFile", () => {
                 const config = ConfigFile.load(configFilePath, configContext);
                 const parserPath = path.join(fixturePath, "parser.js");
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     env: {},
@@ -896,10 +863,6 @@ describe("ConfigFile", () => {
         });
 
         describe("Plugins", () => {
-
-            overrideNativeResolve({
-                "eslint-plugin-test": getProjectModulePath("eslint-plugin-test")
-            });
 
             it("should load information from a YML file and load plugins", () => {
 
@@ -914,7 +877,7 @@ describe("ConfigFile", () => {
                 const configFilePath = getFixturePath("plugins/.eslintrc.yml");
                 const config = ConfigFile.load(configFilePath, stubConfig);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     parserOptions: {},
@@ -932,6 +895,9 @@ describe("ConfigFile", () => {
                 const resolvedPath = path.resolve(PROJECT_PATH, "./node_modules/eslint-plugin-test/index.js");
 
                 const configDeps = {
+                    "../util/module-resolver": createStubModuleResolver({
+                        "eslint-plugin-test": resolvedPath
+                    }),
                     "require-uncached"(filename) {
                         return configDeps[filename];
                     }
@@ -949,7 +915,7 @@ describe("ConfigFile", () => {
                 const configFilePath = getFixturePath("plugins/.eslintrc2.yml");
                 const config = StubbedConfigFile.load(configFilePath, stubConfig);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     parserOptions: {},
@@ -973,7 +939,7 @@ describe("ConfigFile", () => {
                 const configFilePath = getFixturePath("bom/.eslintrc.json");
                 const config = ConfigFile.load(configFilePath, configContext);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     env: {},
@@ -989,7 +955,7 @@ describe("ConfigFile", () => {
                 const configFilePath = getFixturePath("bom/.eslintrc.yaml");
                 const config = ConfigFile.load(configFilePath, configContext);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     env: {},
@@ -1005,7 +971,7 @@ describe("ConfigFile", () => {
                 const configFilePath = getFixturePath("bom/package.json");
                 const config = ConfigFile.load(configFilePath, configContext);
 
-                assert.deepStrictEqual(config, {
+                assert.deepEqual(config, {
                     baseDirectory: path.dirname(configFilePath),
                     filePath: configFilePath,
                     env: {},
@@ -1034,9 +1000,6 @@ describe("ConfigFile", () => {
     describe("resolve()", () => {
 
         describe("Relative to CWD", () => {
-            overrideNativeResolve({
-                "eslint-plugin-foo": getProjectModulePath("eslint-plugin-foo")
-            });
 
             leche.withData([
                 [".eslintrc", path.resolve(".eslintrc")],
@@ -1063,7 +1026,7 @@ describe("ConfigFile", () => {
 
                     const result = StubbedConfigFile.resolve(input);
 
-                    assert.strictEqual(result.filePath, expected);
+                    assert.equal(result.filePath, expected);
                 });
             });
         });
@@ -1072,10 +1035,6 @@ describe("ConfigFile", () => {
 
             const relativePath = path.resolve("./foo/bar");
 
-            overrideNativeResolve({
-                "@foo/eslint-plugin-bar": getProjectModulePath("@foo/eslint-plugin-bar")
-            });
-
             leche.withData([
                 [".eslintrc", path.resolve("./foo/bar", ".eslintrc"), relativePath],
                 ["eslint-config-foo", getRelativeModulePath("eslint-config-foo", relativePath), relativePath],
@@ -1083,7 +1042,7 @@ describe("ConfigFile", () => {
                 ["eslint-configfoo", getRelativeModulePath("eslint-config-eslint-configfoo", relativePath), relativePath],
                 ["@foo/eslint-config", getRelativeModulePath("@foo/eslint-config", relativePath), relativePath],
                 ["@foo/bar", getRelativeModulePath("@foo/eslint-config-bar", relativePath), relativePath],
-                ["plugin:@foo/bar/baz", getProjectModulePath("@foo/eslint-plugin-bar"), relativePath]
+                ["plugin:@foo/bar/baz", getRelativeModulePath("@foo/eslint-plugin-bar", relativePath), relativePath]
             ], (input, expected, relativeTo) => {
                 it(`should return ${expected} when passed ${input}`, () => {
 
@@ -1091,7 +1050,9 @@ describe("ConfigFile", () => {
                         "eslint-config-foo": getRelativeModulePath("eslint-config-foo", relativePath),
                         "eslint-config-eslint-configfoo": getRelativeModulePath("eslint-config-eslint-configfoo", relativePath),
                         "@foo/eslint-config": getRelativeModulePath("@foo/eslint-config", relativePath),
-                        "@foo/eslint-config-bar": getRelativeModulePath("@foo/eslint-config-bar", relativePath)
+                        "@foo/eslint-config-bar": getRelativeModulePath("@foo/eslint-config-bar", relativePath),
+                        "eslint-plugin-foo": getRelativeModulePath("eslint-plugin-foo", relativePath),
+                        "@foo/eslint-plugin-bar": getRelativeModulePath("@foo/eslint-plugin-bar", relativePath)
                     };
 
                     const StubbedConfigFile = proxyquire("../../../lib/config/config-file", {
@@ -1100,7 +1061,7 @@ describe("ConfigFile", () => {
 
                     const result = StubbedConfigFile.resolve(input, relativeTo);
 
-                    assert.strictEqual(result.filePath, expected);
+                    assert.equal(result.filePath, expected);
                 });
             });
 
@@ -1122,7 +1083,7 @@ describe("ConfigFile", () => {
 
                     const result = StubbedConfigFile.resolve(input, relativeTo);
 
-                    assert.strictEqual(result.filePath, expected);
+                    assert.equal(result.filePath, expected);
                 });
             });
 
@@ -1138,27 +1099,27 @@ describe("ConfigFile", () => {
             it("should return project path when config file is in home directory", () => {
                 const result = ConfigFile.getBaseDir(userHome);
 
-                assert.strictEqual(result, PROJECT_PATH);
+                assert.equal(result, PROJECT_PATH);
             });
         }
 
         it("should return project path when config file is in an ancestor directory of the project path", () => {
             const result = ConfigFile.getBaseDir(path.resolve(PROJECT_PATH, "../../"));
 
-            assert.strictEqual(result, PROJECT_PATH);
+            assert.equal(result, PROJECT_PATH);
         });
 
         it("should return config file path when config file is in a descendant directory of the project path", () => {
             const configFilePath = path.resolve(PROJECT_PATH, "./foo/bar/"),
                 result = ConfigFile.getBaseDir(path.resolve(PROJECT_PATH, "./foo/bar/"));
 
-            assert.strictEqual(result, configFilePath);
+            assert.equal(result, configFilePath);
         });
 
         it("should return project path when config file is not an ancestor or descendant of the project path", () => {
             const result = ConfigFile.getBaseDir(path.resolve("/tmp/foo"));
 
-            assert.strictEqual(result, PROJECT_PATH);
+            assert.equal(result, PROJECT_PATH);
         });
 
     });
@@ -1171,27 +1132,27 @@ describe("ConfigFile", () => {
             it("should return project path when config file is in home directory", () => {
                 const result = ConfigFile.getLookupPath(userHome);
 
-                assert.strictEqual(result, PROJECT_DEPS_PATH);
+                assert.equal(result, PROJECT_DEPS_PATH);
             });
         }
 
         it("should return project path when config file is in an ancestor directory of the project path", () => {
             const result = ConfigFile.getLookupPath(path.resolve(PROJECT_DEPS_PATH, "../../"));
 
-            assert.strictEqual(result, PROJECT_DEPS_PATH);
+            assert.equal(result, PROJECT_DEPS_PATH);
         });
 
         it("should return config file path when config file is in a descendant directory of the project path", () => {
             const configFilePath = path.resolve(PROJECT_DEPS_PATH, "./foo/bar/node_modules"),
                 result = ConfigFile.getLookupPath(path.resolve(PROJECT_DEPS_PATH, "./foo/bar/"));
 
-            assert.strictEqual(result, configFilePath);
+            assert.equal(result, configFilePath);
         });
 
         it("should return project path when config file is not an ancestor or descendant of the project path", () => {
             const result = ConfigFile.getLookupPath(path.resolve("/tmp/foo"));
 
-            assert.strictEqual(result, PROJECT_DEPS_PATH);
+            assert.equal(result, PROJECT_DEPS_PATH);
         });
 
     });
@@ -1208,7 +1169,27 @@ describe("ConfigFile", () => {
             it(`should return ${expected} when passed ${input}`, () => {
                 const result = ConfigFile.getFilenameForDirectory(input);
 
-                assert.strictEqual(result, path.resolve(input, expected));
+                assert.equal(result, path.resolve(input, expected));
+            });
+        });
+
+    });
+
+    describe("normalizePackageName()", () => {
+
+        leche.withData([
+            ["foo", "eslint-config-foo"],
+            ["eslint-config-foo", "eslint-config-foo"],
+            ["@z/foo", "@z/eslint-config-foo"],
+            ["@z\\foo", "@z/eslint-config-foo"],
+            ["@z\\foo\\bar.js", "@z/eslint-config-foo/bar.js"],
+            ["@z/eslint-config", "@z/eslint-config"],
+            ["@z/eslint-config-foo", "@z/eslint-config-foo"]
+        ], (input, expected) => {
+            it(`should return ${expected} when passed ${input}`, () => {
+                const result = ConfigFile.normalizePackageName(input, "eslint-config");
+
+                assert.equal(result, expected);
             });
         });
 

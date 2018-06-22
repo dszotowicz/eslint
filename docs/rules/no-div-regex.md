@@ -1,4 +1,4 @@
-# Disallow Regular Expressions That Look Like Division (no-div-regex)
+# Disallow Regexs That Look Like Division (no-div-regex)
 
 Require regex literals to escape division operators.
 

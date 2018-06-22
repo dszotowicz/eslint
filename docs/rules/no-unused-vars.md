@@ -150,7 +150,7 @@ console.log(secondVar);
 
 The `args` option has three settings:
 
-* `after-used` - unused positional arguments that occur before the last used argument will not be checked, but all named arguments and all positional arguments after the last used argument will be checked.
+* `after-used` - only the last argument must be used. This allows you, for instance, to have two named parameters to a function and as long as you use the second argument, ESLint will not warn you about the first. This is the default setting.
 * `all` - all named arguments must be used.
 * `none` - do not check arguments.
 
@@ -161,10 +161,9 @@ Examples of **incorrect** code for the default `{ "args": "after-used" }` option
 ```js
 /*eslint no-unused-vars: ["error", { "args": "after-used" }]*/
 
-// 2 errors, for the parameters after the last used parameter (bar)
+// 1 error
 // "baz" is defined but never used
-// "qux" is defined but never used
-(function(foo, bar, baz, qux) {
+(function(foo, bar, baz) {
     return bar;
 })();
 ```
@@ -174,8 +173,8 @@ Examples of **correct** code for the default `{ "args": "after-used" }` option:
 ```js
 /*eslint no-unused-vars: ["error", {"args": "after-used"}]*/
 
-(function(foo, bar, baz, qux) {
-    return qux;
+(function(foo, bar, baz) {
+    return baz;
 })();
 ```
 
@@ -208,7 +207,7 @@ Examples of **correct** code for the `{ "args": "none" }` option:
 
 ### ignoreRestSiblings
 
-The `ignoreRestSiblings` option is a boolean (default: `false`). Using a [Rest Property](https://github.com/tc39/proposal-object-rest-spread) it is possible to "omit" properties from an object, but by default the sibling properties are marked as "unused". With this option enabled the rest property's siblings are ignored.
+The `ignoreRestSiblings` option is a boolean (default: `false`). Using a [Rest Property](https://github.com/sebmarkbage/ecmascript-rest-spread) it is possible to "omit" properties from an object, but by default the sibling properties are marked as "unused". With this option enabled the rest property's siblings are ignored.
 
 Examples of **correct** code for the `{ "ignoreRestSiblings": true }` option:
 

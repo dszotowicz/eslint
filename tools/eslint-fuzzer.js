@@ -110,7 +110,7 @@ function fuzz(options) {
         const text = codeGenerator({ sourceType });
         const config = {
             rules: lodash.mapValues(ruleConfigs, lodash.sample),
-            parserOptions: { sourceType, ecmaVersion: 2018 }
+            parserOptions: { sourceType, ecmaVersion: 2017 }
         };
 
         let autofixResult;

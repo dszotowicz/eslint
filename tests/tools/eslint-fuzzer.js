@@ -55,7 +55,7 @@ describe("eslint-fuzzer", function() {
                 assert.strictEqual(results.length, 1);
                 assert.strictEqual(results[0].type, "crash");
                 assert.strictEqual(results[0].text, "foo");
-                assert.deepStrictEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
+                assert.deepEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
                 assert.strictEqual(results[0].error, CRASH_BUG.stack);
             });
         });
@@ -64,7 +64,7 @@ describe("eslint-fuzzer", function() {
             it("should return an empty array", () => {
                 fakeRule = () => ({});
 
-                assert.deepStrictEqual(fuzz({ count: 1, codeGenerator: () => "foo", checkAutofixes: false, linter }), []);
+                assert.deepEqual(fuzz({ count: 1, codeGenerator: () => "foo", checkAutofixes: false, linter }), []);
             });
         });
     });
@@ -92,7 +92,7 @@ describe("eslint-fuzzer", function() {
                 assert.strictEqual(results.length, 1);
                 assert.strictEqual(results[0].type, "crash");
                 assert.strictEqual(results[0].text, "foo");
-                assert.deepStrictEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
+                assert.deepEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
                 assert.strictEqual(results[0].error, CRASH_BUG.stack);
             });
         });
@@ -125,7 +125,7 @@ describe("eslint-fuzzer", function() {
                     linter
                 });
 
-                assert.deepStrictEqual(results, []);
+                assert.deepEqual(results, []);
             });
         });
 
@@ -157,11 +157,12 @@ describe("eslint-fuzzer", function() {
                 assert.strictEqual(results.length, 1);
                 assert.strictEqual(results[0].type, "autofix");
                 assert.strictEqual(results[0].text, `foo ${disableFixableRulesComment}`);
-                assert.deepStrictEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
-                assert.deepStrictEqual(results[0].error, {
+                assert.deepEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
+                assert.deepEqual(results[0].error, {
                     ruleId: null,
                     fatal: true,
                     severity: 2,
+                    source: INVALID_SYNTAX,
                     message: `Parsing error: ${expectedSyntaxError.message}`,
                     line: expectedSyntaxError.lineNumber,
                     column: expectedSyntaxError.column
@@ -203,11 +204,12 @@ describe("eslint-fuzzer", function() {
                 assert.strictEqual(results.length, 1);
                 assert.strictEqual(results[0].type, "autofix");
                 assert.strictEqual(results[0].text, intermediateCode);
-                assert.deepStrictEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
-                assert.deepStrictEqual(results[0].error, {
+                assert.deepEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
+                assert.deepEqual(results[0].error, {
                     ruleId: null,
                     fatal: true,
                     severity: 2,
+                    source: INVALID_SYNTAX,
                     message: `Parsing error: ${expectedSyntaxError.message}`,
                     line: expectedSyntaxError.lineNumber,
                     column: expectedSyntaxError.column
@@ -247,7 +249,7 @@ describe("eslint-fuzzer", function() {
 
                 // TODO: (not-an-aardvark) It might be more useful to output the intermediate code here.
                 assert.strictEqual(results[0].text, `foo ${disableFixableRulesComment}`);
-                assert.deepStrictEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
+                assert.deepEqual(results[0].config.rules, { "test-fuzzer-rule": 2 });
                 assert.strictEqual(results[0].error, CRASH_BUG.stack);
             });
         });

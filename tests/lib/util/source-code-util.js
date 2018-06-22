@@ -35,8 +35,11 @@ describe("SourceCodeUtil", () => {
      * @returns {string} The path inside the fixture directory.
      * @private
      */
-    function getFixturePath(...args) {
-        let filepath = path.join(fixtureDir, ...args);
+    function getFixturePath() {
+        const args = Array.prototype.slice.call(arguments);
+
+        args.unshift(fixtureDir);
+        let filepath = path.join.apply(path, args);
 
         try {
             filepath = fs.realpathSync(filepath);
@@ -134,7 +137,7 @@ describe("SourceCodeUtil", () => {
             process.chdir(fixtureDir);
             getSourceCodeOfFiles(filename, spy);
             process.chdir(originalDir);
-            assert.strictEqual(spy.firstCall.args[0], 1);
+            assert.equal(spy.firstCall.args[0], 1);
         });
 
         it("should use default options if none are provided", () => {
@@ -143,7 +146,7 @@ describe("SourceCodeUtil", () => {
 
             getSourceCodeOfFiles(filename);
             assert(spy.called);
-            assert.deepStrictEqual(spy.firstCall.args[1].extensions, [".js"]);
+            assert.deepEqual(spy.firstCall.args[1].extensions, [".js"]);
         });
 
         it("should create an object with located filenames as keys", () => {
@@ -155,12 +158,11 @@ describe("SourceCodeUtil", () => {
             assert.property(sourceCode, barFilename);
         });
 
-        it("should should not include non-existent filenames in results", () => {
+        it("should should not include non-existent filesnames in results", () => {
             const filename = getFixturePath("missing.js");
+            const sourceCode = getSourceCodeOfFiles(filename, { cwd: fixtureDir });
 
-            assert.throws(() => {
-                getSourceCodeOfFiles(filename, { cwd: fixtureDir });
-            }, `No files matching '${filename}' were found.`);
+            assert.notProperty(sourceCode, filename);
         });
 
         it("should throw for files with parsing errors", () => {
@@ -212,7 +214,7 @@ describe("SourceCodeUtil", () => {
             const barFile = getFixturePath("nested/bar.js");
             const sourceCode = getSourceCodeOfFiles(folder, { cwd: fixtureDir });
 
-            assert.strictEqual(Object.keys(sourceCode).length, 2);
+            assert.equal(Object.keys(sourceCode).length, 2);
             assert.instanceOf(sourceCode[fooFile], SourceCode);
             assert.instanceOf(sourceCode[barFile], SourceCode);
         });
@@ -223,7 +225,7 @@ describe("SourceCodeUtil", () => {
             const cliOptions = { extensions: [".abc"], cwd: fixtureDir };
             const sourceCode = getSourceCodeOfFiles(pattern, cliOptions);
 
-            assert.strictEqual(Object.keys(sourceCode).length, 1);
+            assert.equal(Object.keys(sourceCode).length, 1);
             assert.instanceOf(sourceCode[abcFile], SourceCode);
         });
 
@@ -241,7 +243,7 @@ describe("SourceCodeUtil", () => {
             const barFilename = getFixturePath("bar.js");
 
             getSourceCodeOfFiles([fooFilename, barFilename], { cwd: fixtureDir }, callback);
-            assert.strictEqual(callback.callCount, 2);
+            assert.equal(callback.callCount, 2);
         });
 
         it("should call callback function with total number of files with sourceCode", () => {
@@ -249,8 +251,9 @@ describe("SourceCodeUtil", () => {
             const firstFn = getFixturePath("foo.js");
             const secondFn = getFixturePath("bar.js");
             const thirdFn = getFixturePath("nested/foo.js");
+            const missingFn = getFixturePath("missing.js");
 
-            getSourceCodeOfFiles([firstFn, secondFn, thirdFn], { cwd: fixtureDir }, callback);
+            getSourceCodeOfFiles([firstFn, secondFn, thirdFn, missingFn], { cwd: fixtureDir }, callback);
             assert(callback.calledWith(3));
         });
 
